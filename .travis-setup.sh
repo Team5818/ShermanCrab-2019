@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-echo 'org.gradle.console=verbose' >> gradle.properties
+echo 'org.gradle.console=plain' >> gradle.properties
