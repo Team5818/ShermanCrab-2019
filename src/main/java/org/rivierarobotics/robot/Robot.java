@@ -21,6 +21,30 @@
 package org.rivierarobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import subsystems.DriveTrain;
 
 public class Robot extends TimedRobot {
+	public static Robot INSTANCE;
+	public DriveTrain driveTrain;
+	
+	@Override
+	public void robotInit() {
+		INSTANCE = this;
+		driveTrain = new DriveTrain();
+	}
+	
+	@Override
+	public void teleopPeriodic() {
+		
+	}
+	
+	@Override
+	public void autonomousPeriodic() {
+		
+	}
+	
+	@Override
+	public void disabledPeriodic() {
+		
+	}
 }
