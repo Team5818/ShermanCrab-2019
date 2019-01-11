@@ -20,8 +20,9 @@
 
 package org.rivierarobotics.robot;
 
+import org.rivierarobotics.subsystems.DriveTrain;
+
 import edu.wpi.first.wpilibj.TimedRobot;
-import subsystems.DriveTrain;
 
 public class Robot extends TimedRobot {
 	public static Robot INSTANCE;
