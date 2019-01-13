@@ -1,28 +1,28 @@
 package org.rivierarobotics.commands;
 
-import dagger.Provides;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
+import edu.wpi.first.wpilibj.command.Command;
+import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
 
 import javax.inject.Inject;
 
 
-public class DriveControlCommand extends InstantCommand {
+public class DriveControl extends Command {
     private DriveTrain driveTrain;
     private Joystick throttle;
     private Joystick turning;
 
     @Inject
-    public DriveControlCommand(@Provided DriveTrain dt) {
-        driveTrain = dt;
-        throttle = DriverInterface.JS_THROTTLE;
-        turning = DriverInterface.JS_TURNING;
+    public DriveControl(DriveTrain dt,
+                        @Input(Input.Position.DRIVER_LEFT) Joystick left,
+                        @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
+        this.driveTrain = dt;
+        this.throttle = left;
+        this.turning = right;
     }
 
-    public void controlArcade() {
+    public void setTank() {
         double y = throttle.getY();
         double x = turning.getX();
 

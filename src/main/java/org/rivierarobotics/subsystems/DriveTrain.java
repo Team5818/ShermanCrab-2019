@@ -1,23 +1,22 @@
 package org.rivierarobotics.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.rivierarobotics.commands.DriveControlCommand;
+import org.rivierarobotics.commands.DriveControl;
 import org.rivierarobotics.inject.Sided;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
 public class DriveTrain extends Subsystem {
-	private Provider<DriveControlCommand> command;
+	private Provider<DriveControl> command;
 	private DriveTrainSide left;
 	private DriveTrainSide right;
 
 	@Inject
 	public DriveTrain(@Sided(Sided.Side.LEFT) DriveTrainSide left,
 					  @Sided(Sided.Side.RIGHT) DriveTrainSide right,
-					  Provider<DriveControlCommand> command) {
+					  Provider<DriveControl> command) {
 		this.left = left;
 		this.right = right;
 		this.command = command;
