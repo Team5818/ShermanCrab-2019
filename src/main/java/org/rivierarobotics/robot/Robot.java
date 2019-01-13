@@ -20,25 +20,32 @@
 
 package org.rivierarobotics.robot;
 
-import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.commands.DriveControlCommand;
+import org.rivierarobotics.commands.DriveForward;
+import org.rivierarobotics.inject.CommandComponent;
+import org.rivierarobotics.inject.DaggerCommandComponent;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
-	public static Robot INSTANCE;
-	public DriveTrain driveTrain;
+	private CommandComponent commandComponent;
 	
 	@Override
 	public void robotInit() {
-		INSTANCE = this;
-		driveTrain = new DriveTrain();
+		commandComponent = DaggerCommandComponent.create();
 	}
 	
 	@Override
 	public void teleopPeriodic() {
-		
+		DriveControlCommand op = commandComponent.newDriveControlCommand();
+		op.controlArcade();
 	}
-	
+
+	@Override
+	public void autonomousInit() {
+		DriveForward cmd = commandComponent.newDriveForward(0.5, 2);
+	}
+
 	@Override
 	public void autonomousPeriodic() {
 		
