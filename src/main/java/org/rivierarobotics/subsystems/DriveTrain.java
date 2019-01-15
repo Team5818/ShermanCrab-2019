@@ -43,6 +43,14 @@ public class DriveTrain extends Subsystem {
 		return (leftDistance + rightDistance)/2;
 	}
 
+	public DriveTrainSide getLeftSide() {
+		return left;
+	}
+
+	public DriveTrainSide getRightSide() {
+		return right;
+	}
+
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(command.get());

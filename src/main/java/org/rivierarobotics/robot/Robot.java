@@ -20,37 +20,81 @@
 
 package org.rivierarobotics.robot;
 
-import org.rivierarobotics.commands.DriveControl;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
+
+import org.rivierarobotics.subsystems.RequireAllSubsystems;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.DaggerCommandComponent;
-import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
 	private CommandComponent commandComponent;
-	private DriveControl teleop = commandComponent.newDriveControl();
-	
+	private RequireAllSubsystems requireAllSubsystems = commandComponent.getRequireAllSubsystems();
+
+	Command autonomousCommand;
+	SendableChooser<Command> chooser;
+
 	@Override
 	public void robotInit() {
 		commandComponent = DaggerCommandComponent.create();
+		chooser = new SendableChooser<>();
+
+		chooser.addOption("Do Nothing", new TimedCommand(15));
+		chooser.addOption("Drive Forward", commandComponent.newDriveForward(0.6,15));
+
+		SmartDashboard.putData("Auto Mode", chooser);
+	}
+
+	@Override
+	public void teleopInit() {
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
 	}
 	
 	@Override
 	public void teleopPeriodic() {
-		teleop.setTank();
+		Scheduler.getInstance().run();
+		commandComponent.getPrintSmartDash();
 	}
 
 	@Override
 	public void autonomousInit() {
-		commandComponent.newDriveForward(0.5, 2);
+		autonomousCommand = chooser.getSelected();
+		if (autonomousCommand != null)
+			autonomousCommand.start();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		
+		Scheduler.getInstance().run();
+		commandComponent.getPrintSmartDash();
+	}
+
+	@Override
+	public void disabledInit() {
+		if (requireAllSubsystems.isRunning()) {
+			requireAllSubsystems.cancel();
+		}
 	}
 	
 	@Override
 	public void disabledPeriodic() {
-		
+		commandComponent.getPrintSmartDash();
+		Scheduler.getInstance().run();
+	}
+
+	@Override
+	public void testInit() {
+
+	}
+
+	@Override
+	public void testPeriodic() {
+		Scheduler.getInstance().run();
+		commandComponent.getPrintSmartDash();
 	}
 }

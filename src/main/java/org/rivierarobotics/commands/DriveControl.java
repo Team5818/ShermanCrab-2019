@@ -2,8 +2,8 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
-import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.inject.Input;
 import javax.inject.Inject;
 
 
@@ -21,7 +21,8 @@ public class DriveControl extends Command {
         this.turning = right;
     }
 
-    public void setTank() {
+    @Override
+    public void execute() {
         double y = throttle.getY();
         double x = turning.getX();
 
@@ -39,6 +40,11 @@ public class DriveControl extends Command {
 
     public void setZero() {
         driveTrain.stop();
+    }
+
+    @Override
+    protected void end() {
+        driveTrain.setPower(0, 0);
     }
 
     @Override

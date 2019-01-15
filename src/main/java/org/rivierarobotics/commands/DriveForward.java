@@ -33,6 +33,7 @@ public class DriveForward extends InstantCommand {
 		driveTrain.setPower(power, power);
 		currentPosition = driveTrain.getAverageDistance();
 	}
+
 	@Override
 	protected void end() {
 		driveTrain.setPower(0, 0);
