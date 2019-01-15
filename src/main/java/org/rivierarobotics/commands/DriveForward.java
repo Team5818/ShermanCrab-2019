@@ -9,7 +9,7 @@ import javax.inject.Inject;
 @GenerateCreator
 public class DriveForward extends InstantCommand {
 	private DriveTrain driveTrain;
-	private double distance;
+	private final double distance;
 	private final double power;
 	private double startPosition;
 	private double currentPosition;

@@ -7,7 +7,6 @@ import org.rivierarobotics.inject.Sided;
 
 @Module
 public class SubsystemModule {
-    public static final double COUNTS_TO_INCHES_FACTOR = 69.47916 / 1535.6666;
     private static final int L_TALON_ENC = 6;
     private static final int R_TALON_ENC = 3;
     private static final int L_TALON_ZED = 1;

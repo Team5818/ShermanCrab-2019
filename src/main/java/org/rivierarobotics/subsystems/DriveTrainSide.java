@@ -1,6 +1,7 @@
 package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import org.rivierarobotics.robot.UtilMap;
 
 public class DriveTrainSide {
 	private WPI_TalonSRX motorEnc;
@@ -20,10 +21,10 @@ public class DriveTrainSide {
 
 	public void setDistance(double inches) {
 		motorEnc.getSensorCollection().setQuadraturePosition(
-				(int) (inches / SubsystemModule.COUNTS_TO_INCHES_FACTOR), 10);
+				(int) (inches / UtilMap.COUNTS_TO_INCHES_FACTOR), 10);
 	}
 
 	public double getDistance() {
-		return motorEnc.getSensorCollection().getQuadraturePosition() * SubsystemModule.COUNTS_TO_INCHES_FACTOR;
+		return motorEnc.getSensorCollection().getQuadraturePosition() * UtilMap.COUNTS_TO_INCHES_FACTOR;
 	}
 }

@@ -1,6 +1,7 @@
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.rivierarobotics.subsystems.DriveTrain;
 import net.octyl.aptcreator.Provided;
 import javax.inject.Inject;
 import javax.inject.Singleton;

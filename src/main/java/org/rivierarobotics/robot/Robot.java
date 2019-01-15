@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
-import org.rivierarobotics.subsystems.RequireAllSubsystems;
+import org.rivierarobotics.commands.RequireAllSubsystems;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.DaggerCommandComponent;
 
@@ -50,18 +50,6 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void teleopInit() {
-		if (autonomousCommand != null)
-			autonomousCommand.cancel();
-	}
-	
-	@Override
-	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-		commandComponent.getPrintSmartDash();
-	}
-
-	@Override
 	public void autonomousInit() {
 		autonomousCommand = chooser.getSelected();
 		if (autonomousCommand != null)
@@ -70,6 +58,18 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
+		Scheduler.getInstance().run();
+		commandComponent.getPrintSmartDash();
+	}
+
+	@Override
+	public void teleopInit() {
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
+	}
+	
+	@Override
+	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		commandComponent.getPrintSmartDash();
 	}

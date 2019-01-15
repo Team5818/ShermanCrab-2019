@@ -38,13 +38,9 @@ public class DriveControl extends Command {
         driveTrain.setPower(left, right);
     }
 
-    public void setZero() {
-        driveTrain.stop();
-    }
-
     @Override
     protected void end() {
-        driveTrain.setPower(0, 0);
+        driveTrain.stop();
     }
 
     @Override
