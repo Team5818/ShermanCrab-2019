@@ -32,10 +32,16 @@ public class DriveTrain extends Subsystem {
 	    right.setPower(r);
     }
 
-    /*public void driveDistance() {
-        left.driveDistance();
-        right.driveDistance();
-    }*/
+	public void resetDistance() {
+		this.left.setDistance(0);
+		this.right.setDistance(0);
+	}
+
+	public double getAverageDistance() {
+		double leftDistance = this.left.getDistance();
+		double rightDistance = this.right.getDistance();
+		return (leftDistance + rightDistance)/2;
+	}
 
 	@Override
 	protected void initDefaultCommand() {

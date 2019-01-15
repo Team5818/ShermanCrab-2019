@@ -17,4 +17,13 @@ public class DriveTrainSide {
 		motorEnc.set(-pwr);
 		motorZed.set(-pwr);
 	}
+
+	public void setDistance(double inches) {
+		motorEnc.getSensorCollection().setQuadraturePosition(
+				(int) (inches / SubsystemModule.COUNTS_TO_INCHES_FACTOR), 10);
+	}
+
+	public double getDistance() {
+		return motorEnc.getSensorCollection().getQuadraturePosition() * SubsystemModule.COUNTS_TO_INCHES_FACTOR;
+	}
 }

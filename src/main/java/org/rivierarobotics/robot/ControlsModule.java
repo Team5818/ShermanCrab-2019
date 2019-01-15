@@ -10,8 +10,8 @@ import javax.inject.Singleton;
 public class ControlsModule {
     private static final int JS_DRIVER_LEFT = 0;
     private static final int JS_DRIVER_RIGHT = 1;
-    private static final int JS_CODRIVER_LEFT = 1;
-    private static final int JS_CODRIVER_RIGHT = 1;
+    private static final int JS_CODRIVER_LEFT = 2;
+    private static final int JS_CODRIVER_RIGHT = 3;
 
     @Provides
     @Singleton

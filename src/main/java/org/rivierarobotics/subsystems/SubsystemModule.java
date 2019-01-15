@@ -1,7 +1,6 @@
 package org.rivierarobotics.subsystems;
 
 import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import org.rivierarobotics.inject.Sided;
@@ -12,6 +11,7 @@ public class SubsystemModule {
     private static final int R_TALON_ENC = 3;
     private static final int L_TALON_ZED = 1;
     private static final int R_TALON_ZED = 2;
+    public static final double COUNTS_TO_INCHES_FACTOR = 69.47916 / 1535.6666;
 
     @Provides
     @Singleton
