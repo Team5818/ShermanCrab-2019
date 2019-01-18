@@ -1,12 +1,12 @@
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import javax.inject.Inject;
+
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
 
-import javax.inject.Inject;
-
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveControl extends Command {
     private DriveTrain driveTrain;
@@ -14,26 +14,44 @@ public class DriveControl extends Command {
     private Joystick turning;
 
     @Inject
-    public DriveControl(DriveTrain dt,
-                        @Input(Input.Position.DRIVER_LEFT) Joystick left,
-                        @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
+    public DriveControl(DriveTrain dt, @Input(Input.Position.DRIVER_LEFT) Joystick left,
+            @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
         this.driveTrain = dt;
         this.throttle = left;
         this.turning = right;
     }
 
-    public void setTank() {
+    @Override
+    protected void execute() {
         double y = throttle.getY();
         double x = turning.getX();
+        setArcade(x, y);
+    }
+
+    public void setArcade(double rotate, double power) {
+        double max = Math.max(Math.abs(rotate), Math.abs(power));
+        double diff = power - rotate;
+        double sum = power + rotate;
 
         double left;
         double right;
-        if (y >= 0) {
-            left = y+x;
-            right = y-x;
+
+        if (power > 0) {
+            if (rotate > 0) {
+                left = max;
+                right = diff;
+            } else {
+                left = sum;
+                right = max;
+            }
         } else {
-            left = y-x;
-            right = y+x;
+            if (rotate > 0) {
+                left = sum;
+                right = -max;
+            } else {
+                right = diff;
+                left = -max;
+            }
         }
         driveTrain.setPower(left, right);
     }

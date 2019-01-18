@@ -3,6 +3,7 @@ import com.techshroom.inciseblue.commonLib
 plugins {
     id("org.rivierarobotics.gradlerioredux") version "0.2.1"
     id("net.ltgt.apt-idea") version "0.20"
+    id("net.ltgt.apt-eclipse") version "0.20"
 }
 gradleRioRedux {
     robotClass = "org.rivierarobotics.robot.Robot"
@@ -11,7 +12,7 @@ gradleRioRedux {
 }
 
 dependencies {
-	commonLib("net.octyl.apt-creator", "apt-creator", "0.1.1") {
+	commonLib("net.octyl.apt-creator", "apt-creator", "0.1.3") {
 		compileOnly(lib("annotations"))
 		annotationProcessor(lib("processor"))
 	}

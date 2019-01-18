@@ -1,11 +1,13 @@
 package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-import org.rivierarobotics.commands.DriveControl;
-import org.rivierarobotics.inject.Sided;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import org.rivierarobotics.commands.DriveControl;
+import org.rivierarobotics.inject.Sided;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 @Singleton
 public class DriveTrain extends Subsystem {
@@ -32,10 +34,9 @@ public class DriveTrain extends Subsystem {
 	    right.setPower(r);
     }
 
-    /*public void driveDistance() {
-        left.driveDistance();
-        right.driveDistance();
-    }*/
+    public double getDistance() {
+    	return (left.getDistance() + right.getDistance()) / 2;
+	}
 
 	@Override
 	protected void initDefaultCommand() {
