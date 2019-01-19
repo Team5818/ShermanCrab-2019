@@ -20,18 +20,20 @@
 
 package org.rivierarobotics.robot;
 
-import org.rivierarobotics.inject.CommandComponent;
-import org.rivierarobotics.inject.DaggerCommandComponent;
+import org.rivierarobotics.inject.DaggerGlobalComponent;
+import org.rivierarobotics.inject.GlobalComponent;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
-	private CommandComponent commandComponent;
+	private GlobalComponent commandComponent;
 	
 	@Override
 	public void robotInit() {
-		commandComponent = DaggerCommandComponent.create();
+		commandComponent = DaggerGlobalComponent.create();
+		commandComponent.getDriveTrain();
+		commandComponent.getButtonConfiguration().initialize();
 	}
 	
 	@Override

@@ -1,24 +1,31 @@
 package org.rivierarobotics.inject;
 
-import javax.inject.Singleton;
-
-import org.rivierarobotics.commands.DriveControl;
 import org.rivierarobotics.commands.DriveForward;
 import org.rivierarobotics.commands.DriveForwardCreator;
-import org.rivierarobotics.robot.ControlsModule;
-import org.rivierarobotics.subsystems.SubsystemModule;
+import org.rivierarobotics.commands.ExtendPiston;
+import org.rivierarobotics.commands.RetractPiston;
 
-import dagger.Component;
+import dagger.Module;
+import dagger.Subcomponent;
 
-@Component(modules = { SubsystemModule.class, ControlsModule.class })
-@Singleton
+@Subcomponent
 public abstract class CommandComponent {
-    public abstract DriveControl newDriveControl();
-
     abstract DriveForwardCreator getDriveForwardCreator();
 
     public final DriveForward newDriveForward(double power, double time) {
         return getDriveForwardCreator().create(power, time);
     }
 
+    public abstract ExtendPiston newExtendPiston();
+
+    public abstract RetractPiston newRetractPiston();
+
+    @Module(subcomponents = CommandComponent.class)
+    public interface CCModule {
+    }
+
+    @Subcomponent.Builder
+    public interface Builder {
+        CommandComponent build();
+    }
 }

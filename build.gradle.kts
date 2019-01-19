@@ -16,7 +16,7 @@ dependencies {
 		compileOnly(lib("annotations"))
 		annotationProcessor(lib("processor"))
 	}
-	commonLib("com.google.dagger", "dagger", "2.16") {
+	commonLib("com.google.dagger", "dagger", "2.21") {
 		implementation(lib())
 		annotationProcessor(lib("compiler"))
 	}

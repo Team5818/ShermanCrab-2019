@@ -19,6 +19,7 @@ public class DriveControl extends Command {
         this.driveTrain = dt;
         this.throttle = left;
         this.turning = right;
+        requires(driveTrain);
     }
 
     @Override

@@ -61,7 +61,6 @@ public class DriveTrainSide {
          * sensor to have positive increment when driving Talon Forward (Green LED)
          */
         motorEnc.setSensorPhase(true);
-        motorEnc.setInverted(false);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
         motorEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);

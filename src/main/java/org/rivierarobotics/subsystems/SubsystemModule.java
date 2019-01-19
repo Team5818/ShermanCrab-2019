@@ -9,10 +9,10 @@ import dagger.Provides;
 
 @Module
 public class SubsystemModule {
-    private static final int L_TALON_ENC = 6;
-    private static final int R_TALON_ENC = 3;
-    private static final int L_TALON_ZED = 1;
-    private static final int R_TALON_ZED = 2;
+    private static final int L_TALON_ENC = 1;
+    private static final int R_TALON_ENC = 4;
+    private static final int L_TALON_ZED = 2;
+    private static final int R_TALON_ZED = 3;
 
     @Provides
     @Singleton
