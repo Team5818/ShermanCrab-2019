@@ -18,6 +18,7 @@ public class DriveForward extends Command {
 		this.power = power;
 		this.distance = distance;
 		this.dt = dt;
+		requires(dt);
 	}
 
 	@Override

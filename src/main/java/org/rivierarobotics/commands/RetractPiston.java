@@ -12,6 +12,7 @@ public class RetractPiston extends InstantCommand {
     @Inject
     public RetractPiston(HatchController hc) {
         this.hc = hc;
+        requires(hc);
     }
 
     @Override

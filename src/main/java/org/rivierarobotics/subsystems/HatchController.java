@@ -8,19 +8,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private final Solenoid piston;
+    private final Solenoid piston1;
+    private final Solenoid piston2;
 
     @Inject
     public HatchController() {
-        piston = new Solenoid(0);
+        piston1 = new Solenoid(0);
+        piston2 = new Solenoid(0);
     }
 
     public void extendPiston() {
-        piston.set(true);
+        piston1.set(true);
+        piston2.set(true);
     }
 
     public void retractPiston() {
-        piston.set(false);
+        piston1.set(false);
+        piston2.set(false);
     }
 
     @Override

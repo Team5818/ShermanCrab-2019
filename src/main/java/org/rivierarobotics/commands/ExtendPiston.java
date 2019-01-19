@@ -12,6 +12,7 @@ public class ExtendPiston extends InstantCommand {
     @Inject
     public ExtendPiston(HatchController hc) {
         this.hc = hc;
+        requires(hc);
     }
 
     @Override
