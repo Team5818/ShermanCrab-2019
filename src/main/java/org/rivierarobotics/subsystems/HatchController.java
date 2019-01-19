@@ -14,7 +14,7 @@ public class HatchController extends Subsystem {
     @Inject
     public HatchController() {
         piston1 = new Solenoid(0);
-        piston2 = new Solenoid(0);
+        piston2 = new Solenoid(1);
     }
 
     public void extendPiston() {
