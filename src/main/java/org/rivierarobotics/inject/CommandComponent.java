@@ -8,18 +8,7 @@ import org.rivierarobotics.subsystems.Piston;
 
 @Subcomponent
 public abstract class CommandComponent {
-    abstract DriveForwardCreator getDriveForwardCreator();
-
-    public final DriveForward newDriveForward(double power, double time) {
-        return getDriveForwardCreator().create(power, time);
-    }
-
-    abstract RetractPistonCreator getRetractPistonCreator();
-
-    public final RetractPiston newRetractPiston(Piston piston) {
-        return getRetractPistonCreator().create(piston);
-    }
-
+    public abstract DriveCommands drive();
     public abstract PistonCommands piston();
     public abstract HatchPull newHatchPull();
 
