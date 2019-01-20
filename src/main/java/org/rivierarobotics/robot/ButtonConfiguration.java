@@ -28,8 +28,11 @@ public class ButtonConfiguration {
     }
 
     public void initialize() {
-        JoystickButton pistonButton = new JoystickButton(driverLeft, 1);
-        pistonButton.whenPressed(commands.newExtendPiston());
-        pistonButton.whenReleased(commands.newRetractPiston());
+        JoystickButton hatchPull = new JoystickButton(driverRight, 1);
+        hatchPull.whenPressed(commands.newHatchPull());
+
+        JoystickButton bothPistonMove = new JoystickButton(driverLeft, 1);
+        bothPistonMove.whenPressed(commands.newExtendBoth());
+        bothPistonMove.whenReleased(commands.newRetractBoth());
     }
 }

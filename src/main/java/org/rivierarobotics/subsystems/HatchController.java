@@ -17,14 +17,22 @@ public class HatchController extends Subsystem {
         piston2 = new Solenoid(1);
     }
 
-    public void extendPiston() {
-        piston1.set(true);
-        piston2.set(true);
+    private Solenoid pistonFor(Piston piston) {
+        if(piston == Piston.LOWER) {
+            return piston1;
+        } else if(piston == Piston.UPPER) {
+            return piston2;
+        } else {
+            throw new IllegalArgumentException("Invalid piston value " + piston);
+        }
     }
 
-    public void retractPiston() {
-        piston1.set(false);
-        piston2.set(false);
+    public void extendPiston(Piston piston) {
+        pistonFor(piston).set(true);
+    }
+
+    public void retractPiston(Piston piston) {
+        pistonFor(piston).set(false);
     }
 
     @Override
