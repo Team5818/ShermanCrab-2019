@@ -8,20 +8,28 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private final Solenoid piston1;
-    private final Solenoid piston2;
+    private final Solenoid grabPistonLower;
+    private final Solenoid grabPistonUpper;
+    private final Solenoid pushPistonLower;
+    private final Solenoid pushPistonUpper;
 
     @Inject
     public HatchController() {
-        piston1 = new Solenoid(0);
-        piston2 = new Solenoid(1);
+        grabPistonLower = new Solenoid(0);
+        grabPistonUpper = new Solenoid(1);
+        pushPistonLower = new Solenoid(2);
+        pushPistonUpper = new Solenoid(3);
     }
 
     private Solenoid pistonFor(Piston piston) {
-        if(piston == Piston.LOWER) {
-            return piston1;
-        } else if(piston == Piston.UPPER) {
-            return piston2;
+        if(piston == Piston.GRAB_LOWER) {
+            return grabPistonLower;
+        } else if(piston == Piston.GRAB_UPPER) {
+            return grabPistonUpper;
+        } else if(piston == Piston.PUSH_LOWER) {
+            return pushPistonLower;
+        } else if(piston == Piston.PUSH_UPPER) {
+            return pushPistonUpper;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }

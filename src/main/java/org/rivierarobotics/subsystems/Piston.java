@@ -1,5 +1,5 @@
 package org.rivierarobotics.subsystems;
 
 public enum Piston {
-    LOWER, UPPER
+    GRAB_LOWER, GRAB_UPPER, PUSH_LOWER, PUSH_UPPER
 }

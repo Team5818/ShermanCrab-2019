@@ -6,14 +6,16 @@ import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
 
+import static org.rivierarobotics.commands.CommandGroups.inParallel;
+
 public class HatchPull extends CommandGroup {
 
     @Inject
-    public HatchPull(ExtendBoth extendBoth, RetractPistonCreator retractPistons) {
-        addSequential(extendBoth);
+    public HatchPull(ExtendPistonCreator extendPiston, RetractPistonCreator retractPiston) {
+        addSequential(inParallel(extendPiston.create(Piston.GRAB_LOWER), extendPiston.create(Piston.GRAB_UPPER)));
         addSequential(new TimedCommand(0.25));
-        addSequential(retractPistons.create(Piston.UPPER));
+        addSequential(retractPiston.create(Piston.GRAB_UPPER));
         addSequential(new TimedCommand(0.25));
-        addSequential(retractPistons.create(Piston.LOWER));
+        addSequential(retractPiston.create(Piston.GRAB_LOWER));
     }
 }

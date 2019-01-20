@@ -14,20 +14,13 @@ public abstract class CommandComponent {
         return getDriveForwardCreator().create(power, time);
     }
 
-    abstract ExtendPistonCreator getExtendPistonCreator();
-
-    public final ExtendPiston newExtendPiston(Piston piston) {
-        return getExtendPistonCreator().create(piston);
-    }
-
     abstract RetractPistonCreator getRetractPistonCreator();
 
     public final RetractPiston newRetractPiston(Piston piston) {
         return getRetractPistonCreator().create(piston);
     }
 
-    public abstract ExtendBoth newExtendBoth();
-    public abstract RetractBoth newRetractBoth();
+    public abstract PistonCommands piston();
     public abstract HatchPull newHatchPull();
 
     @Module(subcomponents = CommandComponent.class)

@@ -7,13 +7,16 @@ import org.rivierarobotics.inject.Input;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import org.rivierarobotics.subsystems.Piston;
+
+import static org.rivierarobotics.commands.CommandGroups.inParallel;
 
 public class ButtonConfiguration {
     private final Joystick driverLeft;
     private final Joystick driverRight;
     private final Joystick codriverLeft;
     private final Joystick codriverRight;
-    private final CommandComponent commands;
+    private final CommandComponent cmds;
 
     @Inject
     public ButtonConfiguration(@Input(Input.Position.DRIVER_LEFT) Joystick driverLeft,
@@ -24,15 +27,19 @@ public class ButtonConfiguration {
         this.driverRight = driverRight;
         this.codriverLeft = codriverLeft;
         this.codriverRight = codriverRight;
-        this.commands = component.build();
+        this.cmds = component.build();
     }
 
     public void initialize() {
-        JoystickButton hatchPull = new JoystickButton(driverRight, 1);
-        hatchPull.whenPressed(commands.newHatchPull());
+        JoystickButton hatchPull = new JoystickButton(driverLeft, 1);
+        hatchPull.whenPressed(cmds.newHatchPull());
 
-        JoystickButton bothPistonMove = new JoystickButton(driverLeft, 1);
-        bothPistonMove.whenPressed(commands.newExtendBoth());
-        bothPistonMove.whenReleased(commands.newRetractBoth());
+        JoystickButton grabAction = new JoystickButton(driverRight, 1);
+        grabAction.whenPressed(inParallel(cmds.piston().extend(Piston.GRAB_LOWER), cmds.piston().extend(Piston.GRAB_UPPER)));
+        grabAction.whenReleased(inParallel(cmds.piston().retract(Piston.GRAB_LOWER), cmds.piston().retract(Piston.GRAB_UPPER)));
+
+        JoystickButton pushAction = new JoystickButton(driverRight, 2);
+        pushAction.whenPressed(inParallel(cmds.piston().extend(Piston.PUSH_LOWER), cmds.piston().extend(Piston.PUSH_UPPER)));
+        pushAction.whenReleased(inParallel(cmds.piston().retract(Piston.PUSH_LOWER), cmds.piston().retract(Piston.PUSH_UPPER)));
     }
 }
