@@ -32,7 +32,7 @@ public class ButtonConfiguration {
 
     public void initialize() {
         JoystickButton hatchPull = new JoystickButton(driverLeft, 1);
-        hatchPull.whenPressed(cmds.newHatchPull());
+        hatchPull.whenPressed(cmds.hatch().pull());
 
         JoystickButton grabAction = new JoystickButton(driverRight, 1);
         grabAction.whenPressed(inParallel(cmds.piston().extend(Piston.GRAB_LOWER), cmds.piston().extend(Piston.GRAB_UPPER)));
