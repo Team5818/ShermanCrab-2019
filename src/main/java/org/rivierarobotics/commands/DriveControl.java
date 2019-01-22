@@ -24,7 +24,7 @@ public class DriveControl extends Command {
 
     @Override
     protected void execute() {
-        double y = -throttle.getY();
+        double y = throttle.getY();
         double x = turning.getX();
         setArcade(x, y);
     }
