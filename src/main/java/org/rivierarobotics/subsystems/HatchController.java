@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
@@ -19,6 +20,9 @@ public class HatchController extends Subsystem {
         grabPistonUpper = new Solenoid(1);
         pushPistonLower = new Solenoid(2);
         pushPistonUpper = new Solenoid(3);
+        var tab = Shuffleboard.getTab("Solenoid");
+        tab.add(grabPistonLower);
+        tab.add(grabPistonUpper);
     }
 
     private Solenoid pistonFor(Piston piston) {

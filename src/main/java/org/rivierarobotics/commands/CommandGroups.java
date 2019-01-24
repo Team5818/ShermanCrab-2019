@@ -11,4 +11,12 @@ public class CommandGroups {
         }
         return group;
     }
+    
+    public static Command inOrder(Command... commands) {
+        CommandGroup group = new CommandGroup();
+        for(Command c : commands) {
+            group.addSequential(c);
+        }
+        return group;
+    }
 }
