@@ -16,10 +16,10 @@ public class HatchController extends Subsystem {
 
     @Inject
     public HatchController() {
-        grabPistonLower = new Solenoid(0);
-        grabPistonUpper = new Solenoid(1);
-        pushPistonLower = new Solenoid(2);
-        pushPistonUpper = new Solenoid(3);
+        grabPistonLower = new Solenoid(1);
+        grabPistonUpper = new Solenoid(0);
+        pushPistonLower = new Solenoid(3);
+        pushPistonUpper = new Solenoid(2);
         var tab = Shuffleboard.getTab("Solenoid");
         tab.add(grabPistonLower);
         tab.add(grabPistonUpper);

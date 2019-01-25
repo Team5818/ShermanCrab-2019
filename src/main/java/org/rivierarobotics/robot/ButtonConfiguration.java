@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.rivierarobotics.subsystems.Piston;
 
-import static org.rivierarobotics.commands.CommandGroups.inParallel;
 import static org.rivierarobotics.commands.CommandGroups.inOrder;
 
 public class ButtonConfiguration {
