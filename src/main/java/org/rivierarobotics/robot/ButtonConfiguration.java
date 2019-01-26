@@ -31,16 +31,23 @@ public class ButtonConfiguration {
     }
 
     public void initialize() {
-        JoystickButton hatchPull = new JoystickButton(driverLeft, 1);
-        hatchPull.whenPressed(inOrder(cmds.piston().extend(Piston.GRAB_LOWER), cmds.piston().extend(Piston.GRAB_UPPER)));
-        hatchPull.whenReleased(cmds.hatch().pull());
+        JoystickButton hatchPush = new JoystickButton(driverLeft, 1);
+        hatchPush.whenPressed(cmds.hatch().push());
+        hatchPush.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
+                cmds.piston().retract(Piston.PUSH_UPPER),
+                cmds.piston().retract(Piston.CLAMP_LEFT),
+                cmds.piston().retract(Piston.CLAMP_RIGHT)));
 
-        JoystickButton grabAction = new JoystickButton(driverRight, 1);
-        grabAction.whenPressed(inOrder(cmds.piston().extend(Piston.GRAB_LOWER), cmds.piston().extend(Piston.GRAB_UPPER)));
-        grabAction.whenReleased(inOrder(cmds.piston().retract(Piston.GRAB_LOWER), cmds.piston().retract(Piston.GRAB_UPPER)));
+        JoystickButton clampAction = new JoystickButton(driverRight, 1);
+        clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
+                cmds.piston().extend(Piston.CLAMP_LEFT)));
+        clampAction.whenReleased(inOrder(cmds.piston().retract(Piston.CLAMP_RIGHT),
+                cmds.piston().retract(Piston.CLAMP_LEFT)));
 
         JoystickButton pushAction = new JoystickButton(driverRight, 2);
-        pushAction.whenPressed(inOrder(cmds.piston().extend(Piston.PUSH_LOWER), cmds.piston().extend(Piston.PUSH_UPPER)));
-        pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER), cmds.piston().retract(Piston.PUSH_UPPER)));
+        pushAction.whenPressed(inOrder(cmds.piston().extend(Piston.PUSH_LOWER),
+                cmds.piston().extend(Piston.PUSH_UPPER)));
+        pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
+                cmds.piston().retract(Piston.PUSH_UPPER)));
     }
 }

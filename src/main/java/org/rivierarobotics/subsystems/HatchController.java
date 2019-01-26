@@ -9,27 +9,27 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private final Solenoid grabPistonLower;
-    private final Solenoid grabPistonUpper;
+    private final Solenoid clampPistonRight;
+    private final Solenoid clampPistonLeft;
     private final Solenoid pushPistonLower;
     private final Solenoid pushPistonUpper;
 
     @Inject
     public HatchController() {
-        grabPistonLower = new Solenoid(1);
-        grabPistonUpper = new Solenoid(0);
+        clampPistonRight = new Solenoid(1);
+        clampPistonLeft = new Solenoid(0);
         pushPistonLower = new Solenoid(3);
         pushPistonUpper = new Solenoid(2);
         var tab = Shuffleboard.getTab("Solenoid");
-        tab.add(grabPistonLower);
-        tab.add(grabPistonUpper);
+        tab.add(clampPistonRight);
+        tab.add(clampPistonLeft);
     }
 
     private Solenoid pistonFor(Piston piston) {
-        if(piston == Piston.GRAB_LOWER) {
-            return grabPistonLower;
-        } else if(piston == Piston.GRAB_UPPER) {
-            return grabPistonUpper;
+        if(piston == Piston.CLAMP_RIGHT) {
+            return clampPistonRight;
+        } else if(piston == Piston.CLAMP_LEFT) {
+            return clampPistonLeft;
         } else if(piston == Piston.PUSH_LOWER) {
             return pushPistonLower;
         } else if(piston == Piston.PUSH_UPPER) {

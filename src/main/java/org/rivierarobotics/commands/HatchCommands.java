@@ -4,14 +4,14 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class HatchCommands {
-    private final Provider<HatchPullRetract> hatchPullProvider;
+    private final Provider<HatchPushExtend> hatchPushProvider;
 
     @Inject
-    public HatchCommands(Provider<HatchPullRetract> hatchPullProvider) {
-        this.hatchPullProvider = hatchPullProvider;
+    public HatchCommands(Provider<HatchPushExtend> hatchPushProvider) {
+        this.hatchPushProvider = hatchPushProvider;
     }
 
-    public final HatchPullRetract pull() {
-        return hatchPullProvider.get();
+    public final HatchPushExtend push() {
+        return hatchPushProvider.get();
     }
 }
