@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 public class DriveTrainSide {
-    private static final double TICKS_TO_INCHES;
+    private static final double INCHES_TO_TICKS;
     private static final double P;
     private static final double I;
     private static final double D;
@@ -24,8 +24,8 @@ public class DriveTrainSide {
     }
 
     static {
-        TICKS_TO_INCHES = ezWidget("Ticks to Inches", 1).getEntry().getDouble(1);
-        System.err.println("Ticks to Inches: " + TICKS_TO_INCHES);
+        INCHES_TO_TICKS = ezWidget("Inches to Ticks", 1).getEntry().getDouble(1);
+        System.err.println("Inches to Ticks: " + INCHES_TO_TICKS);
 
         P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
         System.err.println("P: " + P);
@@ -54,7 +54,7 @@ public class DriveTrainSide {
         motorEnc.configFactoryDefault();
 
         /* Configure Sensor Source for Primary PID */
-        motorEnc.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, PID_LOOP_IDX, TIMEOUT);
+        motorEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
         /*
          * Configure Talon SRX Output and Sensor direction accordingly Invert Motor to
          * have green LEDs when driving Talon Forward / Requesting Positive Output Phase
@@ -73,19 +73,19 @@ public class DriveTrainSide {
 
         /* Set Motion Magic gains in slot0 - see documentation */
         motorEnc.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        motorEnc.config_kF(SLOT_IDX, F, TIMEOUT);
-        motorEnc.config_kP(SLOT_IDX, P, TIMEOUT);
-        motorEnc.config_kI(SLOT_IDX, I, TIMEOUT);
-        motorEnc.config_kD(SLOT_IDX, D, TIMEOUT);
+        motorEnc.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        motorEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
+        motorEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
+        motorEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
     }
 
     public double getDistance() {
         int ticks = motorEnc.getSensorCollection().getQuadraturePosition();
-        return ticks * TICKS_TO_INCHES;
+        return ticks / INCHES_TO_TICKS;
     }
 
     public void setVelocity(double vel) {
-        motorEnc.set(ControlMode.Velocity, vel);
+        motorEnc.set(ControlMode.Velocity, vel * INCHES_TO_TICKS);
     }
 
     public void setPower(double pwr) {
