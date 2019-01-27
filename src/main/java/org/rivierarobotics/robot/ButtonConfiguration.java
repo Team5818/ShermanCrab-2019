@@ -2,6 +2,7 @@ package org.rivierarobotics.robot;
 
 import javax.inject.Inject;
 
+import org.rivierarobotics.commands.DriveVelocity;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
 
@@ -49,6 +50,6 @@ public class ButtonConfiguration {
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER), cmds.piston().retract(Piston.PUSH_UPPER)));
 
         JoystickButton driveVelocity = new JoystickButton(driverLeft, 2);
-        driveVelocity.whenPressed(cmds.drive().velocity());
+        driveVelocity.toggleWhenPressed(cmds.drive().velocity());
     }
 }

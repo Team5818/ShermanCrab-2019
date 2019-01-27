@@ -51,19 +51,12 @@ public class DriveTrainSide {
         /* Factory default hardware to prevent unexpected behavior */
         motorEnc.configFactoryDefault();
         motorZed.configFactoryDefault();
-//        motorZed.follow(motorEnc);
-        motorZed.setNeutralMode(NeutralMode.Coast);
+        motorEnc.setSensorPhase(!invert);
         motorEnc.setInverted(invert);
-        motorZed.setInverted(invert);
+        motorZed.setInverted(InvertType.FollowMaster);
 
         /* Configure Sensor Source for Primary PID */
         motorEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
-        /*
-         * Configure Talon SRX Output and Sensor direction accordingly Invert Motor to
-         * have green LEDs when driving Talon Forward / Requesting Positive Output Phase
-         * sensor to have positive increment when driving Talon Forward (Green LED)
-         */
-        motorEnc.setSensorPhase(true);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
         motorEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
@@ -88,7 +81,7 @@ public class DriveTrainSide {
     }
 
     public void setVelocity(double vel) {
-        motorEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS)/ 10);
+        motorEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
     }
 
     public void setPower(double pwr) {

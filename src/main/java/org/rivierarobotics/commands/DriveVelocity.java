@@ -14,6 +14,7 @@ public class DriveVelocity extends Command {
 	private final NetworkTableEntry distEntry = Shuffleboard.getTab("Drive Train")
 			.addPersistent("Dist", 0).getEntry();
 	private DriveTrain dt;
+	private double velocity;
 	private double startDistance;
 	private double currentDistance;
 
@@ -24,12 +25,12 @@ public class DriveVelocity extends Command {
 
 	@Override
 	protected void initialize() {
+		velocity = velEntry.getDouble(0.0);
 		startDistance = currentDistance = dt.getDistance();
 	}
 
 	@Override
 	protected void execute() {
-		double velocity = velEntry.getDouble(0.0);
 		dt.setVelocity(velocity, velocity);
 		currentDistance = dt.getDistance();
 	}
@@ -37,6 +38,6 @@ public class DriveVelocity extends Command {
 	@Override
 	protected boolean isFinished() {
 		double distance = distEntry.getDouble(0.0);
-		return currentDistance >= distance + startDistance;
+		return Math.abs(currentDistance - startDistance) >= distance;
 	}
 }
