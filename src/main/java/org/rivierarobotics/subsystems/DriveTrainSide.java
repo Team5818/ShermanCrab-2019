@@ -3,6 +3,7 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -46,12 +47,14 @@ public class DriveTrainSide {
     public DriveTrainSide(int enc, int zed, boolean invert) {
         motorEnc = new WPI_TalonSRX(enc);
         motorZed = new WPI_TalonSRX(zed);
-        motorZed.follow(motorEnc);
-        motorEnc.setInverted(invert);
-        motorZed.setInverted(InvertType.FollowMaster);
 
         /* Factory default hardware to prevent unexpected behavior */
         motorEnc.configFactoryDefault();
+        motorZed.configFactoryDefault();
+//        motorZed.follow(motorEnc);
+        motorZed.setNeutralMode(NeutralMode.Coast);
+        motorEnc.setInverted(invert);
+        motorZed.setInverted(invert);
 
         /* Configure Sensor Source for Primary PID */
         motorEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
@@ -85,7 +88,7 @@ public class DriveTrainSide {
     }
 
     public void setVelocity(double vel) {
-        motorEnc.set(ControlMode.Velocity, vel * INCHES_TO_TICKS);
+        motorEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS)/ 10);
     }
 
     public void setPower(double pwr) {

@@ -29,21 +29,25 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
-	private GlobalComponent commandComponent;
-	private final NetworkTableEntry encoder = Shuffleboard.getTab( "Drive Train")
-			.add("Distance", 0).getEntry();
+	private GlobalComponent globalComponent;
+	private final NetworkTableEntry encoderLeft = Shuffleboard.getTab( "Drive Train")
+	            .add("Distance Left", 0).getEntry();
+	private final NetworkTableEntry encoderRight = Shuffleboard.getTab( "Drive Train")
+	            .add("Distance Right", 0).getEntry();
 	
 	@Override
 	public void robotInit() {
-		commandComponent = DaggerGlobalComponent.create();
-		commandComponent.getDriveTrain();
-		commandComponent.getButtonConfiguration().initialize();
+		globalComponent = DaggerGlobalComponent.create();
+		globalComponent.getDriveTrain();
+		globalComponent.getButtonConfiguration().initialize();
 	}
 	
 	@Override
 	public void teleopPeriodic() {
-		double distance = commandComponent.getDriveTrain().getDistance();
-		encoder.setDouble(distance);
+		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
+		encoderLeft.setDouble(distance);
+	    distance = globalComponent.getDriveTrain().getRight().getDistance();
+	    encoderRight.setDouble(distance);
 		Scheduler.getInstance().run();
 	}
 

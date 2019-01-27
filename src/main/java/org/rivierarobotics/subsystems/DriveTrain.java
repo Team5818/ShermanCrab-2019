@@ -16,14 +16,12 @@ public class DriveTrain extends Subsystem {
     private DriveTrainSide right;
 
     @Inject
-    public DriveTrain(@Sided(Sided.Side.LEFT) DriveTrainSide left,
-                      @Sided(Sided.Side.RIGHT) DriveTrainSide right,
-                      Provider<DriveControl> command) {
+    public DriveTrain(@Sided(Sided.Side.LEFT) DriveTrainSide left, @Sided(Sided.Side.RIGHT) DriveTrainSide right,
+            Provider<DriveControl> command) {
         this.left = left;
         this.right = right;
         this.command = command;
     }
-
 
     public void stop() {
         this.setPower(0, 0);
@@ -37,6 +35,14 @@ public class DriveTrain extends Subsystem {
     public void setVelocity(double l, double r) {
         left.setVelocity(l);
         right.setVelocity(r);
+    }
+
+    public DriveTrainSide getLeft() {
+        return left;
+    }
+
+    public DriveTrainSide getRight() {
+        return right;
     }
 
     public double getDistance() {
