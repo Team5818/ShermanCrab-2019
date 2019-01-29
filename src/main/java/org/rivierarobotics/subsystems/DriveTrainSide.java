@@ -51,6 +51,7 @@ public class DriveTrainSide {
         /* Factory default hardware to prevent unexpected behavior */
         motorEnc.configFactoryDefault();
         motorZed.configFactoryDefault();
+        motorZed.follow(motorEnc);
         motorEnc.setSensorPhase(!invert);
         motorEnc.setInverted(invert);
         motorZed.setInverted(InvertType.FollowMaster);
