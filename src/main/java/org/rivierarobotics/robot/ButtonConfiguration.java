@@ -49,7 +49,7 @@ public class ButtonConfiguration {
         pushAction.whenPressed(inOrder(cmds.piston().extend(Piston.PUSH_LOWER), cmds.piston().extend(Piston.PUSH_UPPER)));
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER), cmds.piston().retract(Piston.PUSH_UPPER)));
 
-        JoystickButton driveVelocity = new JoystickButton(driverLeft, 2);
-        driveVelocity.toggleWhenPressed(cmds.drive().velocity());
+        JoystickButton driveDistance = new JoystickButton(driverLeft, 2);
+        driveDistance.toggleWhenPressed(cmds.drive().distance(5));
     }
 }

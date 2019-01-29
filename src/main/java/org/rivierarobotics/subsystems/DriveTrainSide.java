@@ -3,7 +3,6 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -16,6 +15,8 @@ public class DriveTrainSide {
     private static final double I;
     private static final double D;
     private static final double F;
+    private static final int VELOCITY;
+    private static final int ACCELERATION;
     private static final int SLOT_IDX = 0;
     private static final int PID_LOOP_IDX = 0;
     private static final int TIMEOUT = 30;
@@ -39,6 +40,12 @@ public class DriveTrainSide {
 
         F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
         System.err.println("F: " + F);
+
+        VELOCITY = (int) ezWidget("Velocity", 0).getEntry().getDouble(0);
+        System.err.println("velocity: " + VELOCITY);
+
+        ACCELERATION = (int) ezWidget("Accel", 0).getEntry().getDouble(0);
+        System.err.println("accel: " + ACCELERATION);
     }
 
     private WPI_TalonSRX motorEnc;
@@ -74,11 +81,18 @@ public class DriveTrainSide {
         motorEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
         motorEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
         motorEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
+
+        motorEnc.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
+        motorEnc.configMotionAcceleration(ACCELERATION, TIMEOUT);
     }
 
     public double getDistance() {
         int ticks = motorEnc.getSensorCollection().getQuadraturePosition();
         return ticks / INCHES_TO_TICKS;
+    }
+
+    public void setDistance(double inches) {
+        motorEnc.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
     }
 
     public void setVelocity(double vel) {
