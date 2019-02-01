@@ -34,10 +34,6 @@ public class ButtonConfiguration {
     public void initialize() {
         JoystickButton hatchPush = new JoystickButton(driverLeft, 1);
         hatchPush.whenPressed(cmds.hatch().push());
-        hatchPush.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
-                cmds.piston().retract(Piston.PUSH_UPPER),
-                cmds.piston().retract(Piston.CLAMP_LEFT),
-                cmds.piston().retract(Piston.CLAMP_RIGHT)));
 
         JoystickButton clampAction = new JoystickButton(driverRight, 1);
         clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
@@ -46,8 +42,10 @@ public class ButtonConfiguration {
                 cmds.piston().retract(Piston.CLAMP_LEFT)));
 
         JoystickButton pushAction = new JoystickButton(driverRight, 2);
-        pushAction.whenPressed(inOrder(cmds.piston().extend(Piston.PUSH_LOWER), cmds.piston().extend(Piston.PUSH_UPPER)));
-        pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER), cmds.piston().retract(Piston.PUSH_UPPER)));
+        pushAction.whenPressed(inOrder(cmds.piston().extend(Piston.PUSH_LOWER),
+                cmds.piston().extend(Piston.PUSH_UPPER)));
+        pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
+                cmds.piston().retract(Piston.PUSH_UPPER)));
 
         JoystickButton driveDistance = new JoystickButton(driverLeft, 2);
         driveDistance.toggleWhenPressed(cmds.drive().distance(5));
