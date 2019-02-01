@@ -48,6 +48,6 @@ public class ButtonConfiguration {
                 cmds.piston().retract(Piston.PUSH_UPPER)));
 
         JoystickButton driveDistance = new JoystickButton(codriverLeft, 2);
-        driveDistance.toggleWhenPressed(cmds.drive().distance(5));
+            driveDistance.toggleWhenPressed(cmds.drive().distance(5));
     }
 }

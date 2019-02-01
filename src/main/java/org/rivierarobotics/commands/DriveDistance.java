@@ -23,7 +23,9 @@ public class DriveDistance extends Command {
     @Override
     protected void initialize() {
         startDistance = currentDistance = dt.getDistance();
-        dt.setDistance(distance, distance);
+
+        double absDistance = distance + startDistance;
+        dt.setDistance(absDistance, absDistance);
     }
 
     @Override
