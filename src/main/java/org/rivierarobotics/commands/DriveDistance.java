@@ -1,5 +1,6 @@
 package org.rivierarobotics.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -13,6 +14,8 @@ public class DriveDistance extends Command {
     private final double distance;
     private double startDistance;
     private double currentDistance;
+    private double calcDistance;
+    private double calcCurrentDistance;
 
     public DriveDistance(@Provided DriveTrain dt, double distance) {
         this.dt = dt;
@@ -23,18 +26,19 @@ public class DriveDistance extends Command {
     @Override
     protected void initialize() {
         startDistance = currentDistance = dt.getDistance();
-
-        double absDistance = distance + startDistance;
-        dt.setDistance(absDistance, absDistance);
+        calcDistance = startDistance - distance;
+        dt.setDistance(calcDistance, calcDistance);
     }
 
     @Override
     protected void execute() {
         currentDistance = dt.getDistance();
+        calcCurrentDistance = Math.abs(currentDistance - startDistance);
     }
+
 
     @Override
     protected boolean isFinished() {
-        return Math.abs(currentDistance - startDistance) >= Math.abs(distance);
+        return Math.abs(calcCurrentDistance) >= Math.abs(distance);
     }
 }
