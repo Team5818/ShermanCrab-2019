@@ -12,10 +12,12 @@ public class HatchPushExtend extends CommandGroup {
 
     @Inject
     public HatchPushExtend(PistonCommands piston) {
-        addSequential(inOrder(piston.extend(Piston.PUSH_LOWER), piston.extend(Piston.PUSH_UPPER)));
-        addSequential(new TimedCommand(0.25));
+        addSequential(piston.extend(Piston.PUSH_LOWER));
+        addSequential(new TimedCommand(0.05));
+        addSequential(piston.extend(Piston.PUSH_UPPER));
+        addSequential(new TimedCommand(0.05));
         addSequential(inOrder(piston.extend(Piston.CLAMP_RIGHT), piston.extend(Piston.CLAMP_LEFT)));
-        addSequential(new TimedCommand(0.25));
+        addSequential(new TimedCommand(0.15));
         addSequential(inOrder(piston.retract(Piston.CLAMP_RIGHT),
                 piston.retract(Piston.CLAMP_LEFT),
                 piston.retract(Piston.PUSH_UPPER),
