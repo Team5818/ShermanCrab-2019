@@ -12,7 +12,9 @@ public class DriveCommands {
     public DriveCommands(DriveForwardCreator driveForwardCreator,
             DriveVelocityCreator driveVelocityCreator,
             DriveDistanceCreator driveDistanceCreator,
-            RotateCreator rotateCreator) {
+            RotateCreator rotateCreator,
+            ShiftGearCreator shiftGearCreator,
+            SwapGearCreator swapGearCreator) {
         this.driveForwardCreator = driveForwardCreator;
         this.driveVelocityCreator = driveVelocityCreator;
         this.driveDistanceCreator = driveDistanceCreator;

@@ -36,7 +36,8 @@ public class ButtonConfiguration {
         hatchPush.toggleWhenPressed(cmds.hatch().push());
 
         JoystickButton driveDistance = new JoystickButton(driverLeft, 2);
-        driveDistance.toggleWhenPressed(cmds.drive().rotate(90));
+        /*commented out until geared motors are introduced*/
+        //driveDistance.toggleWhenPressed(cmds.gear().swap());
 
         JoystickButton clampAction = new JoystickButton(driverRight, 1);
         clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),

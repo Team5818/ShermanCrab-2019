@@ -5,6 +5,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.DriveControl;
 import org.rivierarobotics.inject.Sided;
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 @Singleton
 public class DriveTrain extends Subsystem {
     private Provider<DriveControl> command;
-    private PigeonIMU gyro = new PigeonIMU(0);
+   // private PigeonIMU gyro = new PigeonIMU(0);
     private DriveTrainSide left;
     private DriveTrainSide right;
 
@@ -60,12 +61,12 @@ public class DriveTrain extends Subsystem {
     }
 
     private void resetGyroYaw() {
-        gyro.setYaw(0, 10);
+     //   gyro.setYaw(0, 10);
     }
 
     private double[] getYPR() {
         double[] ypr = {0,0,0};
-        gyro.getYawPitchRoll(ypr);
+       // gyro.getYawPitchRoll(ypr);
         return ypr;
     }
 

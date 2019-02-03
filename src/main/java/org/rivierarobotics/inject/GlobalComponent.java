@@ -6,6 +6,7 @@ import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
 import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.Shifter;
 import org.rivierarobotics.subsystems.SubsystemModule;
 
 import dagger.Component;
