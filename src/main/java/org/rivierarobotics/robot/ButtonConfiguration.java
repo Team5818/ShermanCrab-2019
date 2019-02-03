@@ -33,7 +33,10 @@ public class ButtonConfiguration {
 
     public void initialize() {
         JoystickButton hatchPush = new JoystickButton(driverLeft, 1);
-        hatchPush.whenPressed(cmds.hatch().push());
+        hatchPush.toggleWhenPressed(cmds.hatch().push());
+
+        JoystickButton driveDistance = new JoystickButton(driverLeft, 2);
+        driveDistance.toggleWhenPressed(cmds.drive().rotate(90));
 
         JoystickButton clampAction = new JoystickButton(driverRight, 1);
         clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
@@ -46,8 +49,5 @@ public class ButtonConfiguration {
                 cmds.piston().extend(Piston.PUSH_UPPER)));
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
                 cmds.piston().retract(Piston.PUSH_UPPER)));
-
-        JoystickButton driveDistance = new JoystickButton(driverLeft, 2);
-            driveDistance.toggleWhenPressed(cmds.drive().distance(5));
     }
 }

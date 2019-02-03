@@ -8,15 +8,16 @@ import javax.inject.Inject;
 
 import static org.rivierarobotics.commands.CommandGroups.inOrder;
 
-public class HatchPushExtend extends CommandGroup {
+public class HatchPush extends CommandGroup {
 
     @Inject
-    public HatchPushExtend(PistonCommands piston) {
+    public HatchPush(PistonCommands piston) {
         addSequential(piston.extend(Piston.PUSH_LOWER));
         addSequential(new TimedCommand(0.05));
         addSequential(piston.extend(Piston.PUSH_UPPER));
         addSequential(new TimedCommand(0.05));
-        addSequential(inOrder(piston.extend(Piston.CLAMP_RIGHT), piston.extend(Piston.CLAMP_LEFT)));
+        addSequential(inOrder(piston.extend(Piston.CLAMP_RIGHT),
+                piston.extend(Piston.CLAMP_LEFT)));
         addSequential(new TimedCommand(0.15));
         addSequential(inOrder(piston.retract(Piston.CLAMP_RIGHT),
                 piston.retract(Piston.CLAMP_LEFT),

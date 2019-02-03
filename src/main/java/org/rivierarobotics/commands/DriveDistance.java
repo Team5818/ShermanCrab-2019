@@ -1,6 +1,5 @@
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -18,9 +17,9 @@ public class DriveDistance extends Command {
     private double calcCurrentDistance;
 
     public DriveDistance(@Provided DriveTrain dt, double distance) {
+        this.distance = distance;
         this.dt = dt;
         requires(dt);
-        this.distance = distance;
     }
 
     @Override

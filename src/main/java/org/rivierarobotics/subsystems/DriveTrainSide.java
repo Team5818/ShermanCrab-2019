@@ -55,6 +55,9 @@ public class DriveTrainSide {
         motorEnc = new WPI_TalonSRX(enc);
         motorZed = new WPI_TalonSRX(zed);
 
+        /* Reset encoder before reading values */
+        motorEnc.setSelectedSensorPosition(0);
+
         /* Factory default hardware to prevent unexpected behavior */
         motorEnc.configFactoryDefault();
         motorZed.configFactoryDefault();
