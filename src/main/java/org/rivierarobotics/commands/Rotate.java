@@ -13,7 +13,7 @@ public class Rotate extends Command {
     private double currentDegrees;
     private double startDegrees;
     private double distanceToRotate;
-    private final double WHEEL_DIAMETER = 4.2;
+    private final double TURN_DIAMETER = 30;
 
     public Rotate(@Provided DriveTrain dt, double degrees) {
         degreesToRotate = degrees;
@@ -24,19 +24,21 @@ public class Rotate extends Command {
     @Override
     protected void initialize() {
         startDegrees = currentDegrees = dt.getDegrees();
-        distanceToRotate = ((Math.PI * WHEEL_DIAMETER) / (360 / degreesToRotate));
+        distanceToRotate = ((Math.PI * TURN_DIAMETER) / (360 / degreesToRotate));
         SmartDashboard.putNumber("distance to rotate", distanceToRotate);
-        dt.setDistance(Math.abs(distanceToRotate), -Math.abs(distanceToRotate));
+        dt.setDistance(-Math.abs(distanceToRotate), Math.abs(distanceToRotate));
+        dt.resetGyroYaw();
     }
 
     @Override
     protected void execute() {
         currentDegrees = dt.getDegrees();
-        SmartDashboard.putNumber("current degrees", currentDegrees);
+        SmartDashboard.putNumber("current degrees exec", currentDegrees);
     }
 
     @Override
     protected boolean isFinished() {
-        return currentDegrees >= startDegrees + degreesToRotate;
+        SmartDashboard.putNumber("current degrees final", currentDegrees);
+        return currentDegrees - startDegrees >= degreesToRotate;
     }
 }
