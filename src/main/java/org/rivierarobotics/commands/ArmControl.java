@@ -8,6 +8,10 @@ import org.rivierarobotics.subsystems.ArmController;
 import javax.inject.Inject;
 
 public class ArmControl extends Command {
+    /* NEED TO CHANGE VALUES LATER FOR SAFETY DEADBAND, MANUALLY TEST*/
+    private double ARM_DEADBAND = 0.1;
+    private double ARM_MAX_EXT = 90;
+    private double ARM_MIN_EXT = -90;
     private ArmController arm;
     private Joystick armJoy;
 
@@ -19,13 +23,13 @@ public class ArmControl extends Command {
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
-    }
-
-    @Override
     protected void execute() {
-        super.execute();
+        double joyY = armJoy.getY();
+        if(joyY < -ARM_DEADBAND && arm.getDistance() > ARM_MIN_EXT) {
+            arm.setPower(joyY);
+        } else if(joyY > ARM_DEADBAND && arm.getDistance() < ARM_MAX_EXT){
+            arm.setPower(joyY);
+        }
     }
 
     @Override

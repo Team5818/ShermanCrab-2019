@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 public class DriveTrainSide {
-    private static final double INCHES_TO_TICKS;
+    public static final double INCHES_TO_TICKS;
     private static final double P;
     private static final double I;
     private static final double D;
