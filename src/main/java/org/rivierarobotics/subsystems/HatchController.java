@@ -13,6 +13,7 @@ public class HatchController extends Subsystem {
     private final Solenoid clampPistonLeft;
     private final Solenoid pushPistonLower;
     private final Solenoid pushPistonUpper;
+    private final Solenoid hatchDeployPiston;
 
     @Inject
     public HatchController() {
@@ -20,6 +21,7 @@ public class HatchController extends Subsystem {
         pushPistonUpper = new Solenoid(1);
         clampPistonLeft = new Solenoid(2);
         clampPistonRight = new Solenoid(3);
+        hatchDeployPiston = new Solenoid(4);
 
         var tab = Shuffleboard.getTab("Solenoid");
         tab.add(clampPistonRight);
@@ -35,6 +37,8 @@ public class HatchController extends Subsystem {
             return pushPistonLower;
         } else if(piston == Piston.PUSH_UPPER) {
             return pushPistonUpper;
+        } else if(piston == Piston.DEPLOY) {
+            return hatchDeployPiston;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }
@@ -46,6 +50,10 @@ public class HatchController extends Subsystem {
 
     public void retractPiston(Piston piston) {
         pistonFor(piston).set(false);
+    }
+
+    public boolean getPistonState(Piston piston) {
+        return pistonFor(piston).get();
     }
 
     @Override

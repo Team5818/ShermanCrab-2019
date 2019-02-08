@@ -22,7 +22,6 @@ package org.rivierarobotics.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 
@@ -46,11 +45,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
-		SmartDashboard.putNumber("distanceL", distance);
 		encoderLeft.setDouble(distance);
 	    distance = globalComponent.getDriveTrain().getRight().getDistance();
 	    encoderRight.setDouble(distance);
-		SmartDashboard.putNumber("distanceR", distance);
 		Scheduler.getInstance().run();
 	}
 

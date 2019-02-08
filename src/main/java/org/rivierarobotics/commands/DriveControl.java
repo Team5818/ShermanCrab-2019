@@ -57,10 +57,6 @@ public class DriveControl extends Command {
         driveTrain.setPower(left, right);
     }
 
-    public void setZero() {
-        driveTrain.stop();
-    }
-
     @Override
     protected boolean isFinished() {
         return false;
