@@ -35,8 +35,8 @@ public class ButtonConfiguration {
         JoystickButton hatchPush = new JoystickButton(driverLeft, 1);
         hatchPush.toggleWhenPressed(cmds.hatch().push());
 
-        JoystickButton hatchMechanismDeploy = new JoystickButton(driverLeft, 2);
-        hatchMechanismDeploy.toggleWhenPressed(cmds.hatch().deploy());
+        JoystickButton hatchDeploy = new JoystickButton(driverLeft, 2);
+        hatchDeploy.toggleWhenPressed(cmds.hatch().deploy());
 
         JoystickButton clampAction = new JoystickButton(driverRight, 1);
         clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
@@ -49,5 +49,8 @@ public class ButtonConfiguration {
                 cmds.piston().extend(Piston.PUSH_UPPER)));
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
                 cmds.piston().retract(Piston.PUSH_UPPER)));
+
+        JoystickButton spinHood = new JoystickButton(codriverLeft, 1);
+        spinHood.toggleWhenPressed(cmds.hood().spin(0.5));
     }
 }

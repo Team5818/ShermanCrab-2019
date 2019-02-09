@@ -14,24 +14,30 @@ import static org.rivierarobotics.subsystems.DriveTrainSide.INCHES_TO_TICKS;
 @Singleton
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
-    private WPI_TalonSRX hood;
+    private WPI_TalonSRX rotate;
+    private WPI_TalonSRX spin;
 
     @Inject
     public HoodController(Provider<HoodControl> command) {
-        //this.hood = new WPI_TalonSRX(20);
+        //this.rotate = new WPI_TalonSRX(20);
+        //this.spin = new WPI_TalonSRX(22);
         this.command = command;
     }
 
     public void setAngle(double angle) {
-        hood.set(ControlMode.MotionMagic, angle);
+        rotate.set(ControlMode.MotionMagic, angle);
     }
 
     public double getDistance() {
-        return (hood.getSensorCollection().getQuadraturePosition()) / INCHES_TO_TICKS;
+        return (rotate.getSensorCollection().getQuadraturePosition()) / INCHES_TO_TICKS;
     }
 
-    public void setPower(double pwr) {
-        hood.set(pwr);
+    public void setRotatePower(double pwr) {
+        rotate.set(pwr);
+    }
+
+    public void setSpinPower(double pwr) {
+        spin.set(pwr);
     }
 
     @Override

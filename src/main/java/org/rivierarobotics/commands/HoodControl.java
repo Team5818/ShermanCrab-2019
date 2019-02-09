@@ -13,22 +13,22 @@ public class HoodControl extends Command {
     private double HOOD_MAX_EXT = 90;
     private double HOOD_MIN_EXT = -90;
     private HoodController hood;
-    private Joystick armJoy;
+    private Joystick hoodRotateJoy;
 
     @Inject
-    public HoodControl(HoodController hood, @Input(Input.Position.CODRIVER_LEFT) Joystick hoodJoy) {
+    public HoodControl(HoodController hood, @Input(Input.Position.CODRIVER_LEFT) Joystick hoodRotateJoy) {
         this.hood = hood;
-        this.armJoy = hoodJoy;
+        this.hoodRotateJoy = hoodRotateJoy;
         requires(hood);
     }
 
     @Override
     protected void execute() {
-        double armJoyY = armJoy.getY();
+        double armJoyY = hoodRotateJoy.getY();
         if(armJoyY < -HOOD_DEADBAND && hood.getDistance() > HOOD_MIN_EXT) {
-            hood.setPower(armJoyY);
+            hood.setRotatePower(armJoyY);
         } else if(armJoyY > HOOD_DEADBAND && hood.getDistance() < HOOD_MAX_EXT){
-            hood.setPower(armJoyY);
+            hood.setRotatePower(armJoyY);
         }
     }
 

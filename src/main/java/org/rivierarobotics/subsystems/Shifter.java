@@ -1,39 +1,31 @@
 package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.rivierarobotics.inject.Sided;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class Shifter extends Subsystem {
-     /*Working code, just commented out until shifting gears are introduced */
-    /*private final Solenoid shifter;
+    private ShifterSide left;
+    private ShifterSide right;
 
     @Inject
-    public Shifter() {
-        shifter = new Solenoid(4);
-        shifter.set(false);
+    public Shifter(@Sided(Sided.Side.LEFT) ShifterSide left,
+                   @Sided(Sided.Side.RIGHT) ShifterSide right) {
+        this.left = left;
+        this.right = right;
     }
 
     public void setGear(Gear gear) {
-        if(gear == Gear.HIGH) {
-            shifter.set(true);
-        } else if(gear == Gear.LOW) {
-            shifter.set(false);
-        } else {
-            throw new IllegalArgumentException("Invalid gear value " + gear);
-        }
+        left.setGear(gear);
+        right.setGear(gear);
     }
 
     public void swapGear() {
-        shifter.set(!shifter.get());
-    }*/
-
-    @Inject
-    public Shifter() {
-
+        left.swapGear();
+        right.swapGear();
     }
 
     @Override

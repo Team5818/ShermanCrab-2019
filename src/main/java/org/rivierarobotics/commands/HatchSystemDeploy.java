@@ -16,7 +16,7 @@ public class HatchSystemDeploy extends InstantCommand {
     }
 
     @Override
-    protected void initialize() {
+    protected void execute() {
         if(!hc.getPistonState(Piston.DEPLOY_LEFT) || !hc.getPistonState(Piston.DEPLOY_RIGHT)) {
             hc.extendPiston(Piston.DEPLOY_LEFT);
             hc.extendPiston(Piston.DEPLOY_RIGHT);

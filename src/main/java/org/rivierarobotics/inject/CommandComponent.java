@@ -1,9 +1,6 @@
 package org.rivierarobotics.inject;
 
-import org.rivierarobotics.commands.DriveCommands;
-import org.rivierarobotics.commands.GearCommands;
-import org.rivierarobotics.commands.HatchCommands;
-import org.rivierarobotics.commands.PistonCommands;
+import org.rivierarobotics.commands.*;
 
 import dagger.Module;
 import dagger.Subcomponent;
@@ -14,6 +11,8 @@ public abstract class CommandComponent {
     public abstract PistonCommands piston();
     public abstract HatchCommands hatch();
     public abstract GearCommands gear();
+    public abstract HoodCommands hood();
+    public abstract ArmCommands arm();
 
     @Module(subcomponents = CommandComponent.class)
     public interface CCModule {

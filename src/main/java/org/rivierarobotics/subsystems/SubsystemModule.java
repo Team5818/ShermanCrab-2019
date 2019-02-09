@@ -14,6 +14,9 @@ public class SubsystemModule {
     private static final int L_TALON_ZED = 5;
     private static final int R_TALON_ZED = 2;
 
+    private static final int L_SHIFT_SOLENOID = 6;
+    private static final int R_SHIFT_SOLENOID = 7;
+
     @Provides
     @Singleton
     @Sided(Sided.Side.LEFT)
@@ -26,5 +29,19 @@ public class SubsystemModule {
     @Sided(Sided.Side.RIGHT)
     public static DriveTrainSide provideDriveSideRight() {
         return new DriveTrainSide(R_TALON_ENC, R_TALON_ZED, true);
+    }
+
+    @Provides
+    @Singleton
+    @Sided(Sided.Side.LEFT)
+    public static ShifterSide provideShifterSideLeft() {
+        return new ShifterSide(L_SHIFT_SOLENOID);
+    }
+
+    @Provides
+    @Singleton
+    @Sided(Sided.Side.RIGHT)
+    public static ShifterSide provideShifterSideRight() {
+        return new ShifterSide(R_SHIFT_SOLENOID);
     }
 }
