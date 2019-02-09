@@ -9,6 +9,7 @@ gradleRioRedux {
     robotClass = "org.rivierarobotics.robot.Robot"
     teamNumber = 5818
     addCtre = true
+	extraJsonDependenciesProperty.add("https://www.revrobotics.com/content/sw/max/sdk/REVRobotics.json")
 }
 
 dependencies {
