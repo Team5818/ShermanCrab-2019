@@ -9,11 +9,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private final Solenoid clampPistonRight;
-    private final Solenoid clampPistonLeft;
-    private final Solenoid pushPistonLower;
-    private final Solenoid pushPistonUpper;
-    private final Solenoid hatchDeployPiston;
+    private Solenoid clampPistonRight;
+    private Solenoid clampPistonLeft;
+    private Solenoid pushPistonLower;
+    private Solenoid pushPistonUpper;
+    private Solenoid deployPistonLeft;
+    private Solenoid deployPistonRight;
 
     @Inject
     public HatchController() {
@@ -21,7 +22,8 @@ public class HatchController extends Subsystem {
         pushPistonUpper = new Solenoid(1);
         clampPistonLeft = new Solenoid(2);
         clampPistonRight = new Solenoid(3);
-        hatchDeployPiston = new Solenoid(4);
+        deployPistonLeft = new Solenoid(4);
+        deployPistonRight = new Solenoid(5);
 
         var tab = Shuffleboard.getTab("Solenoid");
         tab.add(clampPistonRight);
@@ -37,8 +39,10 @@ public class HatchController extends Subsystem {
             return pushPistonLower;
         } else if(piston == Piston.PUSH_UPPER) {
             return pushPistonUpper;
-        } else if(piston == Piston.DEPLOY) {
-            return hatchDeployPiston;
+        } else if(piston == Piston.DEPLOY_LEFT) {
+            return deployPistonLeft;
+        } else if(piston == Piston.DEPLOY_RIGHT) {
+            return deployPistonRight;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }

@@ -17,10 +17,12 @@ public class HatchSystemDeploy extends InstantCommand {
 
     @Override
     protected void initialize() {
-        if(!hc.getPistonState(Piston.DEPLOY)) {
-            hc.extendPiston(Piston.DEPLOY);
+        if(!hc.getPistonState(Piston.DEPLOY_LEFT) || !hc.getPistonState(Piston.DEPLOY_RIGHT)) {
+            hc.extendPiston(Piston.DEPLOY_LEFT);
+            hc.extendPiston(Piston.DEPLOY_RIGHT);
         } else {
-            hc.retractPiston(Piston.DEPLOY);
+            hc.retractPiston(Piston.DEPLOY_LEFT);
+            hc.retractPiston(Piston.DEPLOY_RIGHT);
         }
     }
 }

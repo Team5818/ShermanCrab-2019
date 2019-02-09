@@ -16,7 +16,7 @@ public class ArmControl extends Command {
     private Joystick armJoy;
 
     @Inject
-    public ArmControl(ArmController arm, @Input(Input.Position.CODRIVER_LEFT)Joystick armJoy) {
+    public ArmControl(ArmController arm, @Input(Input.Position.CODRIVER_LEFT) Joystick armJoy) {
         this.arm = arm;
         this.armJoy = armJoy;
         requires(arm);
@@ -24,11 +24,11 @@ public class ArmControl extends Command {
 
     @Override
     protected void execute() {
-        double joyY = armJoy.getY();
-        if(joyY < -ARM_DEADBAND && arm.getDistance() > ARM_MIN_EXT) {
-            arm.setPower(joyY);
-        } else if(joyY > ARM_DEADBAND && arm.getDistance() < ARM_MAX_EXT){
-            arm.setPower(joyY);
+        double armJoyY = armJoy.getY();
+        if(armJoyY < -ARM_DEADBAND && arm.getDistance() > ARM_MIN_EXT) {
+            arm.setPower(armJoyY);
+        } else if(armJoyY > ARM_DEADBAND && arm.getDistance() < ARM_MAX_EXT){
+            arm.setPower(armJoyY);
         }
     }
 
