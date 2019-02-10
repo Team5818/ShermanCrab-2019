@@ -20,7 +20,49 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import org.rivierarobotics.inject.DaggerGlobalComponent;
+import org.rivierarobotics.inject.GlobalComponent;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
+	private GlobalComponent globalComponent;
+	private final NetworkTableEntry encoderLeft = Shuffleboard.getTab( "Drive Train")
+	            .add("Distance Left", 0).getEntry();
+	private final NetworkTableEntry encoderRight = Shuffleboard.getTab( "Drive Train")
+	            .add("Distance Right", 0).getEntry();
+	
+	@Override
+	public void robotInit() {
+		globalComponent = DaggerGlobalComponent.create();
+		globalComponent.getDriveTrain();
+		globalComponent.getButtonConfiguration().initialize();
+	}
+	
+	@Override
+	public void teleopPeriodic() {
+		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
+		encoderLeft.setDouble(distance);
+	    distance = globalComponent.getDriveTrain().getRight().getDistance();
+	    encoderRight.setDouble(distance);
+		Scheduler.getInstance().run();
+	}
+
+	@Override
+	public void autonomousInit() {
+		
+	}
+
+	@Override
+	public void autonomousPeriodic() {
+	    Scheduler.getInstance().run();
+	}
+	
+	@Override
+	public void disabledPeriodic() {
+		
+	}
 }

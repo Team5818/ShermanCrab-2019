@@ -6,3 +6,5 @@
 bin/
 build/
 /.apt_generated/
+.idea/
+out/
