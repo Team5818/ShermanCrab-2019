@@ -37,7 +37,6 @@ public class SwapGear extends InstantCommand {
 
     @Override
     protected void execute() {
-        /*commented out until geared motors are introduced*/
-        //shifter.swapGear();
+        shifter.swapGear();
     }
 }

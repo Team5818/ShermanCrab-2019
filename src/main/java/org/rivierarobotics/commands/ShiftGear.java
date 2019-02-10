@@ -39,7 +39,6 @@ public class ShiftGear extends InstantCommand {
 
     @Override
     protected void execute() {
-        /*commented out until geared motors are introduced*/
-       // shifter.setGear(gear);
+        shifter.setGear(gear);
     }
 }

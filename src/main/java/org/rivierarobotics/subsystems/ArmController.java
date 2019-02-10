@@ -29,8 +29,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import static org.rivierarobotics.subsystems.DriveTrainSide.INCHES_TO_TICKS;
-
 @Singleton
 public class ArmController extends Subsystem {
     private Provider<ArmControl> command;
@@ -38,7 +36,7 @@ public class ArmController extends Subsystem {
 
     @Inject
     public ArmController(Provider<ArmControl> command) {
-        //this.arm = new WPI_TalonSRX(20);
+        this.arm = new WPI_TalonSRX(20);
         this.command = command;
     }
 
@@ -46,8 +44,8 @@ public class ArmController extends Subsystem {
         arm.set(ControlMode.MotionMagic, angle);
     }
 
-    public double getDistance() {
-        return (arm.getSensorCollection().getQuadraturePosition()) / INCHES_TO_TICKS;
+    public double getAngle() {
+        return (arm.getSensorCollection().getQuadraturePosition());
     }
 
     public void setPower(double pwr) {

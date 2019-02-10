@@ -30,7 +30,6 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ShifterSide {
-     /*Working code, just commented out until shifting gears are introduced */
     private final Solenoid shifter;
 
     @Inject

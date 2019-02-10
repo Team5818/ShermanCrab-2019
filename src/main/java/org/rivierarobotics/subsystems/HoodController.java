@@ -29,8 +29,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import static org.rivierarobotics.subsystems.DriveTrainSide.INCHES_TO_TICKS;
-
 @Singleton
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
@@ -39,8 +37,8 @@ public class HoodController extends Subsystem {
 
     @Inject
     public HoodController(Provider<HoodControl> command) {
-        //this.rotate = new WPI_TalonSRX(20);
-        //this.spin = new WPI_TalonSRX(22);
+        this.rotate = new WPI_TalonSRX(21);
+        this.spin = new WPI_TalonSRX(22);
         this.command = command;
     }
 
@@ -48,8 +46,8 @@ public class HoodController extends Subsystem {
         rotate.set(ControlMode.MotionMagic, angle);
     }
 
-    public double getDistance() {
-        return (rotate.getSensorCollection().getQuadraturePosition()) / INCHES_TO_TICKS;
+    public double getAngle() {
+        return (rotate.getSensorCollection().getQuadraturePosition());
     }
 
     public void setRotatePower(double pwr) {
