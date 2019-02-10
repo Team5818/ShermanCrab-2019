@@ -26,6 +26,8 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
@@ -68,61 +70,65 @@ public class DriveTrainSide {
         System.err.println("accel: " + ACCELERATION);
     }
 
-    private WPI_TalonSRX motorEnc;
-    private WPI_TalonSRX motorZed;
+    private WPI_TalonSRX talonEnc;
+    private CANSparkMax sparkOne;
+    private CANSparkMax sparkTwo;
 
-    public DriveTrainSide(int enc, int zed, boolean invert) {
-        motorEnc = new WPI_TalonSRX(enc);
-        motorZed = new WPI_TalonSRX(zed);
+    public DriveTrainSide(int enc, int one, int two, boolean invert) {
+        // TODO make sparks follow talon
+        // TODO make custom PID loop for sparks
+        talonEnc = new WPI_TalonSRX(enc);
+        sparkOne = new CANSparkMax(one, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkTwo = new CANSparkMax(two, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         /* Reset encoder before reading values */
-        motorEnc.setSelectedSensorPosition(0);
+        talonEnc.setSelectedSensorPosition(0);
 
         /* Factory default hardware to prevent unexpected behavior */
-        motorEnc.configFactoryDefault();
-        motorZed.configFactoryDefault();
-        motorZed.follow(motorEnc);
-        motorEnc.setSensorPhase(!invert);
-        motorEnc.setInverted(invert);
-        motorZed.setInverted(InvertType.FollowMaster);
+        talonEnc.configFactoryDefault();
+        sparkTwo.follow(sparkOne);
+        talonEnc.setSensorPhase(!invert);
+        talonEnc.setInverted(invert);
+        sparkOne.setInverted(invert);
+        sparkTwo.setInverted(invert);
 
         /* Configure Sensor Source for Primary PID */
-        motorEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
+        talonEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
-        motorEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
+        talonEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
 
         /* Set the peak and nominal outputs */
-        motorEnc.configNominalOutputForward(0, TIMEOUT);
-        motorEnc.configNominalOutputReverse(0, TIMEOUT);
-        motorEnc.configPeakOutputForward(1, TIMEOUT);
-        motorEnc.configPeakOutputReverse(-1, TIMEOUT);
+        talonEnc.configNominalOutputForward(0, TIMEOUT);
+        talonEnc.configNominalOutputReverse(0, TIMEOUT);
+        talonEnc.configPeakOutputForward(1, TIMEOUT);
+        talonEnc.configPeakOutputReverse(-1, TIMEOUT);
 
         /* Set Motion Magic gains in slot0 - see documentation */
-        motorEnc.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        motorEnc.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        motorEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        motorEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        motorEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
+        talonEnc.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
+        talonEnc.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        talonEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
+        talonEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
+        talonEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
 
-        motorEnc.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
-        motorEnc.configMotionAcceleration(ACCELERATION, TIMEOUT);
+        talonEnc.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
+        talonEnc.configMotionAcceleration(ACCELERATION, TIMEOUT);
     }
 
     public double getDistance() {
-        int ticks = motorEnc.getSensorCollection().getQuadraturePosition();
+        int ticks = talonEnc.getSensorCollection().getQuadraturePosition();
         return ticks / INCHES_TO_TICKS;
     }
 
     public void setDistance(double inches) {
-        motorEnc.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
+        talonEnc.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
     }
 
     public void setVelocity(double vel) {
-        motorEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
+        talonEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
     }
 
     public void setPower(double pwr) {
-        motorEnc.set(pwr);
+        talonEnc.set(pwr);
     }
 }

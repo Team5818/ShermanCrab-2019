@@ -37,17 +37,24 @@ public class ButtonConfiguration {
     private final Joystick driverRight;
     private final Joystick codriverLeft;
     private final Joystick codriverRight;
+    private final Joystick driverButtons;
+    private final Joystick codriverButtons;
     private final CommandComponent cmds;
 
     @Inject
     public ButtonConfiguration(@Input(Input.Position.DRIVER_LEFT) Joystick driverLeft,
-            @Input(Input.Position.DRIVER_RIGHT) Joystick driverRight,
-            @Input(Input.Position.CODRIVER_LEFT) Joystick codriverLeft,
-            @Input(Input.Position.CODRIVER_RIGHT) Joystick codriverRight, CommandComponent.Builder component) {
+                               @Input(Input.Position.DRIVER_RIGHT) Joystick driverRight,
+                               @Input(Input.Position.CODRIVER_LEFT) Joystick codriverLeft,
+                               @Input(Input.Position.CODRIVER_RIGHT) Joystick codriverRight,
+                               @Input(Input.Position.DRIVER_BUTTONS) Joystick driverButtons,
+                               @Input(Input.Position.CODRIVER_BUTTONS) Joystick codriverButtons,
+                               CommandComponent.Builder component) {
         this.driverLeft = driverLeft;
         this.driverRight = driverRight;
         this.codriverLeft = codriverLeft;
         this.codriverRight = codriverRight;
+        this.driverButtons = driverButtons;
+        this.codriverButtons = codriverButtons;
         this.cmds = component.build();
     }
 

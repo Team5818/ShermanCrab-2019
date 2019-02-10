@@ -25,7 +25,7 @@ import javax.inject.Qualifier;
 @Qualifier
 public @interface Input {
     enum Position {
-        DRIVER_LEFT, DRIVER_RIGHT, CODRIVER_LEFT, CODRIVER_RIGHT
+        DRIVER_LEFT, DRIVER_RIGHT, DRIVER_BUTTONS, CODRIVER_LEFT, CODRIVER_RIGHT, CODRIVER_BUTTONS
     }
 
     Position value();

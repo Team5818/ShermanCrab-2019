@@ -37,6 +37,7 @@ public class HoodController extends Subsystem {
 
     @Inject
     public HoodController(Provider<HoodControl> command) {
+        // TODO change hood talon IDs
         this.rotate = new WPI_TalonSRX(21);
         this.spin = new WPI_TalonSRX(22);
         this.command = command;
