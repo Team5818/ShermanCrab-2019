@@ -27,14 +27,14 @@ import org.rivierarobotics.subsystems.DriveTrain;
 import org.rivierarobotics.subsystems.PigeonGyro;
 
 @GenerateCreator
-public class Rotate extends Command {
+public class RotateProvided extends Command {
     private DriveTrain dt;
     private PigeonGyro gyro;
     private double degreesToRotate;
     private double changeDegrees;
     private double startDegrees;
 
-    public Rotate(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
+    public RotateProvided(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
         degreesToRotate = degrees;
         this.gyro = gyro;
         this.dt = dt;

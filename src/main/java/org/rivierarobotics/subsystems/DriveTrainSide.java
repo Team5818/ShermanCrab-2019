@@ -22,7 +22,6 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -70,65 +69,67 @@ public class DriveTrainSide {
         System.err.println("accel: " + ACCELERATION);
     }
 
-    private WPI_TalonSRX talonEnc;
-    private CANSparkMax sparkOne;
-    private CANSparkMax sparkTwo;
+    private WPI_TalonSRX talonMaster;
+    private CANSparkMax sparkSlaveOne;
+    private CANSparkMax sparkSlaveTwo;
 
-    public DriveTrainSide(int enc, int one, int two, boolean invert) {
-        // TODO make sparks follow talon
-        // TODO make custom PID loop for sparks
-        talonEnc = new WPI_TalonSRX(enc);
-        sparkOne = new CANSparkMax(one, CANSparkMaxLowLevel.MotorType.kBrushless);
-        sparkTwo = new CANSparkMax(two, CANSparkMaxLowLevel.MotorType.kBrushless);
+    public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
+        talonMaster = new WPI_TalonSRX(master);
+        sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         /* Reset encoder before reading values */
-        talonEnc.setSelectedSensorPosition(0);
+        talonMaster.setSelectedSensorPosition(0);
 
         /* Factory default hardware to prevent unexpected behavior */
-        talonEnc.configFactoryDefault();
-        sparkTwo.follow(sparkOne);
-        talonEnc.setSensorPhase(!invert);
-        talonEnc.setInverted(invert);
-        sparkOne.setInverted(invert);
-        sparkTwo.setInverted(invert);
+        talonMaster.configFactoryDefault();
+
+        /* Set master Talon inversion */
+        talonMaster.setSensorPhase(!invert);
+        talonMaster.setInverted(invert);
+
+        /* Get Sparks to follow master Talon */
+        // TODO confirm that kFollowerPhoenix is correct, not kFollowerSparkMax
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, invert);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, invert);
 
         /* Configure Sensor Source for Primary PID */
-        talonEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
+        talonMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
-        talonEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
+        talonMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
 
         /* Set the peak and nominal outputs */
-        talonEnc.configNominalOutputForward(0, TIMEOUT);
-        talonEnc.configNominalOutputReverse(0, TIMEOUT);
-        talonEnc.configPeakOutputForward(1, TIMEOUT);
-        talonEnc.configPeakOutputReverse(-1, TIMEOUT);
+        talonMaster.configNominalOutputForward(0, TIMEOUT);
+        talonMaster.configNominalOutputReverse(0, TIMEOUT);
+        talonMaster.configPeakOutputForward(1, TIMEOUT);
+        talonMaster.configPeakOutputReverse(-1, TIMEOUT);
 
         /* Set Motion Magic gains in slot0 - see documentation */
-        talonEnc.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        talonEnc.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        talonEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        talonEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        talonEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
+        talonMaster.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
+        talonMaster.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        talonMaster.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
+        talonMaster.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
+        talonMaster.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
 
-        talonEnc.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
-        talonEnc.configMotionAcceleration(ACCELERATION, TIMEOUT);
+        talonMaster.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
+        talonMaster.configMotionAcceleration(ACCELERATION, TIMEOUT);
     }
 
     public double getDistance() {
-        int ticks = talonEnc.getSensorCollection().getQuadraturePosition();
+        int ticks = talonMaster.getSensorCollection().getQuadraturePosition();
         return ticks / INCHES_TO_TICKS;
     }
 
     public void setDistance(double inches) {
-        talonEnc.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
+        talonMaster.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
     }
 
     public void setVelocity(double vel) {
-        talonEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
+        talonMaster.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
     }
 
     public void setPower(double pwr) {
-        talonEnc.set(pwr);
+        talonMaster.set(pwr);
     }
 }
