@@ -36,8 +36,8 @@ public class ArmController extends Subsystem {
 
     @Inject
     public ArmController(Provider<ArmControl> command) {
-        // TODO change arm talon IDs
-        this.arm = new WPI_TalonSRX(20);
+        // TODO change arm structure to be on DriveTrainSide gearboxes
+        // this.arm = new WPI_TalonSRX(20);
         this.command = command;
     }
 

@@ -30,11 +30,11 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ShifterSide {
-    private final Solenoid shifter;
+    private Solenoid shifter;
 
     @Inject
     public ShifterSide(int ch) {
-        shifter = new Solenoid(ch);
+        //shifter = new Solenoid(ch);
         shifter.set(false);
     }
 

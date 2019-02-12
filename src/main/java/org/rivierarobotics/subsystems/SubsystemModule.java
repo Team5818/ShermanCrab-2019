@@ -29,30 +29,31 @@ import dagger.Provides;
 
 @Module
 public class SubsystemModule {
-    //TODO change drivetrain solenoid values
-    private static final int L_TALON_ENC = 4;
-    private static final int L_TALON_ZED = 5;
-    private static final int L_SPARK_ZED = 8;
+    // TODO change drivetrain solenoid values
+    // TODO assign talon and spark IDs in Phoenix tuner and SparkMax client
+    private static final int L_TALON_MASTER = 1;
+    private static final int L_SPARK_SLAVE_ONE = 3;
+    private static final int L_SPARK_SLAVE_TWO = 5;
 
-    private static final int R_TALON_ZED = 2;
-    private static final int R_TALON_ENC = 1;
-    private static final int R_SPARK_ZED = 9;
+    private static final int R_TALON_MASTER = 2;
+    private static final int R_SPARK_SLAVE_ONE = 4;
+    private static final int R_SPARK_SLAVE_TWO = 6;
 
-    private static final int L_SHIFT_SOLENOID = 6;
-    private static final int R_SHIFT_SOLENOID = 7;
+    private static final int L_SHIFT_SOLENOID = 7;
+    private static final int R_SHIFT_SOLENOID = 8;
 
     @Provides
     @Singleton
     @Sided(Sided.Side.LEFT)
     public static DriveTrainSide provideDriveSideLeft() {
-        return new DriveTrainSide(L_TALON_ENC, L_TALON_ZED, L_SPARK_ZED, false);
+        return new DriveTrainSide(L_TALON_MASTER, L_SPARK_SLAVE_ONE, L_SPARK_SLAVE_TWO, false);
     }
 
     @Provides
     @Singleton
     @Sided(Sided.Side.RIGHT)
     public static DriveTrainSide provideDriveSideRight() {
-        return new DriveTrainSide(R_TALON_ENC, R_TALON_ZED, R_SPARK_ZED, true);
+        return new DriveTrainSide(R_TALON_MASTER, R_SPARK_SLAVE_ONE, R_SPARK_SLAVE_TWO, true);
     }
 
     @Provides

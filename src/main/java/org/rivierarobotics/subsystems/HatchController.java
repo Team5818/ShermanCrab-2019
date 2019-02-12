@@ -39,12 +39,12 @@ public class HatchController extends Subsystem {
     @Inject
     public HatchController() {
         // TODO change solenoid IDs
-        pushPistonLower = new Solenoid(0);
-        pushPistonUpper = new Solenoid(1);
-        clampPistonLeft = new Solenoid(2);
-        clampPistonRight = new Solenoid(3);
-        deployPistonLeft = new Solenoid(4);
-        deployPistonRight = new Solenoid(5);
+       // pushPistonLower = new Solenoid(0);
+        //pushPistonUpper = new Solenoid(1);
+        //clampPistonLeft = new Solenoid(2);
+        //clampPistonRight = new Solenoid(3);
+        //deployPistonLeft = new Solenoid(4);
+        //deployPistonRight = new Solenoid(5);
 
         var tab = Shuffleboard.getTab("Solenoid");
         tab.add(clampPistonRight);
