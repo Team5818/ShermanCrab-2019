@@ -86,12 +86,12 @@ public class DriveTrainSide {
 
         /* Set master Talon inversion */
         talonMaster.setSensorPhase(!invert);
-        talonMaster.setInverted(invert);
+        talonMaster.setInverted(!invert);
 
         /* Get Sparks to follow master Talon */
         // TODO confirm that kFollowerPhoenix is correct, not kFollowerSparkMax
-        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, invert);
-        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, invert);
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
         /* Configure Sensor Source for Primary PID */
         talonMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
