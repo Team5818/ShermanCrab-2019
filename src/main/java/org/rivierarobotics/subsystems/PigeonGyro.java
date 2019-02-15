@@ -32,7 +32,7 @@ public class PigeonGyro extends Subsystem {
 
     @Inject
     public PigeonGyro() {
-       // this.gyro = new PigeonIMU(15);
+        this.gyro = new PigeonIMU(7);
     }
 
     private double[] getYPR() {

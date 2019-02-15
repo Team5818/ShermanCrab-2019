@@ -89,7 +89,6 @@ public class DriveTrainSide {
         talonMaster.setInverted(!invert);
 
         /* Get Sparks to follow master Talon */
-        // TODO confirm that kFollowerPhoenix is correct, not kFollowerSparkMax
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 

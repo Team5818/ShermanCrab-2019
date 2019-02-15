@@ -22,6 +22,7 @@ package org.rivierarobotics.commands;
 
 import javax.inject.Inject;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
 
@@ -46,6 +47,7 @@ public class DriveControl extends Command {
     protected void execute() {
         double y = -throttle.getY();
         double x = turning.getX();
+
         setArcade(x, y);
     }
 
@@ -74,6 +76,10 @@ public class DriveControl extends Command {
                 left = -max;
             }
         }
+        if(Math.abs(left) <= 0.05) { left = 0; }
+        if(Math.abs(right) <= 0.05) { right = 0; }
+        SmartDashboard.putNumber("left", left);
+        SmartDashboard.putNumber("right", right);
         driveTrain.setPower(left, right);
     }
 

@@ -45,8 +45,8 @@ public class DriveTrain extends Subsystem {
     }
 
     public void setPower(double l, double r) {
-        left.setPower(l);
-        right.setPower(r);
+        left.setPower(l * 0.6);
+        right.setPower(r * 0.6);
     }
 
     public void setVelocity(double l, double r) {

@@ -21,6 +21,7 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.DriveTrain;
@@ -50,6 +51,7 @@ public class RotateProvided extends Command {
     @Override
     protected void execute() {
         changeDegrees = gyro.getYaw() - startDegrees;
+        SmartDashboard.putNumber("deg", changeDegrees);
         dt.setPower(0.5,-0.5);
     }
 

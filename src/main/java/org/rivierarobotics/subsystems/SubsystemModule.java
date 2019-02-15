@@ -30,7 +30,6 @@ import dagger.Provides;
 @Module
 public class SubsystemModule {
     // TODO change drivetrain solenoid values
-    // TODO assign talon and spark IDs in Phoenix tuner and SparkMax client
     private static final int L_TALON_MASTER = 1;
     private static final int L_SPARK_SLAVE_ONE = 3;
     private static final int L_SPARK_SLAVE_TWO = 5;
