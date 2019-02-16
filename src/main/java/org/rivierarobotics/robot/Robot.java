@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		globalComponent = DaggerGlobalComponent.create();
 		globalComponent.getDriveTrain();
+		globalComponent.getPigeonGyro();
 		globalComponent.getButtonConfiguration().initialize();
 	}
 	
@@ -53,12 +54,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		
+
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-	    Scheduler.getInstance().run();
+		Scheduler.getInstance().run();
 	}
 	
 	@Override

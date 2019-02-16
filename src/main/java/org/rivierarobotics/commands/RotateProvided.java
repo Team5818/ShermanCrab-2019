@@ -32,7 +32,7 @@ public class RotateProvided extends Command {
     private DriveTrain dt;
     private PigeonGyro gyro;
     private double degreesToRotate;
-    private double changeDegrees;
+    private double currentDegrees;
     private double startDegrees;
 
     public RotateProvided(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
@@ -45,18 +45,18 @@ public class RotateProvided extends Command {
 
     @Override
     protected void initialize() {
-        startDegrees = changeDegrees = gyro.getYaw();
+        startDegrees = currentDegrees = gyro.getYaw();
     }
 
     @Override
     protected void execute() {
-        changeDegrees = gyro.getYaw() - startDegrees;
-        SmartDashboard.putNumber("deg", changeDegrees);
-        dt.setPower(0.5,-0.5);
+        currentDegrees = gyro.getYaw();
+        SmartDashboard.putNumber("deg", currentDegrees);
+        dt.setPower(-0.5,0.5);
     }
 
     @Override
     protected boolean isFinished() {
-        return changeDegrees >= degreesToRotate;
+        return Math.abs(currentDegrees - startDegrees) >= degreesToRotate;
     }
 }

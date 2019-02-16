@@ -30,14 +30,18 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
+import javax.naming.ldap.Control;
+
 public class DriveTrainSide {
     private static final double INCHES_TO_TICKS;
     private static final double P;
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int VELOCITY;
-    private static final int ACCELERATION;
+    private static final int VELOCITY_INCHES_PER_SEC = 1;
+    private static final int ACCELERATION_INCHES_PER_SEC_PER_SEC = 1;
+    private static final int VELOCITY_TICKS_PER_100MS;
+    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int SLOT_IDX = 0;
     private static final int PID_LOOP_IDX = 0;
     private static final int TIMEOUT = 30;
@@ -62,21 +66,27 @@ public class DriveTrainSide {
         F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
         System.err.println("F: " + F);
 
-        VELOCITY = (int) ezWidget("Velocity", 0).getEntry().getDouble(0);
-        System.err.println("velocity: " + VELOCITY);
+        VELOCITY_TICKS_PER_100MS = (int) (VELOCITY_INCHES_PER_SEC * INCHES_TO_TICKS * 10);
+        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
-        ACCELERATION = (int) ezWidget("Accel", 0).getEntry().getDouble(0);
-        System.err.println("accel: " + ACCELERATION);
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = (int) (ACCELERATION_INCHES_PER_SEC_PER_SEC * INCHES_TO_TICKS * 10);
+        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
     private WPI_TalonSRX talonMaster;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
+    private int distanceInvert;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
+        if (invert) {
+            distanceInvert = -1;
+        } else {
+            distanceInvert = 1;
+        }
 
         /* Reset encoder before reading values */
         talonMaster.setSelectedSensorPosition(0);
@@ -85,8 +95,7 @@ public class DriveTrainSide {
         talonMaster.configFactoryDefault();
 
         /* Set master Talon inversion */
-        talonMaster.setSensorPhase(!invert);
-        talonMaster.setInverted(!invert);
+        talonMaster.setInverted(invert);
 
         /* Get Sparks to follow master Talon */
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
@@ -111,17 +120,21 @@ public class DriveTrainSide {
         talonMaster.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
         talonMaster.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
 
-        talonMaster.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
-        talonMaster.configMotionAcceleration(ACCELERATION, TIMEOUT);
+        talonMaster.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
+        talonMaster.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
     }
 
     public double getDistance() {
-        int ticks = talonMaster.getSensorCollection().getQuadraturePosition();
-        return ticks / INCHES_TO_TICKS;
+        return getTicks() / INCHES_TO_TICKS;
     }
 
-    public void setDistance(double inches) {
-        talonMaster.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
+    public int getTicks() {
+        return talonMaster.getSensorCollection().getQuadraturePosition() * distanceInvert;
+    }
+
+    public void addDistance(double inches) {
+        double ticks = inches * INCHES_TO_TICKS;
+        talonMaster.set(ControlMode.MotionMagic, (getTicks() + ticks) * distanceInvert);
     }
 
     public void setVelocity(double vel) {

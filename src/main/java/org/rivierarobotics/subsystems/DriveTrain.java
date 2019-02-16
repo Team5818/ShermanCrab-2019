@@ -62,9 +62,9 @@ public class DriveTrain extends Subsystem {
         return right;
     }
 
-    public void setDistance(double l, double r) {
-        left.setDistance(l);
-        right.setDistance(r);
+    public void addDistance(double l, double r) {
+        left.addDistance(l);
+        right.addDistance(r);
     }
 
     public double getDistance() {

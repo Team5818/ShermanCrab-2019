@@ -26,6 +26,7 @@ import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
 import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.PigeonGyro;
 import org.rivierarobotics.subsystems.Shifter;
 import org.rivierarobotics.subsystems.SubsystemModule;
 
@@ -35,6 +36,8 @@ import dagger.Component;
 @Singleton 
 public abstract class GlobalComponent {
     public abstract DriveTrain getDriveTrain();
+
+    public abstract PigeonGyro getPigeonGyro();
 
     public abstract ButtonConfiguration getButtonConfiguration();
 

@@ -45,19 +45,18 @@ public class DriveDistance extends Command {
     @Override
     protected void initialize() {
         startDistance = currentDistance = dt.getDistance();
-        calcDistance = startDistance - distance;
-        dt.setDistance(calcDistance, calcDistance);
+        calcDistance = startDistance + distance;
+        dt.addDistance(distance, distance);
     }
 
     @Override
     protected void execute() {
         currentDistance = dt.getDistance();
-        calcCurrentDistance = Math.abs(currentDistance - startDistance);
     }
 
 
     @Override
     protected boolean isFinished() {
-        return Math.abs(calcCurrentDistance) >= Math.abs(distance);
+        return currentDistance >= calcDistance;
     }
 }

@@ -45,14 +45,14 @@ public class SubsystemModule {
     @Singleton
     @Sided(Sided.Side.LEFT)
     public static DriveTrainSide provideDriveSideLeft() {
-        return new DriveTrainSide(L_TALON_MASTER, L_SPARK_SLAVE_ONE, L_SPARK_SLAVE_TWO, false);
+        return new DriveTrainSide(L_TALON_MASTER, L_SPARK_SLAVE_ONE, L_SPARK_SLAVE_TWO, true);
     }
 
     @Provides
     @Singleton
     @Sided(Sided.Side.RIGHT)
     public static DriveTrainSide provideDriveSideRight() {
-        return new DriveTrainSide(R_TALON_MASTER, R_SPARK_SLAVE_ONE, R_SPARK_SLAVE_TWO, true);
+        return new DriveTrainSide(R_TALON_MASTER, R_SPARK_SLAVE_ONE, R_SPARK_SLAVE_TWO, false);
     }
 
     @Provides
