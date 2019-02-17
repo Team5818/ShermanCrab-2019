@@ -24,13 +24,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-
-import javax.naming.ldap.Control;
 
 public class DriveTrainSide {
     private static final double INCHES_TO_TICKS;
@@ -88,6 +87,10 @@ public class DriveTrainSide {
         } else {
             distanceInvert = 1;
         }
+        Notifier followerThread = new Notifier(() -> {
+            sparkSlaveOne.set(-talonMaster.getMotorOutputVoltage() / 12);
+        });
+        followerThread.startPeriodic(0.01);
 
         /* Reset encoder before reading values */
         talonMaster.setSelectedSensorPosition(0);
@@ -97,10 +100,6 @@ public class DriveTrainSide {
 
         /* Set master Talon inversion */
         talonMaster.setInverted(invert);
-
-        /* Get Sparks to follow master Talon */
-        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
         /* Configure Sensor Source for Primary PID */
         talonMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);

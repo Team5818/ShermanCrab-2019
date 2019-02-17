@@ -49,6 +49,10 @@ public class ArmController extends Subsystem {
     public void setPower(double power) {
         arm.setPower(power);
     }
+    
+    public void stop() {
+        setPower(0.0);
+    }
 
     @Override
     protected void initDefaultCommand() {
