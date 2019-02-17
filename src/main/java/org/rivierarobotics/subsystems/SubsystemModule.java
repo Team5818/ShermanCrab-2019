@@ -20,8 +20,10 @@
 
 package org.rivierarobotics.subsystems;
 
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.inject.Sided;
 
 import dagger.Module;
@@ -78,8 +80,8 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static ArmMotorGroup provideArmMotorGroup() {
-        return new ArmMotorGroup(ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
+    public static ArmController provideArmMotorGroup(Provider<ArmControl> command) {
+        return new ArmController(command, ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
     }
 
     @Provides

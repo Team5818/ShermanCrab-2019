@@ -20,11 +20,12 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
-import edu.wpi.first.wpilibj.command.Subsystem;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.ctre.phoenix.sensors.PigeonIMU;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 @Singleton
 public class PigeonGyro extends Subsystem {
