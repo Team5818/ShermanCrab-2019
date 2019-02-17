@@ -20,8 +20,6 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.commands.ArmControl;
 
@@ -32,25 +30,24 @@ import javax.inject.Singleton;
 @Singleton
 public class ArmController extends Subsystem {
     private Provider<ArmControl> command;
-    private WPI_TalonSRX arm;
+    private ArmMotorGroup arm;
 
     @Inject
-    public ArmController(Provider<ArmControl> command) {
-        // TODO change arm structure to be on DriveTrainSide gearboxes
-        // this.arm = new WPI_TalonSRX(20);
+    public ArmController(Provider<ArmControl> command, ArmMotorGroup arm) {
+        this.arm = arm;
         this.command = command;
     }
 
-    public void setAngle(double angle) {
-        arm.set(ControlMode.MotionMagic, angle);
+    public void setAngle(int angle) {
+        arm.setAngle(angle);
     }
 
-    public double getAngle() {
-        return (arm.getSensorCollection().getQuadraturePosition());
+    public int getAngle() {
+        return arm.getAngle();
     }
 
-    public void setPower(double pwr) {
-        arm.set(pwr);
+    public void setPower(double power) {
+        arm.setPower(power);
     }
 
     @Override

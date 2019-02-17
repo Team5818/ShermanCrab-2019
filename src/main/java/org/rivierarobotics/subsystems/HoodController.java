@@ -32,31 +32,28 @@ import javax.inject.Singleton;
 @Singleton
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
-    private WPI_TalonSRX rotate;
-    private WPI_TalonSRX spin;
+    private HoodMotorGroup hood;
 
     @Inject
-    public HoodController(Provider<HoodControl> command) {
-        // TODO change hood talon IDs
-        //this.rotate = new WPI_TalonSRX(21);
-        //this.spin = new WPI_TalonSRX(22);
+    public HoodController(Provider<HoodControl> command, HoodMotorGroup hood) {
+        this.hood = hood;
         this.command = command;
     }
 
-    public void setAngle(double angle) {
-        rotate.set(ControlMode.MotionMagic, angle);
+    public void setRotateAngle(int angle) {
+        hood.setRotateAngle(angle);
     }
 
-    public double getAngle() {
-        return (rotate.getSensorCollection().getQuadraturePosition());
+    public double getRotateAngle() {
+        return hood.getRotateAngle();
     }
 
     public void setRotatePower(double pwr) {
-        rotate.set(pwr);
+        hood.setRotatePower(pwr);
     }
 
     public void setSpinPower(double pwr) {
-        spin.set(pwr);
+        hood.setSpinPower(pwr);
     }
 
     @Override

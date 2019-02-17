@@ -45,9 +45,9 @@ public class HoodControl extends Command {
     @Override
     protected void execute() {
         double armJoyY = hoodRotateJoy.getY();
-        if(armJoyY < -HOOD_DEADBAND && hood.getAngle() > HOOD_MIN_EXT) {
+        if(armJoyY < -HOOD_DEADBAND && hood.getRotateAngle() > HOOD_MIN_EXT) {
             hood.setRotatePower(armJoyY);
-        } else if(armJoyY > HOOD_DEADBAND && hood.getAngle() < HOOD_MAX_EXT){
+        } else if(armJoyY > HOOD_DEADBAND && hood.getRotateAngle() < HOOD_MAX_EXT){
             hood.setRotatePower(armJoyY);
         }
     }

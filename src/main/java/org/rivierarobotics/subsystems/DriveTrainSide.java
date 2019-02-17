@@ -79,6 +79,7 @@ public class DriveTrainSide {
     private int distanceInvert;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
+        // TODO fix Motion Magic/PID/follow problems
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);

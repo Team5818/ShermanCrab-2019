@@ -30,13 +30,20 @@ import dagger.Provides;
 @Module
 public class SubsystemModule {
     // TODO change drivetrain solenoid values
-    private static final int L_TALON_MASTER = 1;
-    private static final int L_SPARK_SLAVE_ONE = 3;
-    private static final int L_SPARK_SLAVE_TWO = 5;
+    private static final int L_DRIVE_TALON_MASTER = 1;
+    private static final int L_DRIVE_SPARK_SLAVE_ONE = 3;
+    private static final int L_DRIVE_SPARK_SLAVE_TWO = 5;
 
-    private static final int R_TALON_MASTER = 2;
-    private static final int R_SPARK_SLAVE_ONE = 4;
-    private static final int R_SPARK_SLAVE_TWO = 6;
+    private static final int R_DRIVE_TALON_MASTER = 2;
+    private static final int R_DRIVE_SPARK_SLAVE_ONE = 4;
+    private static final int R_DRIVE_SPARK_SLAVE_TWO = 6;
+
+    private static final int ARM_TALON_MASTER = 7;
+    private static final int ARM_SPARK_SLAVE_ONE = 8;
+    private static final int ARM_SPARK_SLAVE_TWO = 9;
+
+    private static final int HOOD_TALON_ROTATE = 10;
+    private static final int HOOD_TALON_SPIN = 11;
 
     private static final int L_SHIFT_SOLENOID = 7;
     private static final int R_SHIFT_SOLENOID = 8;
@@ -45,14 +52,14 @@ public class SubsystemModule {
     @Singleton
     @Sided(Sided.Side.LEFT)
     public static DriveTrainSide provideDriveSideLeft() {
-        return new DriveTrainSide(L_TALON_MASTER, L_SPARK_SLAVE_ONE, L_SPARK_SLAVE_TWO, true);
+        return new DriveTrainSide(L_DRIVE_TALON_MASTER, L_DRIVE_SPARK_SLAVE_ONE, L_DRIVE_SPARK_SLAVE_TWO, true);
     }
 
     @Provides
     @Singleton
     @Sided(Sided.Side.RIGHT)
     public static DriveTrainSide provideDriveSideRight() {
-        return new DriveTrainSide(R_TALON_MASTER, R_SPARK_SLAVE_ONE, R_SPARK_SLAVE_TWO, false);
+        return new DriveTrainSide(R_DRIVE_TALON_MASTER, R_DRIVE_SPARK_SLAVE_ONE, R_DRIVE_SPARK_SLAVE_TWO, false);
     }
 
     @Provides
@@ -67,5 +74,17 @@ public class SubsystemModule {
     @Sided(Sided.Side.RIGHT)
     public static ShifterSide provideShifterSideRight() {
         return new ShifterSide(R_SHIFT_SOLENOID);
+    }
+
+    @Provides
+    @Singleton
+    public static ArmMotorGroup provideArmMotorGroup() {
+        return new ArmMotorGroup(ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
+    }
+
+    @Provides
+    @Singleton
+    public static HoodMotorGroup provideHoodMotorGroup() {
+        return new HoodMotorGroup(HOOD_TALON_ROTATE, HOOD_TALON_SPIN);
     }
 }
