@@ -24,6 +24,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.rivierarobotics.commands.ArmControl;
+import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.inject.Sided;
 
 import dagger.Module;
@@ -31,7 +32,7 @@ import dagger.Provides;
 
 @Module
 public class SubsystemModule {
-    // TODO change drivetrain solenoid values
+    // TODO change solenoid, talon, and spark values
     private static final int L_DRIVE_TALON_MASTER = 1;
     private static final int L_DRIVE_SPARK_SLAVE_ONE = 3;
     private static final int L_DRIVE_SPARK_SLAVE_TWO = 5;
@@ -86,7 +87,7 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static HoodMotorGroup provideHoodMotorGroup() {
-        return new HoodMotorGroup(HOOD_TALON_ROTATE, HOOD_TALON_SPIN);
+    public static HoodController provideHoodController(Provider<HoodControl> command) {
+        return new HoodController(command, HOOD_TALON_ROTATE, HOOD_TALON_SPIN);
     }
 }

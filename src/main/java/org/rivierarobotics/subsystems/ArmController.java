@@ -74,10 +74,10 @@ public class ArmController extends Subsystem {
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = (int) (VELOCITY_TICKS_PER_SEC * 10);
+        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
         System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = (int) (ACCELERATION_TICKS_PER_SEC_PER_SEC * 10);
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
         System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
