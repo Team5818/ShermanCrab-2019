@@ -32,14 +32,14 @@ import dagger.Provides;
 
 @Module
 public class SubsystemModule {
-    // TODO change solenoid, talon, and spark values
-    private static final int L_DRIVE_TALON_MASTER = 1;
-    private static final int L_DRIVE_SPARK_SLAVE_ONE = 3;
-    private static final int L_DRIVE_SPARK_SLAVE_TWO = 5;
+    // TODO change solenoid values
+    private static final int L_DRIVE_TALON_MASTER = 4;
+    private static final int L_DRIVE_SPARK_SLAVE_ONE = 5;
+    private static final int L_DRIVE_SPARK_SLAVE_TWO = 6;
 
-    private static final int R_DRIVE_TALON_MASTER = 2;
-    private static final int R_DRIVE_SPARK_SLAVE_ONE = 4;
-    private static final int R_DRIVE_SPARK_SLAVE_TWO = 6;
+    private static final int R_DRIVE_TALON_MASTER = 1;
+    private static final int R_DRIVE_SPARK_SLAVE_ONE = 2;
+    private static final int R_DRIVE_SPARK_SLAVE_TWO = 3;
 
     private static final int ARM_TALON_MASTER = 7;
     private static final int ARM_SPARK_SLAVE_ONE = 8;
