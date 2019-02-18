@@ -76,10 +76,6 @@ public class DriveControl extends Command {
                 left = -max;
             }
         }
-        if(Math.abs(left) <= 0.05) { left = 0; }
-        if(Math.abs(right) <= 0.05) { right = 0; }
-        SmartDashboard.putNumber("left", left);
-        SmartDashboard.putNumber("right", right);
         driveTrain.setPower(left, right);
     }
 
