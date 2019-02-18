@@ -25,7 +25,7 @@ import javax.inject.Provider;
 
 public class HatchCommands {
     private final Provider<HatchPush> hatchPushProvider;
-    private HatchSystemDeployCreator hatchSystemDeployCreator;
+    private final HatchSystemDeployCreator hatchSystemDeployCreator;
 
     @Inject
     public HatchCommands(Provider<HatchPush> hatchPushProvider, HatchSystemDeployCreator hatchSystemDeployCreator) {

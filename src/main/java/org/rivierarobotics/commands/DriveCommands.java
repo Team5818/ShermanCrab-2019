@@ -26,17 +26,17 @@ public class DriveCommands {
     private final DriveForwardCreator driveForwardCreator;
     private final DriveVelocityCreator driveVelocityCreator;
     private final DriveDistanceCreator driveDistanceCreator;
-    private final RotateProvidedCreator rotateProvidedCreator;
+    private final RotateCreator rotateCreator;
 
     @Inject
     public DriveCommands(DriveForwardCreator driveForwardCreator,
             DriveVelocityCreator driveVelocityCreator,
             DriveDistanceCreator driveDistanceCreator,
-            RotateProvidedCreator rotateProvidedCreator) {
+            RotateCreator rotateCreator) {
         this.driveForwardCreator = driveForwardCreator;
         this.driveVelocityCreator = driveVelocityCreator;
         this.driveDistanceCreator = driveDistanceCreator;
-        this.rotateProvidedCreator = rotateProvidedCreator;
+        this.rotateCreator = rotateCreator;
     }
 
     public DriveForward forward(double power, double distance) {
@@ -51,7 +51,7 @@ public class DriveCommands {
         return driveDistanceCreator.create(distance);
     }
 
-    public RotateProvided rotateProvided(double degrees) {
-        return rotateProvidedCreator.create(degrees);
+    public Rotate rotate(double degrees) {
+        return rotateCreator.create(degrees);
     }
 }

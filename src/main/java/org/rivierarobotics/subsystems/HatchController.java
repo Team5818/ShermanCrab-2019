@@ -29,12 +29,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private Solenoid clampPistonRight;
-    private Solenoid clampPistonLeft;
-    private Solenoid pushPistonLower;
-    private Solenoid pushPistonUpper;
-    private Solenoid deployPistonLeft;
-    private Solenoid deployPistonRight;
+    private final Solenoid clampPistonRight;
+    private final Solenoid clampPistonLeft;
+    private final Solenoid pushPistonLower;
+    private final Solenoid pushPistonUpper;
+    private final Solenoid deployPistonLeft;
+    private final Solenoid deployPistonRight;
 
     @Inject
     public HatchController() {

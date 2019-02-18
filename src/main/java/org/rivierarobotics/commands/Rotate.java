@@ -21,14 +21,13 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.DriveTrain;
 import org.rivierarobotics.subsystems.PigeonGyro;
 
 @GenerateCreator
-public class RotateProvided extends Command {
+public class Rotate extends Command {
     private DriveTrain dt;
     private PigeonGyro gyro;
     private double degreesToRotate;
@@ -36,13 +35,14 @@ public class RotateProvided extends Command {
     private double startDegrees;
     private double degreeBuffer;
     
-    public RotateProvided(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
+    public Rotate(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
         degreesToRotate = degrees;
+        degreeBuffer = 7;
         this.gyro = gyro;
         this.dt = dt;
         requires(dt);
         requires(gyro);
-        degreeBuffer = 7;
+
     }
 
     private void rotateDirection(double degrees) {
@@ -60,11 +60,8 @@ public class RotateProvided extends Command {
 
     @Override
     protected void execute() {
-        // changeDegrees = gyro.getYaw() - startDegrees;
         currentDegrees = gyro.getYaw();
-        SmartDashboard.putNumber("deg", currentDegrees - startDegrees);
         rotateDirection(degreesToRotate);
-        //dt.setPower(-0.5, 0.5);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ShifterSide {
 
     @Inject
     public ShifterSide(int ch) {
-        //shifter = new Solenoid(ch);
+        shifter = new Solenoid(ch);
         shifter.set(false);
     }
 
