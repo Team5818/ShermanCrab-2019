@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.util.MathUtil;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -47,8 +48,7 @@ public class DriveControl extends Command {
     protected void execute() {
         double y = -throttle.getY();
         double x = turning.getX();
-
-        setArcade(x, y);
+        setArcade(MathUtil.fitDeadband(x), MathUtil.fitDeadband(y));
     }
 
     public void setArcade(double rotate, double power) {

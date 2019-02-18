@@ -37,8 +37,8 @@ import javax.inject.Singleton;
 @Singleton
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
-    private final WPI_TalonSRX rotate;
-    private final WPI_TalonSRX spin;
+    private final WPI_TalonSRX hood;
+    private final WPI_TalonSRX tentacles;
 
     private static final int TIMEOUT = 30;
     private static final double P;
@@ -78,59 +78,59 @@ public class HoodController extends Subsystem {
     }
 
     @Inject
-    public HoodController(Provider<HoodControl> command, int rot, int spn) {
-        rotate = new WPI_TalonSRX(rot);
-        spin = new WPI_TalonSRX(spn);
+    public HoodController(Provider<HoodControl> command, int h, int tent) {
+        hood = new WPI_TalonSRX(h);
+        tentacles = new WPI_TalonSRX(tent);
         this.command = command;
         /* Spin should not follow rotate. They are two different things */
 
         /* Reset encoder before reading values */
-        rotate.setSelectedSensorPosition(0);
+        hood.setSelectedSensorPosition(0);
 
         /* Factory default hardware to prevent unexpected behavior */
-        rotate.configFactoryDefault();
+        hood.configFactoryDefault();
 
         /* Configure Sensor Source for Primary PID */
-        rotate.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
+        hood.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
-        rotate.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
+        hood.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
 
         /* Set the peak and nominal outputs */
-        rotate.configNominalOutputForward(0, TIMEOUT);
-        rotate.configNominalOutputReverse(0, TIMEOUT);
-        rotate.configPeakOutputForward(1, TIMEOUT);
-        rotate.configPeakOutputReverse(-1, TIMEOUT);
+        hood.configNominalOutputForward(0, TIMEOUT);
+        hood.configNominalOutputReverse(0, TIMEOUT);
+        hood.configPeakOutputForward(1, TIMEOUT);
+        hood.configPeakOutputReverse(-1, TIMEOUT);
 
         /* Set Motion Magic gains in slot0 - see documentation */
-        rotate.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        rotate.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        rotate.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        rotate.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        rotate.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
+        hood.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
+        hood.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        hood.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
+        hood.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
+        hood.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
 
-        rotate.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
-        rotate.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
+        hood.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
+        hood.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
     }
 
-    public void setRotateAngle(double angle) {
-        rotate.set(ControlMode.MotionMagic, angle);
+    public void setHoodAngle(double angle) {
+        hood.set(ControlMode.MotionMagic, angle);
     }
 
-    public int getRotateAngle() {
-        return (rotate.getSensorCollection().getQuadraturePosition());
+    public int getHoodAngle() {
+        return (hood.getSensorCollection().getQuadraturePosition());
     }
 
-    public void setRotatePower(double pwr) {
-        rotate.set(pwr);
+    public void setHoodPower(double pwr) {
+        hood.set(pwr);
     }
-
+    
     public void setSpinPower(double pwr) {
-        rotate.set(pwr);
+        tentacles.set(pwr);
     }
 
     public void stop() {
-        setRotatePower(0.0);
+        setHoodPower(0.0);
         setSpinPower(0.0);
     }
 

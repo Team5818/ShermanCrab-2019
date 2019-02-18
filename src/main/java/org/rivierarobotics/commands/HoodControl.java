@@ -24,19 +24,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 
 public class HoodControl extends Command {
-    // TODO change values for safety hood deadband, manually test
-    private double HOOD_DEADBAND = 0.1;
-    private double HOOD_MAX_EXT = 90;
-    private double HOOD_MIN_EXT = -90;
+
     private HoodController hood;
     private Joystick hoodRotateJoy;
 
     @Inject
-    public HoodControl(HoodController hood, @Input(Input.Position.CODRIVER_LEFT) Joystick hoodRotateJoy) {
+    public HoodControl(HoodController hood, @Input(Input.Position.CODRIVER_RIGHT) Joystick hoodRotateJoy) {
         this.hood = hood;
         this.hoodRotateJoy = hoodRotateJoy;
         requires(hood);
@@ -45,11 +43,7 @@ public class HoodControl extends Command {
     @Override
     protected void execute() {
         double armJoyY = hoodRotateJoy.getY();
-        if(armJoyY < -HOOD_DEADBAND && hood.getRotateAngle() > HOOD_MIN_EXT) {
-            hood.setRotatePower(armJoyY);
-        } else if(armJoyY > HOOD_DEADBAND && hood.getRotateAngle() < HOOD_MAX_EXT){
-            hood.setRotatePower(armJoyY);
-        }
+        hood.setHoodPower(MathUtil.fitDeadband(armJoyY));
     }
 
     @Override
