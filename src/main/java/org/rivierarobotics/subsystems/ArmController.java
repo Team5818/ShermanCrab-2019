@@ -55,12 +55,17 @@ public class ArmController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
+    private static double TICKS_TO_DEGREES;
+    private static final int TICK_BUFFER = 1185;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
     }
 
     static {
+        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
+        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
+
         P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
         System.err.println("P: " + P);
 
@@ -80,31 +85,30 @@ public class ArmController extends Subsystem {
         ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
         System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
-
+    /*
     private final Notifier followerThread = new Notifier(() -> {
         double volts = -arm.getMotorOutputVoltage();
         SparkMaxVolts.set(sparkSlaveOne, volts);
         SparkMaxVolts.set(sparkSlaveTwo, volts);
-    });
+    });*/
 
     @Inject
     public ArmController(Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
         arm = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
-        sparkSlaveOne = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        followerThread.startPeriodic(0.01);
+        //followerThread.startPeriodic(0.01);
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
+
+        arm.setInverted(true);
 
         /* Reset encoder before reading values */
         arm.setSelectedSensorPosition(0);
 
         /* Factory default hardware to prevent unexpected behavior */
         arm.configFactoryDefault();
-
-        /*
-         * Set master Talon inversion GET RID OF COMMENTED OUT STUFF BEFORE COMMITTING
-         */
-//        arm.setInverted(invert);
 
         /* Configure Sensor Source for Primary PID */
         arm.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
@@ -135,7 +139,7 @@ public class ArmController extends Subsystem {
     }
 
     public int getAngle() {
-        return (arm.getSensorCollection().getQuadraturePosition());
+        return (int)((arm.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
     }
 
     public void setPower(double pwr) {

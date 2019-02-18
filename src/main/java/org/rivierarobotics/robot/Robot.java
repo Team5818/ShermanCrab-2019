@@ -30,15 +30,21 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
 	private GlobalComponent globalComponent;
-	private final NetworkTableEntry encoderLeft = Shuffleboard.getTab( "Drive Train")
+	private final NetworkTableEntry driveEncoderLeft = Shuffleboard.getTab( "Drive Train")
 	            .add("Distance Left", 0).getEntry();
-	private final NetworkTableEntry encoderRight = Shuffleboard.getTab( "Drive Train")
+	private final NetworkTableEntry driveEncoderRight = Shuffleboard.getTab( "Drive Train")
 	            .add("Distance Right", 0).getEntry();
+	private final NetworkTableEntry armEncoder = Shuffleboard.getTab( "Arm Controller")
+			.add("Angle", 0).getEntry();
+	private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab( "Hood Controller")
+			.add("Angle", 0).getEntry();
 	
 	@Override
 	public void robotInit() {
 		globalComponent = DaggerGlobalComponent.create();
 		globalComponent.getDriveTrain();
+		globalComponent.getArmController();
+		globalComponent.getHoodController();
 		globalComponent.getPigeonGyro();
 		globalComponent.getButtonConfiguration().initialize();
 	}
@@ -46,9 +52,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
-		encoderLeft.setDouble(distance);
+		driveEncoderLeft.setDouble(distance);
+		hoodEncoder.setDouble(globalComponent.getHoodController().getHoodAngle());
+		armEncoder.setDouble(globalComponent.getArmController().getAngle());
 	    distance = globalComponent.getDriveTrain().getRight().getDistance();
-	    encoderRight.setDouble(distance);
+	    driveEncoderRight.setDouble(distance);
 		Scheduler.getInstance().run();
 	}
 

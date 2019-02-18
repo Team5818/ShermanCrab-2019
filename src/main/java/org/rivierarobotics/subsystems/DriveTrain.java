@@ -45,9 +45,8 @@ public class DriveTrain extends Subsystem {
     }
 
     public void setPower(double l, double r) {
-        // TODO remove power limits or replace with talon limits
-        left.setPower(l * 0.6);
-        right.setPower(r * 0.6);
+        left.setPower(l);
+        right.setPower(r);
     }
 
     public void setVelocity(double l, double r) {

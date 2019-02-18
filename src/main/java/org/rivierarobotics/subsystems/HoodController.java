@@ -51,12 +51,17 @@ public class HoodController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
+    private static double TICKS_TO_DEGREES;
+    private static final int TICK_BUFFER = -4039;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
     }
 
     static {
+        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
+        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
+
         P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
         System.err.println("P: " + P);
 
@@ -118,7 +123,7 @@ public class HoodController extends Subsystem {
     }
 
     public int getHoodAngle() {
-        return (hood.getSensorCollection().getQuadraturePosition());
+        return (int)((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER)/ TICKS_TO_DEGREES);
     }
 
     public void setHoodPower(double pwr) {

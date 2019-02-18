@@ -77,11 +77,11 @@ public class DriveTrainSide {
     private CANSparkMax sparkSlaveTwo;
     private int distanceInvert;
 
-    private final Notifier followerThread = new Notifier(() -> {
-        double volts = -talonMaster.getMotorOutputVoltage();
-        SparkMaxVolts.set(sparkSlaveOne, volts);
-        SparkMaxVolts.set(sparkSlaveTwo, volts);
-    });
+    //private final Notifier followerThread = new Notifier(() -> {
+    //    double volts = -talonMaster.getMotorOutputVoltage();
+    //    SparkMaxVolts.set(sparkSlaveOne, volts);
+    //    SparkMaxVolts.set(sparkSlaveTwo, volts);
+    //});
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
         // TODO fix Motion Magic/PID/follow problems
@@ -94,7 +94,9 @@ public class DriveTrainSide {
             distanceInvert = 1;
         }
 
-        followerThread.startPeriodic(0.01);
+        //followerThread.startPeriodic(0.01);
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
         /* Reset encoder before reading values */
         talonMaster.setSelectedSensorPosition(0);

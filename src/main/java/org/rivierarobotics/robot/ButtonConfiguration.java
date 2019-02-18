@@ -62,6 +62,7 @@ public class ButtonConfiguration {
     public void initialize() {
         // TODO remove testing buttons and replace with competition buttons
         //testing buttons
+        /*
         JoystickButton hatchPush = new JoystickButton(driverLeft, 1);
         hatchPush.toggleWhenPressed(cmds.hatch().push());
 
@@ -79,7 +80,7 @@ public class ButtonConfiguration {
                 cmds.piston().extend(Piston.PUSH_UPPER)));
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
                 cmds.piston().retract(Piston.PUSH_UPPER)));
-
+        */
         /*
         //competition buttons
         // Hatch command groups on codriver button joystick
@@ -120,10 +121,10 @@ public class ButtonConfiguration {
 
         JoystickButton swapDriveGear = new JoystickButton(driverButtons, 4);
         swapDriveGear.whenPressed(cmds.gear().swap());
-
+        */
         // Hood commands on codriver
         JoystickButton spinTentacles = new JoystickButton(codriverButtons, 6);
-        spinTentacles.toggleWhenPressed(cmds.hood().spin(0.7));
-        */
+        spinTentacles.toggleWhenPressed(cmds.hood().spin(0.5));
+
     }
 }
