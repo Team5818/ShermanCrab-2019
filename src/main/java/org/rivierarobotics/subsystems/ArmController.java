@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import org.rivierarobotics.commands.ArmControl;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -102,6 +103,10 @@ public class ArmController extends Subsystem {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
+        arm.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
         arm.setInverted(true);
 
         /* Reset encoder before reading values */
@@ -111,7 +116,7 @@ public class ArmController extends Subsystem {
         arm.configFactoryDefault();
 
         /* Configure Sensor Source for Primary PID */
-        arm.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
+        arm.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, PID_LOOP_IDX, TIMEOUT);
 
         /* Set relevant frame periods to be at least as fast as periodic rate */
         arm.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);

@@ -22,6 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -51,7 +52,7 @@ public class HoodController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
-    private static final int TICK_BUFFER = -4039;
+    private static final int TICK_BUFFER = 2533;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -85,7 +86,8 @@ public class HoodController extends Subsystem {
     public HoodController(Provider<HoodControl> command, int h) {
         hood = new WPI_TalonSRX(h);
         this.command = command;
-        /* Spin should not follow rotate. They are two different things */
+
+       // hood.setNeutralMode(NeutralMode.Brake);
 
         /* Reset encoder before reading values */
         hood.setSelectedSensorPosition(0);
@@ -117,7 +119,7 @@ public class HoodController extends Subsystem {
     }
 
     public void setAngle(double angle) {
-        hood.set(ControlMode.MotionMagic, angle);
+       // hood.set(ControlMode.MotionMagic, 5000);
     }
 
     public int getAngle() {

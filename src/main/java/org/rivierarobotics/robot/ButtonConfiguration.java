@@ -29,6 +29,7 @@ import org.rivierarobotics.inject.Input;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.rivierarobotics.subsystems.Gear;
+import org.rivierarobotics.subsystems.HoodPosition;
 import org.rivierarobotics.subsystems.Piston;
 
 import static org.rivierarobotics.commands.CommandGroups.inOrder;
@@ -81,7 +82,7 @@ public class ButtonConfiguration {
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
                 cmds.piston().retract(Piston.PUSH_UPPER)));
         */
-        /*
+
         //competition buttons
         // Hatch command groups on codriver button joystick
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 12);
@@ -99,6 +100,7 @@ public class ButtonConfiguration {
         clampRetract.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
                 cmds.piston().extend(Piston.CLAMP_LEFT)));
 
+
         // Hatch full action commands on codriver
         JoystickButton clampAction = new JoystickButton(codriverButtons, 8);
         clampAction.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_RIGHT),
@@ -112,25 +114,28 @@ public class ButtonConfiguration {
         pushAction.whenReleased(inOrder(cmds.piston().retract(Piston.PUSH_LOWER),
                 cmds.piston().retract(Piston.PUSH_UPPER)));
 
+
         // Gear commands on driver
-        JoystickButton shiftHighGear = new JoystickButton(driverButtons, 6);
+        JoystickButton shiftHighGear = new JoystickButton(driverLeft, 1);
         shiftHighGear.whenPressed(cmds.gear().shift(Gear.HIGH));
 
-        JoystickButton shiftLowGear = new JoystickButton(driverButtons, 5);
+        JoystickButton shiftLowGear = new JoystickButton(driverLeft, 2);
         shiftLowGear.whenPressed(cmds.gear().shift(Gear.LOW));
 
-        JoystickButton swapDriveGear = new JoystickButton(driverButtons, 4);
+        JoystickButton swapDriveGear = new JoystickButton(driverRight, 1);
         swapDriveGear.whenPressed(cmds.gear().swap());
-        */
+
         // Hood commands on codriver
         JoystickButton spinTentacles = new JoystickButton(codriverButtons, 6);
-        spinTentacles.whenPressed(cmds.tentacle().spin(0.75));
+        spinTentacles.whenPressed(cmds.tentacle().spin(1.0));
         spinTentacles.whenReleased(cmds.tentacle().spin(0.0));
 
 
-        JoystickButton reverseTentacles = new JoystickButton(codriverButtons, 4);
-        reverseTentacles.whenPressed(cmds.tentacle().spin(-0.75));
+        JoystickButton reverseTentacles = new JoystickButton(codriverButtons, 5);
+        reverseTentacles.whenPressed(cmds.tentacle().spin(-1.0));
         reverseTentacles.whenReleased(cmds.tentacle().spin(0.0));
 
+       // JoystickButton hoodSetNinety = new JoystickButton(codriverLeft, 2);
+        //hoodSetNinety.whenPressed(cmds.hood().set(HoodPosition.NINETY_DEGREES));
     }
 }

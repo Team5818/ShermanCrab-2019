@@ -48,8 +48,8 @@ public class SubsystemModule {
     private static final int HOOD_TALON = 10;
     private static final int TENTACLE_TALON = 11;
 
-    private static final int L_SHIFT_SOLENOID = 7;
-    private static final int R_SHIFT_SOLENOID = 8;
+    private static final int L_SHIFT_SOLENOID = 6;
+    private static final int R_SHIFT_SOLENOID = 7;
 
     @Provides
     @Singleton

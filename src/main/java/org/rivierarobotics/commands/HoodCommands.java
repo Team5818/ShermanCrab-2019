@@ -20,11 +20,19 @@
 
 package org.rivierarobotics.commands;
 
+import org.rivierarobotics.subsystems.HoodPosition;
+
 import javax.inject.Inject;
 
 public class HoodCommands {
+    private final HoodSetCreator hoodSetCreator;
 
     @Inject
-    public HoodCommands() {
+    public HoodCommands(HoodSetCreator hoodSetCreator) {
+        this.hoodSetCreator = hoodSetCreator;
+    }
+
+    public final HoodSet set(HoodPosition pos) {
+        return hoodSetCreator.create(pos);
     }
 }

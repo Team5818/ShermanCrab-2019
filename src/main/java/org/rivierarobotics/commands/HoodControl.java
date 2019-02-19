@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.subsystems.HoodPosition;
 import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
