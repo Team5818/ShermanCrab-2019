@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
 		globalComponent.getArmController();
 		globalComponent.getHoodController();
 		globalComponent.getPigeonGyro();
+		globalComponent.getTentacleController();
 		globalComponent.getButtonConfiguration().initialize();
 	}
 	
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
 		driveEncoderLeft.setDouble(distance);
-		hoodEncoder.setDouble(globalComponent.getHoodController().getHoodAngle());
+		hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
 		armEncoder.setDouble(globalComponent.getArmController().getAngle());
 	    distance = globalComponent.getDriveTrain().getRight().getDistance();
 	    driveEncoderRight.setDouble(distance);

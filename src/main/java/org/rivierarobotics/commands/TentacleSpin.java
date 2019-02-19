@@ -18,29 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.inject;
+package org.rivierarobotics.commands;
 
-import org.rivierarobotics.commands.*;
+import edu.wpi.first.wpilibj.command.Command;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.TentacleController;
 
-import dagger.Module;
-import dagger.Subcomponent;
+@GenerateCreator
+public class TentacleSpin extends Command {
+    private double power;
+    private TentacleController tentacle;
 
-@Subcomponent
-public abstract class CommandComponent {
-    public abstract DriveCommands drive();
-    public abstract PistonCommands piston();
-    public abstract HatchCommands hatch();
-    public abstract GearCommands gear();
-    public abstract HoodCommands hood();
-    public abstract ArmCommands arm();
-    public abstract TentacleCommands tentacle();
-
-    @Module(subcomponents = CommandComponent.class)
-    public interface CCModule {
+    public TentacleSpin(@Provided TentacleController tentacle, double power) {
+        this.tentacle = tentacle;
+        this.power = power;
+        requires(tentacle);
     }
 
-    @Subcomponent.Builder
-    public interface Builder {
-        CommandComponent build();
+    @Override
+    protected void execute() {
+        tentacle.setPower(power);
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return false;
     }
 }

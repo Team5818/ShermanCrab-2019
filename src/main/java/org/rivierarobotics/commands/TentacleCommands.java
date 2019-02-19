@@ -18,29 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.inject;
+package org.rivierarobotics.commands;
 
-import org.rivierarobotics.commands.*;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Subcomponent;
+public class TentacleCommands {
+    private final TentacleSpinCreator tentacleSpinCreator;
 
-@Subcomponent
-public abstract class CommandComponent {
-    public abstract DriveCommands drive();
-    public abstract PistonCommands piston();
-    public abstract HatchCommands hatch();
-    public abstract GearCommands gear();
-    public abstract HoodCommands hood();
-    public abstract ArmCommands arm();
-    public abstract TentacleCommands tentacle();
-
-    @Module(subcomponents = CommandComponent.class)
-    public interface CCModule {
+    @Inject
+    public TentacleCommands(TentacleSpinCreator tentacleSpinCreator) {
+        this.tentacleSpinCreator = tentacleSpinCreator;
     }
 
-    @Subcomponent.Builder
-    public interface Builder {
-        CommandComponent build();
+    public final TentacleSpin spin(double power) {
+        return tentacleSpinCreator.create(power);
     }
 }

@@ -40,6 +40,8 @@ public abstract class GlobalComponent {
 
     public abstract ArmController getArmController();
 
+    public abstract TentacleController getTentacleController();
+
     public abstract ButtonConfiguration getButtonConfiguration();
 
 }

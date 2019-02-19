@@ -124,7 +124,13 @@ public class ButtonConfiguration {
         */
         // Hood commands on codriver
         JoystickButton spinTentacles = new JoystickButton(codriverButtons, 6);
-        spinTentacles.toggleWhenPressed(cmds.hood().spin(0.5));
+        spinTentacles.whenPressed(cmds.tentacle().spin(0.75));
+        spinTentacles.whenReleased(cmds.tentacle().spin(0.0));
+
+
+        JoystickButton reverseTentacles = new JoystickButton(codriverButtons, 4);
+        reverseTentacles.whenPressed(cmds.tentacle().spin(-0.75));
+        reverseTentacles.whenReleased(cmds.tentacle().spin(0.0));
 
     }
 }

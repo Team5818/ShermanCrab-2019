@@ -45,8 +45,8 @@ public class SubsystemModule {
     private static final int ARM_SPARK_SLAVE_ONE = 8;
     private static final int ARM_SPARK_SLAVE_TWO = 9;
 
-    private static final int HOOD_TALON_MAIN = 10;
-    private static final int HOOD_TALON_TENTACLE = 11;
+    private static final int HOOD_TALON = 10;
+    private static final int TENTACLE_TALON = 11;
 
     private static final int L_SHIFT_SOLENOID = 7;
     private static final int R_SHIFT_SOLENOID = 8;
@@ -88,6 +88,12 @@ public class SubsystemModule {
     @Provides
     @Singleton
     public static HoodController provideHoodController(Provider<HoodControl> command) {
-        return new HoodController(command, HOOD_TALON_MAIN, HOOD_TALON_TENTACLE);
+        return new HoodController(command, HOOD_TALON);
+    }
+
+    @Provides
+    @Singleton
+    public static TentacleController provideTentacleController() {
+        return new TentacleController(TENTACLE_TALON);
     }
 }

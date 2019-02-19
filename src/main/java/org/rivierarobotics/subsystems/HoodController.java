@@ -38,7 +38,6 @@ import javax.inject.Singleton;
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
     private final WPI_TalonSRX hood;
-    private final WPI_TalonSRX tentacles;
 
     private static final int TIMEOUT = 30;
     private static final double P;
@@ -83,9 +82,8 @@ public class HoodController extends Subsystem {
     }
 
     @Inject
-    public HoodController(Provider<HoodControl> command, int h, int tent) {
+    public HoodController(Provider<HoodControl> command, int h) {
         hood = new WPI_TalonSRX(h);
-        tentacles = new WPI_TalonSRX(tent);
         this.command = command;
         /* Spin should not follow rotate. They are two different things */
 
@@ -118,25 +116,20 @@ public class HoodController extends Subsystem {
         hood.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
     }
 
-    public void setHoodAngle(double angle) {
+    public void setAngle(double angle) {
         hood.set(ControlMode.MotionMagic, angle);
     }
 
-    public int getHoodAngle() {
+    public int getAngle() {
         return (int)((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER)/ TICKS_TO_DEGREES);
     }
 
-    public void setHoodPower(double pwr) {
+    public void setPower(double pwr) {
         hood.set(pwr);
-    }
-    
-    public void setSpinPower(double pwr) {
-        tentacles.set(pwr);
     }
 
     public void stop() {
-        setHoodPower(0.0);
-        setSpinPower(0.0);
+        setPower(0.0);
     }
 
     @Override

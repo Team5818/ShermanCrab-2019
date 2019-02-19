@@ -43,7 +43,7 @@ public class HoodControl extends Command {
     @Override
     protected void execute() {
         double armJoyY = hoodRotateJoy.getY();
-        hood.setHoodPower(MathUtil.fitDeadband(armJoyY));
+        hood.setPower(MathUtil.fitDeadband(armJoyY));
     }
 
     @Override

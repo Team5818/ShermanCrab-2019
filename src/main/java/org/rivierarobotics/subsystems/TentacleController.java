@@ -18,30 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HoodController;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-@GenerateCreator
-public class HoodSpin extends Command {
-    private double power;
-    private HoodController hood;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-    public HoodSpin(@Provided HoodController hood, double power) {
-        this.hood = hood;
-        this.power = power;
+@Singleton
+public class TentacleController extends Subsystem {
+    private final WPI_TalonSRX tentacles;
+
+    @Inject
+    public TentacleController(int tent) {
+        tentacles = new WPI_TalonSRX(tent);
+    }
+    
+    public void setPower(double pwr) {
+        tentacles.set(pwr);
+    }
+
+    public void stop() {
+        setPower(0.0);
     }
 
     @Override
-    protected void execute() {
-        hood.setSpinPower(power);
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
+    protected void initDefaultCommand() {
     }
 }
