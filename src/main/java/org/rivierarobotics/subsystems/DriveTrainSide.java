@@ -20,14 +20,13 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import org.rivierarobotics.util.AbstractPIDSource;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
@@ -41,9 +40,6 @@ public class DriveTrainSide {
     private static final int ACCELERATION_INCHES_PER_SEC_PER_SEC = 1;
     private static final int VELOCITY_TICKS_PER_100MS;
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    private static final int SLOT_IDX = 0;
-    private static final int PID_LOOP_IDX = 0;
-    private static final int TIMEOUT = 30;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Drive Train").addPersistent(name, def);
@@ -76,6 +72,7 @@ public class DriveTrainSide {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
     private int distanceInvert;
+    private PIDController pidLoop;
 
     /*
     private final Notifier followerThread = new Notifier(() -> {
@@ -100,39 +97,10 @@ public class DriveTrainSide {
         sparkSlaveTwo.setInverted(!invert);
 
         //followerThread.startPeriodic(0.01);
-        //sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-        //sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-
-        /* Reset encoder before reading values */
-        talonMaster.setSelectedSensorPosition(0);
-
-        /* Factory default hardware to prevent unexpected behavior */
-        talonMaster.configFactoryDefault();
-
-        /* Set master Talon inversion */
-        talonMaster.setInverted(invert);
-
-        /* Configure Sensor Source for Primary PID */
-        talonMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        talonMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
-
-        /* Set the peak and nominal outputs */
-        talonMaster.configNominalOutputForward(0, TIMEOUT);
-        talonMaster.configNominalOutputReverse(0, TIMEOUT);
-        talonMaster.configPeakOutputForward(1, TIMEOUT);
-        talonMaster.configPeakOutputReverse(-1, TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        talonMaster.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        talonMaster.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        talonMaster.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        talonMaster.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        talonMaster.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
-
-        talonMaster.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
-        talonMaster.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setPower);
     }
 
     public double getDistance() {
@@ -145,14 +113,12 @@ public class DriveTrainSide {
 
     public void addDistance(double inches) {
         double ticks = inches * INCHES_TO_TICKS;
-        talonMaster.set(ControlMode.MotionMagic, (getTicks() + ticks) * distanceInvert);
-    }
-
-    public void setVelocity(double vel) {
-        talonMaster.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
+        pidLoop.setSetpoint(getTicks() + ticks);
+        pidLoop.enable();
     }
 
     public void setPower(double pwr) {
+        pidLoop.disable();
         talonMaster.set(pwr);
         sparkSlaveOne.set(pwr);
         sparkSlaveTwo.set(pwr);

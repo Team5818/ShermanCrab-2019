@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import org.rivierarobotics.commands.ArmControl;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -35,6 +36,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -45,20 +47,18 @@ public class ArmController extends Subsystem {
     private WPI_TalonSRX arm;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
-    private static final int TIMEOUT = 30;
     private static final double P;
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int SLOT_IDX = 0;
-    private static final int PID_LOOP_IDX = 0;
     private static final int VELOCITY_TICKS_PER_100MS;
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
     private static final int TICK_BUFFER = 1185;
-
+    private PIDController pidLoop;
+    
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
     }
@@ -108,39 +108,14 @@ public class ArmController extends Subsystem {
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         arm.setInverted(true);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::setPower, 0.01);
 
-        /* Reset encoder before reading values */
-        arm.setSelectedSensorPosition(0);
-
-        /* Factory default hardware to prevent unexpected behavior */
-        arm.configFactoryDefault();
-
-        /* Configure Sensor Source for Primary PID */
-        arm.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, PID_LOOP_IDX, TIMEOUT);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        arm.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
-
-        /* Set the peak and nominal outputs */
-        arm.configNominalOutputForward(0, TIMEOUT);
-        arm.configNominalOutputReverse(0, TIMEOUT);
-        arm.configPeakOutputForward(1, TIMEOUT);
-        arm.configPeakOutputReverse(-1, TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        arm.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        arm.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        arm.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        arm.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        arm.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
-
-        arm.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
-        arm.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
         this.command = command;
     }
 
     public void setAngle(double angle) {
-        arm.set(ControlMode.MotionMagic, angle);
+        pidLoop.setSetpoint(angle);
+        pidLoop.enable();
     }
 
     public int getAngle() {
@@ -148,6 +123,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
+        pidLoop.disable();
         arm.set(pwr);
     }
 
