@@ -18,30 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.inject;
+package org.rivierarobotics.commands;
 
-import org.rivierarobotics.commands.*;
+import javax.inject.Inject;
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
 
-import dagger.Module;
-import dagger.Subcomponent;
+public class TestCommands {
+    private final TestMotorCreator testMotorCreator;
+    private final TestSolenoidCreator testSolenoidCreator;
 
-@Subcomponent
-public abstract class CommandComponent {
-    public abstract DriveCommands drive();
-    public abstract PistonCommands piston();
-    public abstract HatchCommands hatch();
-    public abstract GearCommands gear();
-    public abstract HoodCommands hood();
-    public abstract ArmCommands arm();
-    public abstract TentacleCommands tentacle();
-    public abstract TestCommands test();
-
-    @Module(subcomponents = CommandComponent.class)
-    public interface CCModule {
+    @Inject
+    public TestCommands(TestMotorCreator testMotorCreator, TestSolenoidCreator testSolenoidCreator) {
+        this.testMotorCreator = testMotorCreator;
+        this.testSolenoidCreator = testSolenoidCreator;
     }
 
-    @Subcomponent.Builder
-    public interface Builder {
-        CommandComponent build();
+    public TestMotor motor(DoubleSupplier stick, DoubleConsumer out) {
+        return testMotorCreator.create(stick, out);
+    }
+
+    public TestSolenoid solenoid(Consumer<Boolean> out) {
+        return testSolenoidCreator.create(out);
     }
 }

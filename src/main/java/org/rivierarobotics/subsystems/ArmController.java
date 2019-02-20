@@ -108,7 +108,7 @@ public class ArmController extends Subsystem {
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         arm.setInverted(true);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::setPower, 0.01);
+//        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::setPower, 0.01);
 
         this.command = command;
     }
@@ -123,7 +123,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        pidLoop.disable();
+//        pidLoop.disable();
         arm.set(pwr);
     }
 

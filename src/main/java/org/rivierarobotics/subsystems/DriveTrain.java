@@ -49,11 +49,6 @@ public class DriveTrain extends Subsystem {
         right.setPower(r);
     }
 
-    public void setVelocity(double l, double r) {
-        left.setVelocity(l);
-        right.setVelocity(r);
-    }
-
     public DriveTrainSide getLeft() {
         return left;
     }

@@ -20,19 +20,21 @@
 
 package org.rivierarobotics.robot;
 
-import javax.inject.Inject;
-
-import org.rivierarobotics.commands.DriveVelocity;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import org.rivierarobotics.subsystems.Gear;
-import org.rivierarobotics.subsystems.HoodPosition;
-import org.rivierarobotics.subsystems.Piston;
-
-import static org.rivierarobotics.commands.CommandGroups.inOrder;
+import javax.inject.Inject;
+import java.lang.reflect.Field;
+import java.util.Vector;
+import java.util.function.DoubleConsumer;
 
 public class ButtonConfiguration {
     private final Joystick driverLeft;
@@ -60,7 +62,8 @@ public class ButtonConfiguration {
         this.cmds = component.build();
     }
 
-    public void initialize() {
+    public void initTeleop() {
+        clearButtons();
         /*
         //shift
        JoystickButton shiftHigh = new JoystickButton(driverLeft,1);
@@ -108,5 +111,57 @@ public class ButtonConfiguration {
 
         JoystickButton stow = new JoystickButton(codriverButtons, 2);
         stow.whenPressed(cmds.hood().set(1980));
+    }
+
+    public void initTest() {
+        clearButtons();
+        for (int i = 1; i <= 6; i++) {
+            DoubleConsumer out;
+            if (i % 3 == 1) {
+                out = new WPI_TalonSRX(i)::set;
+            } else {
+                CANSparkMax sm = new CANSparkMax(i, CANSparkMaxLowLevel.MotorType.kBrushless);
+                sm.follow(CANSparkMax.ExternalFollower.kFollowerDisabled, 0);
+                out = sm::set;
+            }
+            new JoystickButton(driverButtons, i).whenPressed(cmds.test().motor(
+                    () -> -driverLeft.getY(),
+                    out));
+        }
+        for (int i = 7; i <= 9; i++) {
+            DoubleConsumer out;
+            if (i % 3 == 1) {
+                out = new WPI_TalonSRX(i)::set;
+            } else {
+                CANSparkMax sm = new CANSparkMax(i, CANSparkMaxLowLevel.MotorType.kBrushless);
+                sm.follow(CANSparkMax.ExternalFollower.kFollowerDisabled, 0);
+                out = sm::set;
+            }
+            new JoystickButton(codriverButtons, i).whenPressed(cmds.test().motor(
+                    () -> -codriverLeft.getY(),
+                    out));
+        }
+        new JoystickButton(codriverButtons, 10).whenPressed(cmds.test().motor(
+                () -> -codriverLeft.getY(),
+                new WPI_TalonSRX(10)::set));
+        for (int i = 0; i < 6; i++) {
+            new JoystickButton(codriverButtons, i + 1).whenPressed(cmds.test().solenoid(new Solenoid(i)::set));
+        }
+        new JoystickButton(codriverButtons, 11).whenPressed(cmds.tentacle().spin(0.2));
+        new JoystickButton(codriverButtons, 12).whenPressed(cmds.tentacle().spin(-0.2));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void clearButtons() {
+        try {
+            Field m_buttons = Scheduler.class.getDeclaredField("m_buttons");
+            m_buttons.setAccessible(true);
+            Vector<Trigger.ButtonScheduler> buttons = (Vector<Trigger.ButtonScheduler>) m_buttons.get(Scheduler.getInstance());
+            if (buttons != null) {
+                buttons.clear();
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

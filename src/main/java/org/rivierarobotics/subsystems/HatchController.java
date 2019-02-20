@@ -29,37 +29,25 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
-    private final Solenoid clampPistonRight;
-    private final Solenoid clampPistonLeft;
-    private final Solenoid pushPistonLower;
-    private final Solenoid pushPistonUpper;
+    private final Solenoid clampPiston;
+    private final Solenoid pushPiston;
     private final Solenoid deployPistonLeft;
     private final Solenoid deployPistonRight;
 
     @Inject
     public HatchController() {
         // TODO change solenoid IDs
-        pushPistonLower = new Solenoid(0);
-        pushPistonUpper = new Solenoid(1);
-        clampPistonLeft = new Solenoid(2);
-        clampPistonRight = new Solenoid(3);
+        pushPiston= new Solenoid(0);
+        clampPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(4);
         deployPistonRight = new Solenoid(5);
-
-        var tab = Shuffleboard.getTab("Solenoid");
-        tab.add(clampPistonRight);
-        tab.add(clampPistonLeft);
     }
 
     private Solenoid pistonFor(Piston piston) {
-        if(piston == Piston.CLAMP_RIGHT) {
-            return clampPistonRight;
-        } else if(piston == Piston.CLAMP_LEFT) {
-            return clampPistonLeft;
-        } else if(piston == Piston.PUSH_LOWER) {
-            return pushPistonLower;
-        } else if(piston == Piston.PUSH_UPPER) {
-            return pushPistonUpper;
+        if(piston == Piston.CLAMP) {
+            return clampPiston;
+        } else if(piston == Piston.PUSH) {
+            return pushPiston;
         } else if(piston == Piston.DEPLOY_LEFT) {
             return deployPistonLeft;
         } else if(piston == Piston.DEPLOY_RIGHT) {

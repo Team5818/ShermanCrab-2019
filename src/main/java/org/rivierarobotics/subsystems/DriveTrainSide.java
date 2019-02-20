@@ -93,14 +93,13 @@ public class DriveTrainSide {
             distanceInvert = 1;
         }
 
-        sparkSlaveOne.setInverted(!invert);
-        sparkSlaveTwo.setInverted(!invert);
+        talonMaster.setInverted(invert);
 
         //followerThread.startPeriodic(0.01);
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setPower);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
     }
 
     public double getDistance() {
@@ -119,8 +118,14 @@ public class DriveTrainSide {
 
     public void setPower(double pwr) {
         pidLoop.disable();
-        talonMaster.set(pwr);
-        sparkSlaveOne.set(pwr);
-        sparkSlaveTwo.set(pwr);
+        setMotorPower(pwr);
     }
+
+    private void setMotorPower(double pwr) {
+        talonMaster.set(pwr);
+//        sparkSlaveOne.set(pwr * distanceInvert);
+//        sparkSlaveTwo.set(pwr * distanceInvert);
+    }
+
+
 }
