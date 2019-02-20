@@ -10,9 +10,9 @@ import org.rivierarobotics.subsystems.HoodPosition;
 @GenerateCreator
 public class HoodSet extends InstantCommand {
     private final HoodController hood;
-    private final HoodPosition pos;
+    private final int pos;
 
-    public HoodSet(@Provided HoodController hood, HoodPosition pos) {
+    public HoodSet(@Provided HoodController hood, int pos) {
         this.hood = hood;
         this.pos = pos;
         requires(hood);
@@ -20,7 +20,7 @@ public class HoodSet extends InstantCommand {
 
     @Override
     protected void execute() {
-        hood.setAngle(enumToAngle(pos));
+        hood.setAngle(pos);
     }
 
     private int enumToAngle(HoodPosition pos) {

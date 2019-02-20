@@ -96,9 +96,12 @@ public class DriveTrainSide {
             distanceInvert = 1;
         }
 
+        sparkSlaveOne.setInverted(!invert);
+        sparkSlaveTwo.setInverted(!invert);
+
         //followerThread.startPeriodic(0.01);
-        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        //sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        //sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
         /* Reset encoder before reading values */
         talonMaster.setSelectedSensorPosition(0);
@@ -151,5 +154,7 @@ public class DriveTrainSide {
 
     public void setPower(double pwr) {
         talonMaster.set(pwr);
+        sparkSlaveOne.set(pwr);
+        sparkSlaveTwo.set(pwr);
     }
 }
