@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
+import org.rivierarobotics.subsystems.TestControllers;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -116,34 +117,20 @@ public class ButtonConfiguration {
     public void initTest() {
         clearButtons();
         for (int i = 1; i <= 6; i++) {
-            DoubleConsumer out;
-            if (i % 3 == 1) {
-                out = new WPI_TalonSRX(i)::set;
-            } else {
-                CANSparkMax sm = new CANSparkMax(i, CANSparkMaxLowLevel.MotorType.kBrushless);
-                sm.follow(CANSparkMax.ExternalFollower.kFollowerDisabled, 0);
-                out = sm::set;
-            }
+            DoubleConsumer out = TestControllers.get(i)::set;
             new JoystickButton(driverButtons, i).whenPressed(cmds.test().motor(
                     () -> -driverLeft.getY(),
                     out));
         }
         for (int i = 7; i <= 9; i++) {
-            DoubleConsumer out;
-            if (i % 3 == 1) {
-                out = new WPI_TalonSRX(i)::set;
-            } else {
-                CANSparkMax sm = new CANSparkMax(i, CANSparkMaxLowLevel.MotorType.kBrushless);
-                sm.follow(CANSparkMax.ExternalFollower.kFollowerDisabled, 0);
-                out = sm::set;
-            }
+            DoubleConsumer out = TestControllers.get(i)::set;
             new JoystickButton(codriverButtons, i).whenPressed(cmds.test().motor(
                     () -> -codriverLeft.getY(),
                     out));
         }
         new JoystickButton(codriverButtons, 10).whenPressed(cmds.test().motor(
                 () -> -codriverLeft.getY(),
-                new WPI_TalonSRX(10)::set));
+                TestControllers.get(10)::set));
         for (int i = 0; i < 6; i++) {
             new JoystickButton(codriverButtons, i + 1).whenPressed(cmds.test().solenoid(new Solenoid(i)::set));
         }
