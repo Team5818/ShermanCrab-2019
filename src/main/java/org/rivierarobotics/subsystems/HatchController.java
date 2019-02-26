@@ -33,6 +33,7 @@ public class HatchController extends Subsystem {
     private final Solenoid pushPiston;
     private final Solenoid deployPistonLeft;
     private final Solenoid deployPistonRight;
+    private final Solenoid climbPiston;
 
     @Inject
     public HatchController() {
@@ -40,6 +41,7 @@ public class HatchController extends Subsystem {
         pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
+        climbPiston = new Solenoid(6);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -51,6 +53,8 @@ public class HatchController extends Subsystem {
             return deployPistonLeft;
         } else if(piston == Piston.DEPLOY_RIGHT) {
             return deployPistonRight;
+        } else if(piston == Piston.CLIMB) {
+            return climbPiston;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }

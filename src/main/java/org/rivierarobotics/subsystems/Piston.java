@@ -21,5 +21,5 @@
 package org.rivierarobotics.subsystems;
 
 public enum Piston {
-    SHIFTER, CLAMP, PUSH, DEPLOY_LEFT, DEPLOY_RIGHT
+    SHIFTER, CLAMP, PUSH, DEPLOY_LEFT, DEPLOY_RIGHT, CLIMB
 }

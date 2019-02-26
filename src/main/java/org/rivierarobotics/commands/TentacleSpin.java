@@ -42,6 +42,11 @@ public class TentacleSpin extends Command {
     }
 
     @Override
+    protected void end() {
+        tentacle.setPower(0.0);
+    }
+
+    @Override
     protected boolean isFinished() {
         return false;
     }

@@ -71,6 +71,7 @@ public class ButtonConfiguration {
         clearButtons();
 
         //shift
+        /*
        JoystickButton shiftHigh = new JoystickButton(driverButtons,6);
        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
@@ -79,7 +80,7 @@ public class ButtonConfiguration {
 
        JoystickButton swapGear = new JoystickButton(driverButtons, 4);
        swapGear.whenPressed(cmds.gear().swap());
-
+        */
        //hatch
        JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
@@ -87,33 +88,24 @@ public class ButtonConfiguration {
        hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
                cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
-        JoystickButton hatchPush = new JoystickButton(driverButtons, 12);
+        JoystickButton hatchPush = new JoystickButton(driverButtons, 6);
         hatchPush.whenPressed(cmds.hatch().push());
 
        //clamp
-       JoystickButton clampActionToggle = new JoystickButton(driverButtons, 11);
+       JoystickButton clampActionToggle = new JoystickButton(driverButtons, 5);
        clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
        clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
 
        JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 4);
-       tentaclesFwd.whenPressed(cmds.tentacle().spin(1.0));
-       tentaclesFwd.whenReleased(cmds.tentacle().spin(0.0));
+       tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
 
         JoystickButton tentaclesBack = new JoystickButton(codriverButtons, 3);
-        tentaclesBack.whenPressed(cmds.tentacle().spin(-1.0));
-        tentaclesBack.whenReleased(cmds.tentacle().spin(0.0));
+        tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));
 
-        JoystickButton collectFront = new JoystickButton(codriverButtons, 1);
-        collectFront.whenPressed(cmds.hood().set(2515));
+        JoystickButton climb = new JoystickButton(driverButtons, 11);
+        climb.whenPressed(cmds.piston().extend(Piston.CLIMB));
+        climb.whenReleased(cmds.piston().retract(Piston.CLIMB));
 
-        JoystickButton collectBack = new JoystickButton(codriverButtons, 3);
-        collectBack.whenPressed(cmds.hood().set(1445));
-
-        JoystickButton stow = new JoystickButton(codriverButtons, 2);
-        stow.whenPressed(cmds.hood().set(1980));
-
-        JoystickButton powerstep = new JoystickButton(driverButtons, 1);
-        powerstep.whenPressed(cmds.arm().setPower(0.01));
     }
 
     public void initTest() {

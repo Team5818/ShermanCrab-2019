@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 @Singleton
 public class ArmController extends Subsystem {
@@ -50,9 +51,10 @@ public class ArmController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static double TICKS_TO_DEGREES;
-    private static final int TICK_BUFFER = 1185;
-    private static final int GRAVITY_CONSTANT = 0;
+    private static final double GRAVITY_CONSTANT = -0.042;
+    private static final int ZERO_DEGREES = 1079;
+    private static final int NINETY_DEGREES = 2100;
+    private static final double ANGLE_SCALE = (90) / (double) (NINETY_DEGREES - ZERO_DEGREES);
     private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
@@ -60,9 +62,6 @@ public class ArmController extends Subsystem {
     }
 
     static {
-        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
-        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
-
         P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
         System.err.println("P: " + P);
 
@@ -82,12 +81,6 @@ public class ArmController extends Subsystem {
         ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
         System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
-    /*
-    private final Notifier followerThread = new Notifier(() -> {
-        double volts = -arm.getMotorOutputVoltage();
-        SparkMaxVolts.set(sparkSlaveOne, volts);
-        SparkMaxVolts.set(sparkSlaveTwo, volts);
-    });*/
 
     @Inject
     public ArmController(Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
@@ -95,7 +88,6 @@ public class ArmController extends Subsystem {
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        //followerThread.startPeriodic(0.01);
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
@@ -103,8 +95,7 @@ public class ArmController extends Subsystem {
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        arm.setInverted(true);
-//        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::setPower, 0.01);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         this.command = command;
     }
@@ -115,12 +106,20 @@ public class ArmController extends Subsystem {
     }
 
     public int getAngle() {
-        return (int)((arm.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
+        return arm.getSensorCollection().getPulseWidthPosition();
+    }
+
+    public double getDegrees() {
+        return (getAngle() - ZERO_DEGREES) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {
-//        pidLoop.disable();
-        pwr += Math.sin(Math.toRadians(getAngle())) * GRAVITY_CONSTANT;
+        pidLoop.disable();
+        rawSetPower(pwr);
+    }
+
+    private void rawSetPower(double pwr) {
+        pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
         arm.set(pwr);
     }
 
