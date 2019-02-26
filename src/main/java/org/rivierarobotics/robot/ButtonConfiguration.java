@@ -71,16 +71,12 @@ public class ButtonConfiguration {
         clearButtons();
 
         //shift
-        /*
-       JoystickButton shiftHigh = new JoystickButton(driverButtons,6);
+       JoystickButton shiftHigh = new JoystickButton(driverLeft,1);
        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
-       JoystickButton shiftLow = new JoystickButton(driverButtons, 5);
+       JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
        shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
-       JoystickButton swapGear = new JoystickButton(driverButtons, 4);
-       swapGear.whenPressed(cmds.gear().swap());
-        */
        //hatch
        JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
@@ -92,7 +88,7 @@ public class ButtonConfiguration {
         hatchPush.whenPressed(cmds.hatch().push());
 
        //clamp
-       JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 5);
+       JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 10);
        clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
        clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
 
