@@ -25,7 +25,6 @@ import javax.inject.Singleton;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 @Singleton
 public class HatchController extends Subsystem {
@@ -61,19 +60,11 @@ public class HatchController extends Subsystem {
     }
 
     public void extendPiston(Piston piston) {
-        pistonFor(piston).set(pstateFor(piston));
+        pistonFor(piston).set(piston.defaultState());
     }
 
     public void retractPiston(Piston piston) {
-        pistonFor(piston).set(!pstateFor(piston));
-    }
-
-    private boolean pstateFor(Piston piston) {
-        if(piston == Piston.CLAMP) {
-            return false;
-        } else {
-            return true;
-        }
+        pistonFor(piston).set(!piston.defaultState());
     }
 
     public boolean getPistonState(Piston piston) {
