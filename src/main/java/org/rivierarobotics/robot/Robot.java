@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
 		globalComponent.getPigeonGyro();
 		globalComponent.getTentacleController();
 		globalComponent.getHatchController();
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
