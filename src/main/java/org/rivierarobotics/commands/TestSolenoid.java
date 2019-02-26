@@ -35,7 +35,7 @@ import java.util.function.DoubleSupplier;
 @GenerateCreator
 public class TestSolenoid extends Command {
     @Singleton
-    static class TSSystem extends Subsystem {
+    public static class TSSystem extends Subsystem {
         @Inject
         public TSSystem() {
         }

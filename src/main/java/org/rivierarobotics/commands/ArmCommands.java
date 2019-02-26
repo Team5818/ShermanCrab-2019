@@ -23,8 +23,14 @@ package org.rivierarobotics.commands;
 import javax.inject.Inject;
 
 public class ArmCommands {
-    @Inject
-    public ArmCommands() {
+    private ArmSetPowerCreator armSetPowerCreator;
 
+    @Inject
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator) {
+        this.armSetPowerCreator = armSetPowerCreator;
+    }
+
+    public ArmSetPower setPower(double pwr) {
+        return armSetPowerCreator.create(pwr);
     }
 }

@@ -26,16 +26,11 @@ import javax.inject.Singleton;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import org.rivierarobotics.commands.ArmControl;
-import org.rivierarobotics.util.AbstractPIDSource;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -57,8 +52,9 @@ public class ArmController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
     private static final int TICK_BUFFER = 1185;
+    private static final int GRAVITY_CONSTANT = 0;
     private PIDController pidLoop;
-    
+
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
     }
@@ -124,6 +120,7 @@ public class ArmController extends Subsystem {
 
     public void setPower(double pwr) {
 //        pidLoop.disable();
+        pwr += Math.sin(Math.toRadians(getAngle())) * GRAVITY_CONSTANT;
         arm.set(pwr);
     }
 

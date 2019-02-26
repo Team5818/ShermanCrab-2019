@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
 		globalComponent.getHoodController();
 		globalComponent.getPigeonGyro();
 		globalComponent.getTentacleController();
+		globalComponent.getHatchController();
 	}
 
 	@Override

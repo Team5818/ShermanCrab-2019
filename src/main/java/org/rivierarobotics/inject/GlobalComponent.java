@@ -44,4 +44,6 @@ public abstract class GlobalComponent {
 
     public abstract ButtonConfiguration getButtonConfiguration();
 
+    public abstract HatchController getHatchController();
+
 }

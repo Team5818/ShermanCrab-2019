@@ -30,12 +30,16 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
+import org.rivierarobotics.subsystems.Gear;
+import org.rivierarobotics.subsystems.Piston;
 import org.rivierarobotics.subsystems.TestControllers;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.Vector;
 import java.util.function.DoubleConsumer;
+
+import static org.rivierarobotics.commands.CommandGroups.inOrder;
 
 public class ButtonConfiguration {
     private final Joystick driverLeft;
@@ -65,36 +69,31 @@ public class ButtonConfiguration {
 
     public void initTeleop() {
         clearButtons();
-        /*
+
         //shift
-       JoystickButton shiftHigh = new JoystickButton(driverLeft,1);
+       JoystickButton shiftHigh = new JoystickButton(driverButtons,6);
        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
-       JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
+       JoystickButton shiftLow = new JoystickButton(driverButtons, 5);
        shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
-       JoystickButton swapGear = new JoystickButton(driverRight, 1);
+       JoystickButton swapGear = new JoystickButton(driverButtons, 4);
        swapGear.whenPressed(cmds.gear().swap());
 
        //hatch
-       JoystickButton hatchDeploy = new JoystickButton(codriverButtons, 12);
+       JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
                cmds.piston().extend(Piston.DEPLOY_RIGHT)));
        hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
                cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
-       //clamp
-       JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 11);
-       clampActionToggle.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_LEFT),
-               cmds.piston().extend(Piston.CLAMP_RIGHT)));
-       clampActionToggle.whenReleased(inOrder(cmds.piston().retract(Piston.CLAMP_LEFT),
-               cmds.piston().retract(Piston.CLAMP_RIGHT)));
+        JoystickButton hatchPush = new JoystickButton(driverButtons, 12);
+        hatchPush.whenPressed(cmds.hatch().push());
 
-       JoystickButton clampActionPress = new JoystickButton(codriverButtons, 5);
-       clampActionPress.whenPressed(inOrder(cmds.piston().extend(Piston.CLAMP_LEFT),
-                cmds.piston().extend(Piston.CLAMP_RIGHT)));
-       clampActionPress.whenReleased(inOrder(cmds.piston().retract(Piston.CLAMP_LEFT),
-                cmds.piston().retract(Piston.CLAMP_RIGHT)));
+       //clamp
+       JoystickButton clampActionToggle = new JoystickButton(driverButtons, 11);
+       clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
+       clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
 
        JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 4);
        tentaclesFwd.whenPressed(cmds.tentacle().spin(1.0));
@@ -103,7 +102,7 @@ public class ButtonConfiguration {
         JoystickButton tentaclesBack = new JoystickButton(codriverButtons, 3);
         tentaclesBack.whenPressed(cmds.tentacle().spin(-1.0));
         tentaclesBack.whenReleased(cmds.tentacle().spin(0.0));
-        */
+
         JoystickButton collectFront = new JoystickButton(codriverButtons, 1);
         collectFront.whenPressed(cmds.hood().set(2515));
 
@@ -112,6 +111,9 @@ public class ButtonConfiguration {
 
         JoystickButton stow = new JoystickButton(codriverButtons, 2);
         stow.whenPressed(cmds.hood().set(1980));
+
+        JoystickButton powerstep = new JoystickButton(driverButtons, 1);
+        powerstep.whenPressed(cmds.arm().setPower(0.01));
     }
 
     public void initTest() {

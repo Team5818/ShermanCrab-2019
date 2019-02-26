@@ -36,9 +36,8 @@ public class HatchController extends Subsystem {
 
     @Inject
     public HatchController() {
-        // TODO change solenoid IDs
-        pushPiston = new Solenoid(1);
-        clampPiston = new Solenoid(2);
+        clampPiston = new Solenoid(1);
+        pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
     }

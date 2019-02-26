@@ -34,7 +34,7 @@ import java.util.function.DoubleSupplier;
 @GenerateCreator
 public class TestMotor extends Command {
     @Singleton
-    static class TMSystem extends Subsystem {
+    public static class TMSystem extends Subsystem {
         @Inject
         public TMSystem() {
 
