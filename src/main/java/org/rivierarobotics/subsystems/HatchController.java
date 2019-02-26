@@ -60,11 +60,11 @@ public class HatchController extends Subsystem {
     }
 
     public void extendPiston(Piston piston) {
-        pistonFor(piston).set(piston.defaultState());
+        pistonFor(piston).set(piston.extend);
     }
 
     public void retractPiston(Piston piston) {
-        pistonFor(piston).set(!piston.defaultState());
+        pistonFor(piston).set(!piston.extend);
     }
 
     public boolean getPistonState(Piston piston) {

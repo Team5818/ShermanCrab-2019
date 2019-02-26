@@ -24,14 +24,9 @@ public enum Piston {
 
     SHIFTER(true), CLAMP(false), PUSH(true), DEPLOY_LEFT(true), DEPLOY_RIGHT(true), CLIMB(true);
 
-    private boolean extend;
+    public boolean extend;
 
-    Piston(boolean extend) {
-        this.extend = extend;
+    Piston(boolean ext) {
+        extend = ext;
     }
-
-    public boolean defaultState() {
-        return extend;
-    }
-
 }
