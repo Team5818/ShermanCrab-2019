@@ -44,7 +44,7 @@ public class ArmControl extends Command {
     protected void execute() {
         double armJoyY = -armJoy.getY();
         double val = MathUtil.fitDeadband(armJoyY);
-        val = MathUtil.clamp(val, 0.2);
+        val = MathUtil.clamp(val, 0.4);
         arm.setPower(val);
     }
 
