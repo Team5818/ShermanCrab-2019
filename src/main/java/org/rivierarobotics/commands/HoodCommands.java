@@ -20,17 +20,23 @@
 
 package org.rivierarobotics.commands;
 
+import org.rivierarobotics.subsystems.HoodPosition;
+
 import javax.inject.Inject;
 
 public class HoodCommands {
-    private final HoodSpinCreator hoodSpinCreator;
+    private final HoodSetCreator hoodSetCreator;
 
     @Inject
-    public HoodCommands(HoodSpinCreator hoodSpinCreator) {
-        this.hoodSpinCreator = hoodSpinCreator;
+    public HoodCommands(HoodSetCreator hoodSetCreator) {
+        this.hoodSetCreator = hoodSetCreator;
     }
 
-    public final HoodSpin spin(double power) {
-        return hoodSpinCreator.create(power);
+    public final HoodSet set(HoodPosition pos) {
+        return hoodSetCreator.create(pos.degrees);
+    }
+
+    public final HoodSet set(int pos) {
+        return hoodSetCreator.create(pos);
     }
 }

@@ -21,22 +21,47 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.function.Consumer;
+
+@GenerateCreator
+public class TestSolenoid extends Command {
+    @Singleton
+    public static class TSSystem extends Subsystem {
+        @Inject
+        public TSSystem() {
         }
-        return group;
+
+        @Override
+        protected void initDefaultCommand() {
+
+        }
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    private final Consumer<Boolean> out;
+
+    public TestSolenoid(@Provided TSSystem TSSystem, Consumer<Boolean> out) {
+        requires(TSSystem);
+        this.out = out;
+    }
+
+    @Override
+    protected void execute() {
+        out.accept(true);
+    }
+
+    @Override
+    protected void end() {
+        out.accept(false);
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return false;
     }
 }

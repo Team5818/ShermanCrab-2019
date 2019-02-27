@@ -21,8 +21,12 @@
 package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 
 import javax.inject.Inject;
@@ -32,30 +36,98 @@ import javax.inject.Singleton;
 @Singleton
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
-    private WPI_TalonSRX rotate;
-    private WPI_TalonSRX spin;
+    private final WPI_TalonSRX hood;
+
+    private static final int TIMEOUT = 30;
+    private static final double P;
+    private static final double I;
+    private static final double D;
+    private static final double F;
+    private static final int SLOT_IDX = 0;
+    private static final int PID_LOOP_IDX = 0;
+    private static final int VELOCITY_TICKS_PER_100MS;
+    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
+    private static final int VELOCITY_TICKS_PER_SEC = 1;
+    private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
+    private static double TICKS_TO_DEGREES;
+    private static final int TICK_BUFFER = 0;
+
+    private static SimpleWidget ezWidget(String name, Object def) {
+        return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
+    }
+
+    static {
+        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
+        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
+
+        P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
+        System.err.println("P: " + P);
+
+        I = ezWidget("I", 0.0).getEntry().getDouble(0);
+        System.err.println("I: " + I);
+
+        D = ezWidget("D", 0.0).getEntry().getDouble(0);
+        System.err.println("D: " + D);
+
+        F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
+        System.err.println("F: " + F);
+
+        // CHANGE UNITS STUFF
+        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
+        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
+
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
+        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
+    }
 
     @Inject
-    public HoodController(Provider<HoodControl> command) {
-        this.rotate = new WPI_TalonSRX(21);
-        this.spin = new WPI_TalonSRX(22);
+    public HoodController(Provider<HoodControl> command, int h) {
+        hood = new WPI_TalonSRX(h);
         this.command = command;
+
+        /* Reset encoder before reading values */
+        hood.setSelectedSensorPosition(0);
+
+        /* Factory default hardware to prevent unexpected behavior */
+        hood.configFactoryDefault();
+
+        /* Configure Sensor Source for Primary PID */
+        hood.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
+
+        /* Set relevant frame periods to be at least as fast as periodic rate */
+        hood.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
+
+        /* Set the peak and nominal outputs */
+        hood.configNominalOutputForward(0, TIMEOUT);
+        hood.configNominalOutputReverse(0, TIMEOUT);
+        hood.configPeakOutputForward(1, TIMEOUT);
+        hood.configPeakOutputReverse(-1, TIMEOUT);
+
+        /* Set Motion Magic gains in slot0 - see documentation */
+        hood.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
+        hood.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        hood.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
+        hood.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
+        hood.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
+
+        hood.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
+        hood.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
     }
 
     public void setAngle(double angle) {
-        rotate.set(ControlMode.MotionMagic, angle);
+        hood.set(ControlMode.MotionMagic, angle);
     }
 
     public double getAngle() {
-        return (rotate.getSensorCollection().getQuadraturePosition());
+        return ((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
     }
 
-    public void setRotatePower(double pwr) {
-        rotate.set(pwr);
+    public void setPower(double pwr) {
+        hood.set(pwr);
     }
 
-    public void setSpinPower(double pwr) {
-        spin.set(pwr);
+    public void stop() {
+        setPower(0.0);
     }
 
     @Override

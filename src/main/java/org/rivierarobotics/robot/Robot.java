@@ -20,49 +20,75 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
-
 public class Robot extends TimedRobot {
-	private GlobalComponent globalComponent;
-	private final NetworkTableEntry encoderLeft = Shuffleboard.getTab( "Drive Train")
-	            .add("Distance Left", 0).getEntry();
-	private final NetworkTableEntry encoderRight = Shuffleboard.getTab( "Drive Train")
-	            .add("Distance Right", 0).getEntry();
-	
-	@Override
-	public void robotInit() {
-		globalComponent = DaggerGlobalComponent.create();
-		globalComponent.getDriveTrain();
-		globalComponent.getButtonConfiguration().initialize();
-	}
-	
-	@Override
-	public void teleopPeriodic() {
-		double distance = globalComponent.getDriveTrain().getLeft().getDistance();
-		encoderLeft.setDouble(distance);
-	    distance = globalComponent.getDriveTrain().getRight().getDistance();
-	    encoderRight.setDouble(distance);
-		Scheduler.getInstance().run();
-	}
+    private GlobalComponent globalComponent;
+    private final NetworkTableEntry driveEncoderLeft = Shuffleboard.getTab("Drive Train")
+            .add("Distance Left", 0).getEntry();
+    private final NetworkTableEntry driveEncoderRight = Shuffleboard.getTab("Drive Train")
+            .add("Distance Right", 0).getEntry();
+    private final NetworkTableEntry armEncoder = Shuffleboard.getTab("Arm Controller")
+            .add("Angle", 0).getEntry();
+    private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
+            .add("Angle", 0).getEntry();
 
-	@Override
-	public void autonomousInit() {
-		
-	}
+    @Override
+    public void robotInit() {
+        globalComponent = DaggerGlobalComponent.create();
+        globalComponent.getDriveTrain();
+        globalComponent.getArmController();
+        globalComponent.getHoodController();
+        globalComponent.getPigeonGyro();
+        globalComponent.getTentacleController();
+        globalComponent.getHatchController();
+        CameraServer.getInstance().startAutomaticCapture();
+    }
 
-	@Override
-	public void autonomousPeriodic() {
-	    Scheduler.getInstance().run();
-	}
-	
-	@Override
-	public void disabledPeriodic() {
-		
-	}
+    @Override
+    public void teleopInit() {
+        globalComponent.getButtonConfiguration().initTeleop();
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        double distance = globalComponent.getDriveTrain().getLeft().getDistance();
+        driveEncoderLeft.setDouble(distance);
+        distance = globalComponent.getDriveTrain().getRight().getDistance();
+        driveEncoderRight.setDouble(distance);
+        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
+        armEncoder.setDouble(globalComponent.getArmController().getAngle());
+        Scheduler.getInstance().run();
+    }
+
+    @Override
+    public void autonomousInit() {
+        globalComponent.getButtonConfiguration().initTeleop();
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        Scheduler.getInstance().run();
+    }
+
+    @Override
+    public void testInit() {
+        globalComponent.getButtonConfiguration().initTest();
+    }
+
+    @Override
+    public void testPeriodic() {
+        Scheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledPeriodic() {
+
+    }
 }

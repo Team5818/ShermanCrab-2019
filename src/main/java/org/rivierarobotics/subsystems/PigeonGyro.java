@@ -32,11 +32,11 @@ public class PigeonGyro extends Subsystem {
 
     @Inject
     public PigeonGyro() {
-        this.gyro = new PigeonIMU(15);
+        gyro = new PigeonIMU(20);
     }
 
     private double[] getYPR() {
-        double[] ypr = {0,0,0};
+        double[] ypr = {0, 0, 0};
         gyro.getYawPitchRoll(ypr);
         return ypr;
     }

@@ -20,14 +20,13 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 public class DriveTrainSide {
     private static final double INCHES_TO_TICKS;
@@ -35,11 +34,10 @@ public class DriveTrainSide {
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int VELOCITY;
-    private static final int ACCELERATION;
-    private static final int SLOT_IDX = 0;
-    private static final int PID_LOOP_IDX = 0;
-    private static final int TIMEOUT = 30;
+    private static final int VELOCITY_INCHES_PER_SEC = 1;
+    private static final int ACCELERATION_INCHES_PER_SEC_PER_SEC = 1;
+    private static final int VELOCITY_TICKS_PER_100MS;
+    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Drive Train").addPersistent(name, def);
@@ -61,68 +59,59 @@ public class DriveTrainSide {
         F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
         System.err.println("F: " + F);
 
-        VELOCITY = (int) ezWidget("Velocity", 0).getEntry().getDouble(0);
-        System.err.println("velocity: " + VELOCITY);
+        VELOCITY_TICKS_PER_100MS = (int) (VELOCITY_INCHES_PER_SEC * INCHES_TO_TICKS * 10);
+        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
-        ACCELERATION = (int) ezWidget("Accel", 0).getEntry().getDouble(0);
-        System.err.println("accel: " + ACCELERATION);
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = (int) (ACCELERATION_INCHES_PER_SEC_PER_SEC * INCHES_TO_TICKS * 10);
+        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
-    private WPI_TalonSRX motorEnc;
-    private WPI_TalonSRX motorZed;
+    private WPI_TalonSRX talonMaster;
+    private CANSparkMax sparkSlaveOne;
+    private CANSparkMax sparkSlaveTwo;
+    private int distanceInvert;
+    private PIDController pidLoop;
 
-    public DriveTrainSide(int enc, int zed, boolean invert) {
-        motorEnc = new WPI_TalonSRX(enc);
-        motorZed = new WPI_TalonSRX(zed);
+    public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
+        talonMaster = new WPI_TalonSRX(master);
+        sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
+        if (invert) {
+            distanceInvert = -1;
+        } else {
+            distanceInvert = 1;
+        }
 
-        /* Reset encoder before reading values */
-        motorEnc.setSelectedSensorPosition(0);
+        talonMaster.setInverted(invert);
 
-        /* Factory default hardware to prevent unexpected behavior */
-        motorEnc.configFactoryDefault();
-        motorZed.configFactoryDefault();
-        motorZed.follow(motorEnc);
-        motorEnc.setSensorPhase(!invert);
-        motorEnc.setInverted(invert);
-        motorZed.setInverted(InvertType.FollowMaster);
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
-        /* Configure Sensor Source for Primary PID */
-        motorEnc.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        motorEnc.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
-
-        /* Set the peak and nominal outputs */
-        motorEnc.configNominalOutputForward(0, TIMEOUT);
-        motorEnc.configNominalOutputReverse(0, TIMEOUT);
-        motorEnc.configPeakOutputForward(1, TIMEOUT);
-        motorEnc.configPeakOutputReverse(-1, TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        motorEnc.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        motorEnc.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        motorEnc.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        motorEnc.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        motorEnc.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
-
-        motorEnc.configMotionCruiseVelocity(VELOCITY, TIMEOUT);
-        motorEnc.configMotionAcceleration(ACCELERATION, TIMEOUT);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
     }
 
     public double getDistance() {
-        int ticks = motorEnc.getSensorCollection().getQuadraturePosition();
-        return ticks / INCHES_TO_TICKS;
+        return getTicks() / INCHES_TO_TICKS;
     }
 
-    public void setDistance(double inches) {
-        motorEnc.set(ControlMode.MotionMagic, inches * INCHES_TO_TICKS);
+    public int getTicks() {
+        return talonMaster.getSensorCollection().getQuadraturePosition() * distanceInvert;
     }
 
-    public void setVelocity(double vel) {
-        motorEnc.set(ControlMode.Velocity, (vel * INCHES_TO_TICKS) / 10);
+    public void addDistance(double inches) {
+        double ticks = inches * INCHES_TO_TICKS;
+        pidLoop.setSetpoint(getTicks() + ticks);
+        pidLoop.enable();
     }
 
     public void setPower(double pwr) {
-        motorEnc.set(pwr);
+        pidLoop.disable();
+        setMotorPower(pwr);
     }
+
+    private void setMotorPower(double pwr) {
+        talonMaster.set(pwr);
+    }
+
+
 }

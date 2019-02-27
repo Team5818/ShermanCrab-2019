@@ -20,48 +20,69 @@
 
 package org.rivierarobotics.subsystems;
 
-import javax.inject.Singleton;
-
-import org.rivierarobotics.inject.Sided;
-
 import dagger.Module;
 import dagger.Provides;
+import org.rivierarobotics.commands.ArmControl;
+import org.rivierarobotics.commands.HoodControl;
+import org.rivierarobotics.inject.Sided;
+
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 @Module
 public class SubsystemModule {
-    private static final int L_TALON_ENC = 4;
-    private static final int R_TALON_ENC = 1;
-    private static final int L_TALON_ZED = 5;
-    private static final int R_TALON_ZED = 2;
+    private static final int L_DRIVE_TALON_MASTER = 4;
+    private static final int L_DRIVE_SPARK_SLAVE_ONE = 5;
+    private static final int L_DRIVE_SPARK_SLAVE_TWO = 6;
 
-    private static final int L_SHIFT_SOLENOID = 6;
-    private static final int R_SHIFT_SOLENOID = 7;
+    private static final int R_DRIVE_TALON_MASTER = 1;
+    private static final int R_DRIVE_SPARK_SLAVE_ONE = 2;
+    private static final int R_DRIVE_SPARK_SLAVE_TWO = 3;
+
+    private static final int ARM_TALON_MASTER = 7;
+    private static final int ARM_SPARK_SLAVE_ONE = 8;
+    private static final int ARM_SPARK_SLAVE_TWO = 9;
+
+    private static final int HOOD_TALON = 10;
+    private static final int TENTACLE_TALON = 11;
+
+    private static final int SHIFT_SOLENOID = 0;
 
     @Provides
     @Singleton
     @Sided(Sided.Side.LEFT)
     public static DriveTrainSide provideDriveSideLeft() {
-        return new DriveTrainSide(L_TALON_ENC, L_TALON_ZED, false);
+        return new DriveTrainSide(L_DRIVE_TALON_MASTER, L_DRIVE_SPARK_SLAVE_ONE, L_DRIVE_SPARK_SLAVE_TWO, true);
     }
 
     @Provides
     @Singleton
     @Sided(Sided.Side.RIGHT)
     public static DriveTrainSide provideDriveSideRight() {
-        return new DriveTrainSide(R_TALON_ENC, R_TALON_ZED, true);
+        return new DriveTrainSide(R_DRIVE_TALON_MASTER, R_DRIVE_SPARK_SLAVE_ONE, R_DRIVE_SPARK_SLAVE_TWO, false);
     }
 
     @Provides
     @Singleton
-    @Sided(Sided.Side.LEFT)
-    public static ShifterSide provideShifterSideLeft() {
-        return new ShifterSide(L_SHIFT_SOLENOID);
+    public static Shifter provideShifter() {
+        return new Shifter(SHIFT_SOLENOID);
     }
 
     @Provides
     @Singleton
-    @Sided(Sided.Side.RIGHT)
-    public static ShifterSide provideShifterSideRight() {
-        return new ShifterSide(R_SHIFT_SOLENOID);
+    public static ArmController provideArmMotorGroup(Provider<ArmControl> command) {
+        return new ArmController(command, ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
+    }
+
+    @Provides
+    @Singleton
+    public static HoodController provideHoodController(Provider<HoodControl> command) {
+        return new HoodController(command, HOOD_TALON);
+    }
+
+    @Provides
+    @Singleton
+    public static TentacleController provideTentacleController() {
+        return new TentacleController(TENTACLE_TALON);
     }
 }

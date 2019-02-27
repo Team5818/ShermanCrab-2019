@@ -18,37 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.util;
 
-import edu.wpi.first.wpilibj.Solenoid;
-import org.rivierarobotics.commands.DriveControl;
-import org.rivierarobotics.inject.Sided;
+public class MathUtil {
+    private static final double DEADBAND = 0.05;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-@Singleton
-public class ShifterSide {
-    private final Solenoid shifter;
-
-    @Inject
-    public ShifterSide(int ch) {
-        shifter = new Solenoid(ch);
-        shifter.set(false);
-    }
-
-    public void setGear(Gear gear) {
-        if(gear == Gear.HIGH) {
-            shifter.set(true);
-        } else if(gear == Gear.LOW) {
-            shifter.set(false);
-        } else {
-            throw new IllegalArgumentException("Invalid gear value " + gear);
+    public static double fitDeadband(double val) {
+        double abs = Math.abs(val);
+        if (abs < DEADBAND) {
+            return 0;
         }
+        if (abs > 1) {
+            return 1;
+        }
+        return (val - DEADBAND) / (1 - DEADBAND);
     }
 
-    public void swapGear() {
-        shifter.set(!shifter.get());
+    public static double clamp(double value, double max) {
+        if (value > max) {
+            return max;
+        } else if (value < -max) {
+            return -max;
+        } else {
+            return value;
+        }
     }
 }

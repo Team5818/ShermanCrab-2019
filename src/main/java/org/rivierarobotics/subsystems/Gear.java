@@ -21,5 +21,11 @@
 package org.rivierarobotics.subsystems;
 
 public enum Gear {
-    HIGH, LOW
+    HIGH(true), LOW(false);
+
+    public final boolean state;
+
+    Gear(boolean state) {
+        this.state = state;
+    }
 }

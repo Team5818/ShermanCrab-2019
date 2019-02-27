@@ -23,7 +23,6 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.Gear;
 import org.rivierarobotics.subsystems.Shifter;
 
 @GenerateCreator

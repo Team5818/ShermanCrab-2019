@@ -30,7 +30,7 @@ public class GearCommands {
 
     @Inject
     public GearCommands(ShiftGearCreator shiftGearCreator,
-                         SwapGearCreator swapGearCreator) {
+                        SwapGearCreator swapGearCreator) {
         this.shiftGearCreator = shiftGearCreator;
         this.swapGearCreator = swapGearCreator;
     }

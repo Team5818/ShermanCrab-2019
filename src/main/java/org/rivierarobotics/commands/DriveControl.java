@@ -20,13 +20,13 @@
 
 package org.rivierarobotics.commands;
 
-import javax.inject.Inject;
-
-import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.DriveTrain;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import org.rivierarobotics.inject.Input;
+import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.util.MathUtil;
+
+import javax.inject.Inject;
 
 public class DriveControl extends Command {
     private DriveTrain driveTrain;
@@ -35,7 +35,7 @@ public class DriveControl extends Command {
 
     @Inject
     public DriveControl(DriveTrain dt, @Input(Input.Position.DRIVER_LEFT) Joystick left,
-            @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
+                        @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
         this.driveTrain = dt;
         this.throttle = left;
         this.turning = right;
@@ -46,7 +46,7 @@ public class DriveControl extends Command {
     protected void execute() {
         double y = -throttle.getY();
         double x = turning.getX();
-        setArcade(x, y);
+        setArcade(MathUtil.fitDeadband(x), MathUtil.fitDeadband(y));
     }
 
     public void setArcade(double rotate, double power) {

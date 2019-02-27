@@ -20,23 +20,26 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import javax.inject.Inject;
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
-        }
-        return group;
+public class TestCommands {
+    private final TestMotorCreator testMotorCreator;
+    private final TestSolenoidCreator testSolenoidCreator;
+
+    @Inject
+    public TestCommands(TestMotorCreator testMotorCreator, TestSolenoidCreator testSolenoidCreator) {
+        this.testMotorCreator = testMotorCreator;
+        this.testSolenoidCreator = testSolenoidCreator;
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    public TestMotor motor(DoubleSupplier stick, DoubleConsumer out) {
+        return testMotorCreator.create(stick, out);
+    }
+
+    public TestSolenoid solenoid(Consumer<Boolean> out) {
+        return testSolenoidCreator.create(out);
     }
 }

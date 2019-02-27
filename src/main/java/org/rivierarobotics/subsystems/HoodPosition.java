@@ -18,31 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HatchController;
-import org.rivierarobotics.subsystems.Piston;
+public enum HoodPosition {
+    NINETY_DEGREES(90), ONE_HUNDRED_EIGHTY_DEGREES(180), ZERO_DEGREES(0);
 
-@GenerateCreator
-public class HatchSystemDeploy extends InstantCommand {
-    private HatchController hc;
+    public final int degrees;
 
-    public HatchSystemDeploy(@Provided HatchController hc) {
-        this.hc = hc;
-        requires(hc);
-    }
-
-    @Override
-    protected void execute() {
-        if(!hc.getPistonState(Piston.DEPLOY_LEFT) || !hc.getPistonState(Piston.DEPLOY_RIGHT)) {
-            hc.extendPiston(Piston.DEPLOY_LEFT);
-            hc.extendPiston(Piston.DEPLOY_RIGHT);
-        } else {
-            hc.retractPiston(Piston.DEPLOY_LEFT);
-            hc.retractPiston(Piston.DEPLOY_RIGHT);
-        }
+    HoodPosition(int degrees) {
+        this.degrees = degrees;
     }
 }

@@ -18,25 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.util;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
-        }
-        return group;
+import java.util.function.DoubleSupplier;
+
+public class AbstractPIDSource implements PIDSource {
+    private final DoubleSupplier source;
+    private PIDSourceType sourceType = PIDSourceType.kDisplacement;
+
+    public AbstractPIDSource(DoubleSupplier source) {
+        this.source = source;
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    @Override
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        this.sourceType = pidSource;
     }
+
+    @Override
+    public PIDSourceType getPIDSourceType() {
+        return sourceType;
+    }
+
+    @Override
+    public double pidGet() {
+        return source.getAsDouble();
+    }
+
 }

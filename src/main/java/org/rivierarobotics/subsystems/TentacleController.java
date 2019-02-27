@@ -18,25 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
-        }
-        return group;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class TentacleController extends Subsystem {
+    private final WPI_TalonSRX tentacles;
+
+    @Inject
+    public TentacleController(int tent) {
+        tentacles = new WPI_TalonSRX(tent);
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    public void setPower(double pwr) {
+        tentacles.set(pwr);
+    }
+
+    public void stop() {
+        setPower(0.0);
+    }
+
+    @Override
+    protected void initDefaultCommand() {
     }
 }

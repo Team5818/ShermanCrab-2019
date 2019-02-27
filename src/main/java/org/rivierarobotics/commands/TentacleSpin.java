@@ -21,22 +21,33 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.TentacleController;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
-        }
-        return group;
+@GenerateCreator
+public class TentacleSpin extends Command {
+    private double power;
+    private TentacleController tentacle;
+
+    public TentacleSpin(@Provided TentacleController tentacle, double power) {
+        this.tentacle = tentacle;
+        this.power = power;
+        requires(tentacle);
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    @Override
+    protected void execute() {
+        tentacle.setPower(power);
+    }
+
+    @Override
+    protected void end() {
+        tentacle.setPower(0.0);
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return false;
     }
 }

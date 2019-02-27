@@ -24,14 +24,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 
 public class ArmControl extends Command {
-    // TODO change values for safety arm deadband, manually test
-    private static final double ARM_DEADBAND = 0.1;
-    private static final double ARM_MAX_EXT = 90;
-    private static final double ARM_MIN_EXT = -90;
+
     private ArmController arm;
     private Joystick armJoy;
 
@@ -44,12 +42,10 @@ public class ArmControl extends Command {
 
     @Override
     protected void execute() {
-        double armJoyY = armJoy.getY();
-        if(armJoyY < -ARM_DEADBAND && arm.getAngle() > ARM_MIN_EXT) {
-            arm.setPower(armJoyY);
-        } else if(armJoyY > ARM_DEADBAND && arm.getAngle() < ARM_MAX_EXT){
-            arm.setPower(armJoyY);
-        }
+        double armJoyY = -armJoy.getY();
+        double val = MathUtil.fitDeadband(armJoyY);
+        val = MathUtil.clamp(val, 0.4);
+        arm.setPower(val);
     }
 
     @Override

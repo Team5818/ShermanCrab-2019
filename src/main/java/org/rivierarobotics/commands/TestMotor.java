@@ -21,41 +21,52 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.util.MathUtil;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
 
 @GenerateCreator
-public class DriveDistance extends Command {
+public class TestMotor extends Command {
+    @Singleton
+    public static class TMSystem extends Subsystem {
+        @Inject
+        public TMSystem() {
 
-    private DriveTrain dt;
-    private final double distance;
-    private double startDistance;
-    private double currentDistance;
-    private double calcDistance;
-    private double calcCurrentDistance;
+        }
 
-    public DriveDistance(@Provided DriveTrain dt, double distance) {
-        this.distance = distance;
-        this.dt = dt;
-        requires(dt);
+        @Override
+        protected void initDefaultCommand() {
+
+        }
     }
 
-    @Override
-    protected void initialize() {
-        startDistance = currentDistance = dt.getDistance();
-        calcDistance = startDistance + distance;
-        dt.addDistance(distance, distance);
+    private final DoubleSupplier stick;
+    private final DoubleConsumer out;
+
+    public TestMotor(@Provided TMSystem tmSystem, DoubleSupplier stick, DoubleConsumer out) {
+        requires(tmSystem);
+        this.stick = stick;
+        this.out = out;
     }
 
     @Override
     protected void execute() {
-        currentDistance = dt.getDistance();
+        out.accept(MathUtil.fitDeadband(stick.getAsDouble()));
     }
 
+    @Override
+    protected void end() {
+        out.accept(0);
+    }
 
     @Override
     protected boolean isFinished() {
-        return currentDistance >= calcDistance;
+        return false;
     }
 }

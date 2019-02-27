@@ -20,46 +20,62 @@
 
 package org.rivierarobotics.robot;
 
-import javax.inject.Singleton;
-
-import org.rivierarobotics.inject.Input;
-
 import dagger.Module;
 import dagger.Provides;
 import edu.wpi.first.wpilibj.Joystick;
+import org.rivierarobotics.inject.Input;
+
+import javax.inject.Singleton;
 
 @Module
 public class ControlsModule {
-    private static final int JS_DRIVER_LEFT = 0;
-    private static final int JS_DRIVER_RIGHT = 1;
-    private static final int JS_CODRIVER_LEFT = 2;
-    private static final int JS_CODRIVER_RIGHT = 3;
+    private static final int DRIVER_LEFT_JS = 0;
+    private static final int DRIVER_RIGHT_JS = 1;
+    private static final int CODRIVER_LEFT_JS = 2;
+    private static final int CODRIVER_RIGHT_JS = 3;
+
+    private static final int DRIVER_BUTTONS = 4;
+    private static final int CODRIVER_BUTTONS = 5;
 
     @Provides
     @Singleton
     @Input(Input.Position.DRIVER_LEFT)
     public static Joystick provideDriverJoystickLeft() {
-        return new Joystick(JS_DRIVER_LEFT);
+        return new Joystick(DRIVER_LEFT_JS);
     }
 
     @Provides
     @Singleton
     @Input(Input.Position.DRIVER_RIGHT)
     public static Joystick provideDriverJoystickRight() {
-        return new Joystick(JS_DRIVER_RIGHT);
+        return new Joystick(DRIVER_RIGHT_JS);
     }
 
     @Provides
     @Singleton
     @Input(Input.Position.CODRIVER_LEFT)
     public static Joystick provideCoDriverJoystickLeft() {
-        return new Joystick(JS_CODRIVER_LEFT);
+        return new Joystick(CODRIVER_LEFT_JS);
     }
 
     @Provides
     @Singleton
     @Input(Input.Position.CODRIVER_RIGHT)
     public static Joystick provideCoDriverJoystickRight() {
-        return new Joystick(JS_CODRIVER_RIGHT);
+        return new Joystick(CODRIVER_RIGHT_JS);
+    }
+
+    @Provides
+    @Singleton
+    @Input(Input.Position.DRIVER_BUTTONS)
+    public static Joystick provideDriverButtons() {
+        return new Joystick(DRIVER_BUTTONS);
+    }
+
+    @Provides
+    @Singleton
+    @Input(Input.Position.CODRIVER_BUTTONS)
+    public static Joystick provideCoDriverButtons() {
+        return new Joystick(CODRIVER_BUTTONS);
     }
 }

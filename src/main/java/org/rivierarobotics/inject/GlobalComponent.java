@@ -20,22 +20,29 @@
 
 package org.rivierarobotics.inject;
 
-import javax.inject.Singleton;
-
+import dagger.Component;
 import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
-import org.rivierarobotics.subsystems.DriveTrain;
-import org.rivierarobotics.subsystems.Shifter;
-import org.rivierarobotics.subsystems.SubsystemModule;
+import org.rivierarobotics.subsystems.*;
 
-import dagger.Component;
+import javax.inject.Singleton;
 
-@Component(modules = { SubsystemModule.class, ControlsModule.class, CCModule.class })
-@Singleton 
+@Component(modules = {SubsystemModule.class, ControlsModule.class, CCModule.class})
+@Singleton
 public abstract class GlobalComponent {
     public abstract DriveTrain getDriveTrain();
 
+    public abstract PigeonGyro getPigeonGyro();
+
+    public abstract HoodController getHoodController();
+
+    public abstract ArmController getArmController();
+
+    public abstract TentacleController getTentacleController();
+
     public abstract ButtonConfiguration getButtonConfiguration();
+
+    public abstract HatchController getHatchController();
 
 }

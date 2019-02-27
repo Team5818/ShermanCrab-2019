@@ -20,23 +20,17 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import javax.inject.Inject;
 
-public class CommandGroups {
-    public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addParallel(c);
-        }
-        return group;
+public class TentacleCommands {
+    private final TentacleSpinCreator tentacleSpinCreator;
+
+    @Inject
+    public TentacleCommands(TentacleSpinCreator tentacleSpinCreator) {
+        this.tentacleSpinCreator = tentacleSpinCreator;
     }
 
-    public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
-        for (Command c : commands) {
-            group.addSequential(c);
-        }
-        return group;
+    public final TentacleSpin spin(double power) {
+        return tentacleSpinCreator.create(power);
     }
 }
