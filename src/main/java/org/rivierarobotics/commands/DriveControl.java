@@ -20,15 +20,13 @@
 
 package org.rivierarobotics.commands;
 
-import javax.inject.Inject;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.command.Command;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
 import org.rivierarobotics.util.MathUtil;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import javax.inject.Inject;
 
 public class DriveControl extends Command {
     private DriveTrain driveTrain;
@@ -37,7 +35,7 @@ public class DriveControl extends Command {
 
     @Inject
     public DriveControl(DriveTrain dt, @Input(Input.Position.DRIVER_LEFT) Joystick left,
-            @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
+                        @Input(Input.Position.DRIVER_RIGHT) Joystick right) {
         this.driveTrain = dt;
         this.throttle = left;
         this.turning = right;

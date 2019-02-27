@@ -36,11 +36,7 @@ public class Shifter extends Subsystem {
     }
 
     public void setGear(Gear gear) {
-        if(gear.equals(Gear.HIGH) || gear.equals(Gear.LOW)) {
-            shift.set(gear.gearToBool());
-        } else {
-            throw new IllegalArgumentException("Invalid gear value " + gear);
-        }
+        shift.set(gear.state);
     }
 
     public void swapGear() {

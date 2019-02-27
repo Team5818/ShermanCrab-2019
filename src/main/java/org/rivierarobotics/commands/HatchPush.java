@@ -26,8 +26,6 @@ import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
 
-import static org.rivierarobotics.commands.CommandGroups.inOrder;
-
 public class HatchPush extends CommandGroup {
 
     @Inject

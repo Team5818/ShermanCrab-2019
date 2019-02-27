@@ -23,13 +23,9 @@ package org.rivierarobotics.subsystems;
 public enum Gear {
     HIGH(true), LOW(false);
 
-    private boolean state;
+    public final boolean state;
 
     Gear(boolean state) {
         this.state = state;
-    }
-
-    public boolean gearToBool() {
-        return state;
     }
 }

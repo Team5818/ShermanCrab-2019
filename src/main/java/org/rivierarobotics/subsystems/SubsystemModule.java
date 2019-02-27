@@ -20,15 +20,14 @@
 
 package org.rivierarobotics.subsystems;
 
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
+import dagger.Module;
+import dagger.Provides;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.inject.Sided;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 @Module
 public class SubsystemModule {

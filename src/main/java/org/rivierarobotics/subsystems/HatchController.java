@@ -20,11 +20,11 @@
 
 package org.rivierarobotics.subsystems;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class HatchController extends Subsystem {
@@ -44,15 +44,15 @@ public class HatchController extends Subsystem {
     }
 
     private Solenoid pistonFor(Piston piston) {
-        if(piston == Piston.CLAMP) {
+        if (piston == Piston.CLAMP) {
             return clampPiston;
-        } else if(piston == Piston.PUSH) {
+        } else if (piston == Piston.PUSH) {
             return pushPiston;
-        } else if(piston == Piston.DEPLOY_LEFT) {
+        } else if (piston == Piston.DEPLOY_LEFT) {
             return deployPistonLeft;
-        } else if(piston == Piston.DEPLOY_RIGHT) {
+        } else if (piston == Piston.DEPLOY_RIGHT) {
             return deployPistonRight;
-        } else if(piston == Piston.CLIMB) {
+        } else if (piston == Piston.CLIMB) {
             return climbPiston;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);

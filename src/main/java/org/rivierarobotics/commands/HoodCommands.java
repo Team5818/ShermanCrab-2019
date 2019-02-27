@@ -32,6 +32,10 @@ public class HoodCommands {
         this.hoodSetCreator = hoodSetCreator;
     }
 
+    public final HoodSet set(HoodPosition pos) {
+        return hoodSetCreator.create(pos.degrees);
+    }
+
     public final HoodSet set(int pos) {
         return hoodSetCreator.create(pos);
     }

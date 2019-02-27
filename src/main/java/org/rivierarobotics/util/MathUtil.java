@@ -22,7 +22,7 @@ package org.rivierarobotics.util;
 
 public class MathUtil {
     private static final double DEADBAND = 0.05;
-    
+
     public static double fitDeadband(double val) {
         double abs = Math.abs(val);
         if (abs < DEADBAND) {
@@ -35,7 +35,7 @@ public class MathUtil {
     }
 
     public static double clamp(double value, double max) {
-        if(value > max) {
+        if (value > max) {
             return max;
         } else if (value < -max) {
             return -max;

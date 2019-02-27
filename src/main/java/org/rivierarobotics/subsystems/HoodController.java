@@ -119,7 +119,7 @@ public class HoodController extends Subsystem {
     }
 
     public double getAngle() {
-        return ((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER)/ TICKS_TO_DEGREES);
+        return ((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
     }
 
     public void setPower(double pwr) {

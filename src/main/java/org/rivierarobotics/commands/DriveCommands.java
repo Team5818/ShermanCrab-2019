@@ -29,8 +29,8 @@ public class DriveCommands {
 
     @Inject
     public DriveCommands(DriveForwardCreator driveForwardCreator,
-            DriveDistanceCreator driveDistanceCreator,
-            RotateCreator rotateCreator) {
+                         DriveDistanceCreator driveDistanceCreator,
+                         RotateCreator rotateCreator) {
         this.driveForwardCreator = driveForwardCreator;
         this.driveDistanceCreator = driveDistanceCreator;
         this.rotateCreator = rotateCreator;

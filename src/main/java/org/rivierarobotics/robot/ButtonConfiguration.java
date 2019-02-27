@@ -20,9 +20,6 @@
 
 package org.rivierarobotics.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -71,29 +68,29 @@ public class ButtonConfiguration {
         clearButtons();
 
         //shift
-       JoystickButton shiftHigh = new JoystickButton(driverLeft,1);
-       shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
+        JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
+        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
-       JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
-       shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
+        JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
+        shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
-       //hatch
-       JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
-       hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
-               cmds.piston().extend(Piston.DEPLOY_RIGHT)));
-       hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
-               cmds.piston().retract(Piston.DEPLOY_RIGHT)));
+        //hatch
+        JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
+        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
+                cmds.piston().extend(Piston.DEPLOY_RIGHT)));
+        hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
+                cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 6);
         hatchPush.whenPressed(cmds.hatch().push());
 
-       //clamp
-       JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 10);
-       clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
-       clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
+        //clamp
+        JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 10);
+        clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
+        clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
 
-       JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 3);
-       tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
+        JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 3);
+        tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
 
         JoystickButton tentaclesBack = new JoystickButton(codriverButtons, 2);
         tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));

@@ -20,10 +20,10 @@
 
 package org.rivierarobotics.util;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+
+import java.util.function.DoubleSupplier;
 
 public class AbstractPIDSource implements PIDSource {
     private final DoubleSupplier source;

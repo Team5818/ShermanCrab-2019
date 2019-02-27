@@ -28,16 +28,16 @@ import org.rivierarobotics.subsystems.PigeonGyro;
 
 @GenerateCreator
 public class Rotate extends Command {
+    // TODO fix PID for the drivetrain so DEGREE_BUFFER can be removed or modified
+    private static final int DEGREE_BUFFER = 7;
     private DriveTrain dt;
     private PigeonGyro gyro;
     private double degreesToRotate;
     private double currentDegrees;
     private double startDegrees;
-    private double degreeBuffer;
-    
+
     public Rotate(@Provided DriveTrain dt, @Provided PigeonGyro gyro, double degrees) {
         degreesToRotate = degrees;
-        degreeBuffer = 7;
         this.gyro = gyro;
         this.dt = dt;
         requires(dt);
@@ -66,6 +66,6 @@ public class Rotate extends Command {
 
     @Override
     protected boolean isFinished() {
-        return Math.abs(currentDegrees - startDegrees) >= degreesToRotate - (degreeBuffer * (degreesToRotate / 90));
+        return Math.abs(currentDegrees - startDegrees) >= degreesToRotate - (DEGREE_BUFFER * (degreesToRotate / 90));
     }
 }

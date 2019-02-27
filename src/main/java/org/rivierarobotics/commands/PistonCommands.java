@@ -41,4 +41,4 @@ public class PistonCommands {
     public final RetractPiston retract(Piston piston) {
         return retractPistonCreator.create(piston);
     }
- }
+}

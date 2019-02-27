@@ -20,13 +20,12 @@
 
 package org.rivierarobotics.robot;
 
-import javax.inject.Singleton;
-
-import org.rivierarobotics.inject.Input;
-
 import dagger.Module;
 import dagger.Provides;
 import edu.wpi.first.wpilibj.Joystick;
+import org.rivierarobotics.inject.Input;
+
+import javax.inject.Singleton;
 
 @Module
 public class ControlsModule {

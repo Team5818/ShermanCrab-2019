@@ -34,7 +34,7 @@ public class TentacleController extends Subsystem {
     public TentacleController(int tent) {
         tentacles = new WPI_TalonSRX(tent);
     }
-    
+
     public void setPower(double pwr) {
         tentacles.set(pwr);
     }

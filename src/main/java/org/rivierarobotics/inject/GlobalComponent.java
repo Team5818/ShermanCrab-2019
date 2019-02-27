@@ -20,17 +20,16 @@
 
 package org.rivierarobotics.inject;
 
-import javax.inject.Singleton;
-
+import dagger.Component;
 import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
 import org.rivierarobotics.subsystems.*;
 
-import dagger.Component;
+import javax.inject.Singleton;
 
-@Component(modules = { SubsystemModule.class, ControlsModule.class, CCModule.class })
-@Singleton 
+@Component(modules = {SubsystemModule.class, ControlsModule.class, CCModule.class})
+@Singleton
 public abstract class GlobalComponent {
     public abstract DriveTrain getDriveTrain();
 

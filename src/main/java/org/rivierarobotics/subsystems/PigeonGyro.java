@@ -20,12 +20,11 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.command.Subsystem;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.ctre.phoenix.sensors.PigeonIMU;
-
-import edu.wpi.first.wpilibj.command.Subsystem;
 
 @Singleton
 public class PigeonGyro extends Subsystem {
@@ -37,7 +36,7 @@ public class PigeonGyro extends Subsystem {
     }
 
     private double[] getYPR() {
-        double[] ypr = {0,0,0};
+        double[] ypr = {0, 0, 0};
         gyro.getYawPitchRoll(ypr);
         return ypr;
     }

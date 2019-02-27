@@ -20,11 +20,10 @@
 
 package org.rivierarobotics.commands;
 
-import org.rivierarobotics.subsystems.DriveTrain;
-
 import edu.wpi.first.wpilibj.command.Command;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.DriveTrain;
 
 @GenerateCreator
 public class DriveDistance extends Command {

@@ -20,14 +20,13 @@
 
 package org.rivierarobotics.subsystems;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
+import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.commands.DriveControl;
 import org.rivierarobotics.inject.Sided;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 @Singleton
 public class DriveTrain extends Subsystem {

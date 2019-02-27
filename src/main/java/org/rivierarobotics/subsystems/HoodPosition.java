@@ -21,5 +21,11 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    NINETY_DEGREES, ONEHUNDREDEIGHTY_DEGREES, ZERO_DEGREES
+    NINETY_DEGREES(90), ONE_HUNDRED_EIGHTY_DEGREES(180), ZERO_DEGREES(0);
+
+    public final int degrees;
+
+    HoodPosition(int degrees) {
+        this.degrees = degrees;
+    }
 }

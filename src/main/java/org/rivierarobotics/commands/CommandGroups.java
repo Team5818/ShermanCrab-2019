@@ -26,15 +26,15 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class CommandGroups {
     public static Command inParallel(Command... commands) {
         CommandGroup group = new CommandGroup();
-        for(Command c : commands) {
+        for (Command c : commands) {
             group.addParallel(c);
         }
         return group;
     }
-    
+
     public static Command inOrder(Command... commands) {
         CommandGroup group = new CommandGroup();
-        for(Command c : commands) {
+        for (Command c : commands) {
             group.addSequential(c);
         }
         return group;

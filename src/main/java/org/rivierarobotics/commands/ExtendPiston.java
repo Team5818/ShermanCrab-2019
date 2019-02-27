@@ -20,11 +20,10 @@
 
 package org.rivierarobotics.commands;
 
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.HatchController;
-
-import edu.wpi.first.wpilibj.command.InstantCommand;
 import org.rivierarobotics.subsystems.Piston;
 
 @GenerateCreator

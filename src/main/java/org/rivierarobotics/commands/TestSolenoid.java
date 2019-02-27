@@ -24,13 +24,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 @GenerateCreator
 public class TestSolenoid extends Command {

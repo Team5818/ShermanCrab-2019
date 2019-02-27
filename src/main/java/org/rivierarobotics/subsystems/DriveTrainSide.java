@@ -20,15 +20,13 @@
 
 package org.rivierarobotics.subsystems;
 
-import org.rivierarobotics.util.AbstractPIDSource;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 public class DriveTrainSide {
     private static final double INCHES_TO_TICKS;
@@ -74,16 +72,7 @@ public class DriveTrainSide {
     private int distanceInvert;
     private PIDController pidLoop;
 
-    /*
-    private final Notifier followerThread = new Notifier(() -> {
-        double volts = -talonMaster.getMotorOutputVoltage();
-        SparkMaxVolts.set(sparkSlaveOne, volts);
-        SparkMaxVolts.set(sparkSlaveTwo, volts);
-    });
-    */
-
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
-        // TODO fix Motion Magic/PID/follow problems
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -95,10 +84,9 @@ public class DriveTrainSide {
 
         talonMaster.setInverted(invert);
 
-        //followerThread.startPeriodic(0.01);
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-        
+
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
     }
 
@@ -123,8 +111,6 @@ public class DriveTrainSide {
 
     private void setMotorPower(double pwr) {
         talonMaster.set(pwr);
-//        sparkSlaveOne.set(pwr * distanceInvert);
-//        sparkSlaveTwo.set(pwr * distanceInvert);
     }
 
 
