@@ -21,5 +21,11 @@
 package org.rivierarobotics.subsystems;
 
 public enum Piston {
-    SHIFTER, CLAMP, PUSH, DEPLOY_LEFT, DEPLOY_RIGHT, CLIMB
+    SHIFTER(true), CLAMP(false), PUSH(true), DEPLOY_LEFT(true), DEPLOY_RIGHT(true), CLIMB(true);
+
+    public final boolean extend;
+
+    Piston(boolean ext) {
+        extend = ext;
+    }
 }
