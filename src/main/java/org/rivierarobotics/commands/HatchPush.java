@@ -27,16 +27,23 @@ import org.rivierarobotics.subsystems.Piston;
 import javax.inject.Inject;
 
 public class HatchPush extends CommandGroup {
+    private final PistonCommands pistonCmds;
 
     @Inject
     public HatchPush(PistonCommands piston) {
-        addSequential(piston.extend(Piston.PUSH));
-        addSequential(new TimedCommand(0.05));
-        addSequential(piston.extend(Piston.CLAMP));
-        addSequential(new TimedCommand(0.15));
-        addSequential(piston.retract(Piston.PUSH));
-        addSequential(new TimedCommand(0.05));
-        addSequential(piston.retract(Piston.CLAMP));
+        pistonCmds = piston;
+    }
 
+    @Override
+    protected void execute() {
+        addSequential(pistonCmds.extend(Piston.PUSH));
+        addSequential(new TimedCommand(0.05));
+        addSequential(pistonCmds.retract(Piston.CLAMP));
+    }
+
+    @Override
+    protected void end() {
+        addSequential(pistonCmds.retract(Piston.PUSH));
+        addSequential(new TimedCommand(0.05));
     }
 }

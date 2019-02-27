@@ -85,16 +85,20 @@ public class ButtonConfiguration {
         hatchPush.whenPressed(cmds.hatch().push());
 
         //clamp
-        JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 10);
-        clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
-        clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
+        JoystickButton clampOpen = new JoystickButton(codriverButtons, 4);
+        clampOpen.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
+        JoystickButton clampClosed = new JoystickButton(codriverButtons, 5);
+        clampClosed.whenPressed(cmds.piston().retract(Piston.CLAMP));
+
+        //tentacles
         JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 3);
         tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
 
         JoystickButton tentaclesBack = new JoystickButton(codriverButtons, 2);
         tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));
 
+        //assorted
         JoystickButton climb = new JoystickButton(driverButtons, 11);
         climb.whenPressed(cmds.piston().extend(Piston.CLIMB));
         climb.whenReleased(cmds.piston().retract(Piston.CLIMB));
