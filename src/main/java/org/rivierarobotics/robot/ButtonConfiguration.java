@@ -75,11 +75,12 @@ public class ButtonConfiguration {
         shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
         //tentacles
+        double tentacleSpeed = 0.5;
         JoystickButton tentaclesFwd = new JoystickButton(codriverRight, 1);
-        tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
+        tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
         JoystickButton tentaclesBack = new JoystickButton(codriverRight, 2);
-        tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));
+        tentaclesBack.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
 
         //hatch
         JoystickButton deployOpen = new JoystickButton(codriverButtons, 2);
