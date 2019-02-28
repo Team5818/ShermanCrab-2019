@@ -26,13 +26,11 @@ import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
 
-public class HatchPush extends CommandGroup {
+public class HatchPushCleanup extends CommandGroup {
 
     @Inject
-    public HatchPush(PistonCommands piston) {
-        addSequential(piston.extend(Piston.PUSH));
-        addSequential(new TimedCommand(0.05));
-        addSequential(piston.extend(Piston.CLAMP));
+    public HatchPushCleanup(PistonCommands piston) {
+        addSequential(piston.retract(Piston.PUSH));
     }
 
 }

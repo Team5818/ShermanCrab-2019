@@ -82,21 +82,24 @@ public class ButtonConfiguration {
         tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));
 
         //hatch
-        JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
-        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
-                cmds.piston().extend(Piston.DEPLOY_RIGHT)));
-        hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
+        JoystickButton deployOpen = new JoystickButton(codriverButtons, 2);
+        deployOpen.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
+            cmds.piston().extend(Piston.DEPLOY_RIGHT)));
+
+        JoystickButton deployClose = new JoystickButton(codriverButtons, 3);
+        deployClose.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
                 cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 6);
         hatchPush.whenPressed(cmds.hatch().push());
+        hatchPush.whenReleased(cmds.hatch().pushCleanup());
 
         //clamp
         JoystickButton clampOpen = new JoystickButton(codriverButtons, 4);
-        clampOpen.whenPressed(cmds.piston().extend(Piston.CLAMP));
+        clampOpen.whenPressed(cmds.piston().retract(Piston.CLAMP));
 
         JoystickButton clampClosed = new JoystickButton(codriverButtons, 5);
-        clampClosed.whenPressed(cmds.piston().retract(Piston.CLAMP));
+        clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
         //assorted
         JoystickButton climb = new JoystickButton(driverButtons, 11);
