@@ -24,20 +24,13 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.HoodController;
-import org.rivierarobotics.subsystems.HoodPosition;
 
 @GenerateCreator
 public class HoodSet extends InstantCommand {
     private final HoodController hood;
-    private final int pos;
+    private final double pos;
 
-    public HoodSet(@Provided HoodController hood, HoodPosition pos) {
-        this.hood = hood;
-        this.pos = pos.degrees;
-        requires(hood);
-    }
-
-    public HoodSet(@Provided HoodController hood, int pos) {
+    public HoodSet(@Provided HoodController hood, double pos) {
         this.hood = hood;
         this.pos = pos;
         requires(hood);

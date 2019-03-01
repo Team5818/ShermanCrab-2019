@@ -20,10 +20,13 @@
 
 package org.rivierarobotics.commands;
 
+import org.rivierarobotics.subsystems.ArmPosition;
+
 import javax.inject.Inject;
 
 public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
+    private ArmSetCreator armSetCreator;
 
     @Inject
     public ArmCommands(ArmSetPowerCreator armSetPowerCreator) {
@@ -32,5 +35,13 @@ public class ArmCommands {
 
     public ArmSetPower setPower(double pwr) {
         return armSetPowerCreator.create(pwr);
+    }
+
+    public ArmSet setPosition(ArmPosition pos) {
+        return armSetCreator.create(pos.ticks);
+    }
+
+    public ArmSet setPosition(double pos) {
+        return armSetCreator.create(pos);
     }
 }

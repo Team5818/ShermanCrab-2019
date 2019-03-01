@@ -27,9 +27,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.Gear;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.TestControllers;
+import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -106,6 +104,10 @@ public class ButtonConfiguration {
         JoystickButton climb = new JoystickButton(driverButtons, 11);
         climb.whenPressed(cmds.piston().extend(Piston.CLIMB));
         climb.whenReleased(cmds.piston().retract(Piston.CLIMB));
+
+        JoystickButton asst = new JoystickButton(driverButtons, 5);
+        climb.whenPressed(inOrder(cmds.arm().setPosition(ArmPosition.FRONT_ROCKET_LEVEL_ONE),
+                cmds.hood().setPosition(HoodPosition.FRONT_ROCKET_LEVEL_ONE)));
 
     }
 

@@ -50,9 +50,7 @@ public class ArmController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static final double GRAVITY_CONSTANT = -0.042;
-    private static final int ZERO_DEGREES = 1079;
-    private static final int NINETY_DEGREES = 2100;
-    private static final double ANGLE_SCALE = (90) / (double) (NINETY_DEGREES - ZERO_DEGREES);
+    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticks - ArmPosition.ZERO_DEGREES.ticks);
     private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
@@ -108,7 +106,7 @@ public class ArmController extends Subsystem {
     }
 
     public double getDegrees() {
-        return (getAngle() - ZERO_DEGREES) * ANGLE_SCALE;
+        return (getAngle() - ArmPosition.ZERO_DEGREES.ticks) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {

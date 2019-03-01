@@ -18,25 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import org.rivierarobotics.subsystems.HoodPosition;
+public enum ArmPosition {
+    ZERO_DEGREES(1079),
+    NINETY_DEGREES(2100),
+    NEGATIVE_NINETY_DEGREES(80),
 
-import javax.inject.Inject;
+    FRONT_ROCKET_LEVEL_ONE(1765),
+    FRONT_ROCKET_LEVEL_TWO(1138),
+    FRONT_CARGO_SHIP(1395),
+    FRONT_HUMAN_PLAYER_STATION(1336),
+    FRONT_COLLECT(2083),
 
-public class HoodCommands {
-    private final HoodSetCreator hoodSetCreator;
+    BACK_ROCKET_LEVEL_ONE(421),
+    BACK_ROCKET_LEVEL_TWO(925),
+    BACK_CARGO_SHIP(518),
+    BACK_HUMAN_PLAYER_STATION(780),
+    BACK_COLLECT(128);
 
-    @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator) {
-        this.hoodSetCreator = hoodSetCreator;
-    }
+    public final double ticks;
 
-    public final HoodSet setPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticks);
-    }
-
-    public final HoodSet setPosition(double pos) {
-        return hoodSetCreator.create(pos);
+    ArmPosition(double ticks) {
+        this.ticks = ticks;
     }
 }

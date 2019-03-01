@@ -20,23 +20,24 @@
 
 package org.rivierarobotics.commands;
 
-import org.rivierarobotics.subsystems.HoodPosition;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.ArmController;
 
-import javax.inject.Inject;
+@GenerateCreator
+public class ArmSet extends InstantCommand {
+    private double positionTicks;
+    private final ArmController arm;
 
-public class HoodCommands {
-    private final HoodSetCreator hoodSetCreator;
-
-    @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator) {
-        this.hoodSetCreator = hoodSetCreator;
+    public ArmSet(@Provided ArmController arm, double position) {
+        this.arm = arm;
+        this.positionTicks = position;
+        requires(arm);
     }
 
-    public final HoodSet setPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticks);
-    }
-
-    public final HoodSet setPosition(double pos) {
-        return hoodSetCreator.create(pos);
+    @Override
+    protected void execute() {
+        arm.setAngle(positionTicks);
     }
 }
