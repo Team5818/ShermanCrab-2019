@@ -64,7 +64,7 @@ public class ButtonConfiguration {
 
     public void initTeleop() {
         clearButtons();
-    /*
+
         //shift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
         shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
@@ -100,30 +100,27 @@ public class ButtonConfiguration {
         JoystickButton clampClosed = new JoystickButton(codriverButtons, 5);
         clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
-        //assorted
-        JoystickButton climb = new JoystickButton(driverButtons, 11);
-        climb.whenPressed(cmds.piston().extend(Piston.CLIMB));
-        climb.whenReleased(cmds.piston().retract(Piston.CLIMB));
-        */
-        JoystickButton zero = new JoystickButton(codriverButtons, 1);
+        //arm testing
+        JoystickButton zero = new JoystickButton(codriverButtons, 10);
         zero.whenPressed(cmds.arm().setPosition(ArmPosition.ZERO_DEGREES));
 
-        JoystickButton ninety = new JoystickButton(codriverButtons, 2);
+        JoystickButton ninety = new JoystickButton(codriverButtons, 12);
         ninety.whenPressed(cmds.arm().setPosition(ArmPosition.NINETY_DEGREES));
 
-        JoystickButton neg_ninety = new JoystickButton(codriverButtons, 3);
-        neg_ninety.whenPressed(cmds.arm().setPosition(ArmPosition.NEGATIVE_NINETY_DEGREES));
+        JoystickButton negNinety = new JoystickButton(codriverButtons, 8);
+        negNinety.whenPressed(cmds.arm().setPosition(ArmPosition.NEGATIVE_NINETY_DEGREES));
 
-        JoystickButton disablePIDArm = new JoystickButton(codriverButtons, 12);
+        JoystickButton disablePIDArm = new JoystickButton(codriverButtons, 1);
         disablePIDArm.whenPressed(cmds.arm().disablePID());
 
-        JoystickButton fwd = new JoystickButton(codriverButtons, 4);
+        //hood testing
+        JoystickButton fwd = new JoystickButton(codriverButtons, 11);
         fwd.whenPressed(cmds.hood().setPosition(HoodPosition.NINETY_ARM_ZERO));
 
-        JoystickButton back = new JoystickButton(codriverButtons, 5);
+        JoystickButton back = new JoystickButton(codriverButtons, 7);
         back.whenPressed(cmds.hood().setPosition(HoodPosition.NEGATIVE_NINETY_ARM_ZERO));
 
-        JoystickButton zed = new JoystickButton(codriverButtons, 6);
+        JoystickButton zed = new JoystickButton(codriverButtons, 9);
         zed.whenPressed(cmds.hood().setPosition(HoodPosition.RESTING_ARM_ZERO));
 
     }
