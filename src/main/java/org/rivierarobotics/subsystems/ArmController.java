@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -58,7 +59,7 @@ public class ArmController extends Subsystem {
     }
 
     static {
-        P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
+        P = ezWidget("P", 0.0005).getEntry().getDouble(0.0005);
         System.err.println("P: " + P);
 
         I = ezWidget("I", 0.0).getEntry().getDouble(0);
@@ -67,7 +68,7 @@ public class ArmController extends Subsystem {
         D = ezWidget("D", 0.0).getEntry().getDouble(0);
         System.err.println("D: " + D);
 
-        F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
+        F = ezWidget("F", 0.00005).getEntry().getDouble(0.00005);
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
@@ -110,17 +111,23 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        pidLoop.disable();
-        rawSetPower(pwr);
+        if(!pidLoop.isEnabled()) {
+            pidLoop.disable();
+            rawSetPower(pwr);
+        }
     }
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        arm.set(pwr);
+        arm.set(MathUtil.clamp(pwr, 0.4));
     }
 
     public void stop() {
         setPower(0.0);
+    }
+
+    public PIDController getPidLoop() {
+        return pidLoop;
     }
 
     @Override

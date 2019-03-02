@@ -22,6 +22,9 @@ package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
     STARTING_ANGLE(0),
+    RESTING_ARM_ZERO(2450),
+    NINETY_ARM_ZERO(1375),
+    NEGATIVE_NINETY_ARM_ZERO(3520),
 
     FRONT_ROCKET_LEVEL_ONE(1647),
     FRONT_ROCKET_LEVEL_TWO(4657),

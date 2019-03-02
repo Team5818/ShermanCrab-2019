@@ -27,10 +27,13 @@ import javax.inject.Inject;
 public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
     private ArmSetCreator armSetCreator;
+    private ArmDisablePIDCreator armDisablePIDCreator;
 
     @Inject
-    public ArmCommands(ArmSetPowerCreator armSetPowerCreator) {
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmDisablePIDCreator armDisablePIDCreator) {
         this.armSetPowerCreator = armSetPowerCreator;
+        this.armSetCreator = armSetCreator;
+        this.armDisablePIDCreator = armDisablePIDCreator;
     }
 
     public ArmSetPower setPower(double pwr) {
@@ -43,5 +46,9 @@ public class ArmCommands {
 
     public ArmSet setPosition(double pos) {
         return armSetCreator.create(pos);
+    }
+
+    public ArmDisablePID disablePID() {
+        return armDisablePIDCreator.create();
     }
 }

@@ -27,6 +27,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.HoodControl;
 
 import javax.inject.Inject;
@@ -50,7 +51,6 @@ public class HoodController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
-    private static final int TICK_BUFFER = 0;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -69,11 +69,11 @@ public class HoodController extends Subsystem {
         D = ezWidget("D", 0.0).getEntry().getDouble(0);
         System.err.println("D: " + D);
 
-        F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
+        F = ezWidget("F", 0.0).getEntry().getDouble(0.0);
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
+        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 5;
         System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
         ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
@@ -90,7 +90,6 @@ public class HoodController extends Subsystem {
 
         /* Factory default hardware to prevent unexpected behavior */
         hood.configFactoryDefault();
-
         /* Configure Sensor Source for Primary PID */
         hood.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
 
@@ -106,6 +105,7 @@ public class HoodController extends Subsystem {
         /* Set Motion Magic gains in slot0 - see documentation */
         hood.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
         hood.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
+        SmartDashboard.putNumber("P", P * 1023);
         hood.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
         hood.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
         hood.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
@@ -119,7 +119,11 @@ public class HoodController extends Subsystem {
     }
 
     public double getAngle() {
-        return ((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
+        return hood.getSensorCollection().getPulseWidthPosition();
+    }
+
+    public double getDegrees() {
+        return (getAngle() / TICKS_TO_DEGREES);
     }
 
     public void setPower(double pwr) {

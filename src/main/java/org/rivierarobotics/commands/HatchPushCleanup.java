@@ -21,7 +21,6 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;

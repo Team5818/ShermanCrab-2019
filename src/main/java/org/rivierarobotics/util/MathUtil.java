@@ -43,4 +43,12 @@ public class MathUtil {
             return value;
         }
     }
+
+    public static double rangeLimit(double max, double min, double cpos, double pwr) {
+        if ((cpos >= max && pwr > 0) || (cpos <= min && pwr > 0)) {
+            return 0;
+        } else {
+            return pwr;
+        }
+    }
 }
