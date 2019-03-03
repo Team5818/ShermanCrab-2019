@@ -123,6 +123,9 @@ public class ButtonConfiguration {
         JoystickButton zed = new JoystickButton(codriverButtons, 9);
         zed.whenPressed(cmds.hood().setPosition(HoodPosition.RESTING_ARM_ZERO));
 
+        JoystickButton disablePID = new JoystickButton(codriverLeft, 1);
+        disablePID.whenPressed(cmds.hood().disablePID());
+
     }
 
     public void initTest() {

@@ -20,29 +20,22 @@
 
 package org.rivierarobotics.commands;
 
-import org.rivierarobotics.subsystems.HoodPosition;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.HoodController;
 
-import javax.inject.Inject;
+@GenerateCreator
+public class HoodDisablePID extends InstantCommand {
+    private HoodController hood;
 
-public class HoodCommands {
-    private final HoodSetCreator hoodSetCreator;
-    private final HoodDisablePIDCreator hoodDisablePIDCreator;
-
-    @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator,  HoodDisablePIDCreator hoodDisablePIDCreator) {
-        this.hoodSetCreator = hoodSetCreator;
-        this.hoodDisablePIDCreator = hoodDisablePIDCreator;
+    public HoodDisablePID(@Provided HoodController hood) {
+        this.hood = hood;
+        requires(hood);
     }
 
-    public final HoodSet setPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticks);
-    }
-
-    public final HoodSet setPosition(double pos) {
-        return hoodSetCreator.create(pos);
-    }
-
-    public final HoodDisablePID disablePID() {
-        return hoodDisablePIDCreator.create();
+    @Override
+    protected void execute() {
+        hood.disablePID();
     }
 }

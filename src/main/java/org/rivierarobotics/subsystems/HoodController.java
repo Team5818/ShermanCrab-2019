@@ -22,13 +22,16 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.HoodControl;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -51,6 +54,8 @@ public class HoodController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
+    private boolean PIDMode;
+    private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -60,7 +65,7 @@ public class HoodController extends Subsystem {
         TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
         System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
 
-        P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
+        P = ezWidget("P", 0.01).getEntry().getDouble(0.01);
         System.err.println("P: " + P);
 
         I = ezWidget("I", 0.0).getEntry().getDouble(0);
@@ -73,10 +78,10 @@ public class HoodController extends Subsystem {
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 5;
+        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC / 10;
         System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC / 10;
         System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
@@ -85,37 +90,19 @@ public class HoodController extends Subsystem {
         hood = new WPI_TalonSRX(h);
         this.command = command;
 
-        /* Reset encoder before reading values */
-        hood.setSelectedSensorPosition(0);
-
-        /* Factory default hardware to prevent unexpected behavior */
-        hood.configFactoryDefault();
-        /* Configure Sensor Source for Primary PID */
-        hood.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        hood.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
-
-        /* Set the peak and nominal outputs */
-        hood.configNominalOutputForward(0, TIMEOUT);
-        hood.configNominalOutputReverse(0, TIMEOUT);
-        hood.configPeakOutputForward(1, TIMEOUT);
-        hood.configPeakOutputReverse(-1, TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        hood.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        hood.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        SmartDashboard.putNumber("P", P * 1023);
-        hood.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        hood.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        hood.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
-
-        hood.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
-        hood.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
+        hood.setNeutralMode(NeutralMode.Brake);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower, 0.01);
+//        pidLoop.setContinuous(true);
+        pidLoop.setOutputRange(-.1, .1);
     }
 
     public void setAngle(double angle) {
-        hood.set(ControlMode.MotionMagic, angle);
+        pidLoop.setSetpoint(angle);
+        pidLoop.enable();
+    }
+
+    public double getTicks() {
+        return hood.getSensorCollection().getPulseWidthPosition();
     }
 
     public double getAngle() {
@@ -127,7 +114,15 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
+        if(!pidLoop.isEnabled()){
+            rawSetPower(pwr);
+        }
+    }
+    public void rawSetPower(double pwr) {
         hood.set(pwr);
+    }
+    public void disablePID() {
+        pidLoop.disable();
     }
 
     public void stop() {
