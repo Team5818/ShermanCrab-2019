@@ -36,6 +36,6 @@ public class ArmDisablePID extends InstantCommand {
 
     @Override
     protected void execute() {
-        arm.getPidLoop().disable();
+        arm.getPIDLoop().disable();
     }
 }

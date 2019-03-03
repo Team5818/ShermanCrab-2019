@@ -42,12 +42,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
-        globalComponent.getDriveTrain();
-        globalComponent.getArmController();
-        globalComponent.getHoodController();
-        globalComponent.getPigeonGyro();
-        globalComponent.getTentacleController();
-        globalComponent.getHatchController();
+        globalComponent.robotInit();
         CameraServer.getInstance().startAutomaticCapture();
     }
 
@@ -58,10 +53,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        double distance = globalComponent.getDriveTrain().getLeft().getDistance();
-        driveEncoderLeft.setDouble(distance);
-        distance = globalComponent.getDriveTrain().getRight().getDistance();
-        driveEncoderRight.setDouble(distance);
+        driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
+        driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         Scheduler.getInstance().run();
@@ -89,7 +82,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        globalComponent.getArmController().getPidLoop().disable();
-        globalComponent.getHoodController().disablePID();
+        globalComponent.getArmController().getPIDLoop().disable();
+        globalComponent.getHoodController().getPIDLoop().disable();
     }
 }

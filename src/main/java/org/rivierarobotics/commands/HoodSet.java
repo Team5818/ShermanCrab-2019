@@ -40,4 +40,9 @@ public class HoodSet extends InstantCommand {
     protected void execute() {
         hood.setAngle(pos);
     }
+
+    @Override
+    protected void end() {
+        hood.getPIDLoop().disable();
+    }
 }

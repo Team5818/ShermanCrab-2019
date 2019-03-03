@@ -31,18 +31,27 @@ import javax.inject.Singleton;
 @Component(modules = {SubsystemModule.class, ControlsModule.class, CCModule.class})
 @Singleton
 public abstract class GlobalComponent {
+    public void robotInit() {
+        getDriveTrain();
+        getHatchController();
+        getArmController();
+        getHoodController();
+        getTentacleController();
+        getButtonConfiguration();
+        getPigeonGyro();
+    }
+
     public abstract DriveTrain getDriveTrain();
 
-    public abstract PigeonGyro getPigeonGyro();
-
-    public abstract HoodController getHoodController();
+    public abstract HatchController getHatchController();
 
     public abstract ArmController getArmController();
+
+    public abstract HoodController getHoodController();
 
     public abstract TentacleController getTentacleController();
 
     public abstract ButtonConfiguration getButtonConfiguration();
 
-    public abstract HatchController getHatchController();
-
+    public abstract PigeonGyro getPigeonGyro();
 }

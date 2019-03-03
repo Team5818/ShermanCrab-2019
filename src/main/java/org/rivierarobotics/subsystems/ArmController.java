@@ -126,7 +126,7 @@ public class ArmController extends Subsystem {
         setPower(0.0);
     }
 
-    public PIDController getPidLoop() {
+    public PIDController getPIDLoop() {
         return pidLoop;
     }
 

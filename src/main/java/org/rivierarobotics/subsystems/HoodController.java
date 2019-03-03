@@ -41,21 +41,17 @@ import javax.inject.Singleton;
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
     private final WPI_TalonSRX hood;
+    private PIDController pidLoop;
 
-    private static final int TIMEOUT = 30;
     private static final double P;
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int SLOT_IDX = 0;
-    private static final int PID_LOOP_IDX = 0;
     private static final int VELOCITY_TICKS_PER_100MS;
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES;
-    private boolean PIDMode;
-    private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -92,7 +88,7 @@ public class HoodController extends Subsystem {
 
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower, 0.01);
-//        pidLoop.setContinuous(true);
+        // pidLoop.setContinuous(true);
         pidLoop.setOutputRange(-.1, .1);
     }
 
@@ -118,11 +114,13 @@ public class HoodController extends Subsystem {
             rawSetPower(pwr);
         }
     }
+
     public void rawSetPower(double pwr) {
         hood.set(pwr);
     }
-    public void disablePID() {
-        pidLoop.disable();
+
+    public PIDController getPIDLoop() {
+        return pidLoop;
     }
 
     public void stop() {
