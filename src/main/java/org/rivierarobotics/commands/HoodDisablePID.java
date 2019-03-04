@@ -36,6 +36,6 @@ public class HoodDisablePID extends InstantCommand {
 
     @Override
     protected void execute() {
-        hood.disablePID();
+        hood.getPIDLoop().disable();
     }
 }
