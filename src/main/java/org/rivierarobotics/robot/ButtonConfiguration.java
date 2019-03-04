@@ -93,7 +93,7 @@ public class ButtonConfiguration {
         hatchPush.whenPressed(cmds.hatch().push());
         hatchPush.whenReleased(cmds.hatch().pushCleanup());
 
-        //clamp
+        //limit
         JoystickButton clampOpen = new JoystickButton(codriverButtons, 4);
         clampOpen.whenPressed(cmds.piston().retract(Piston.CLAMP));
 

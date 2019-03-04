@@ -111,15 +111,17 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if(!pidLoop.isEnabled()) {
+        if(pwr > 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
+        }
+        if(!pidLoop.isEnabled()) {
             rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        arm.set(MathUtil.clamp(pwr, 0.4));
+        arm.set(MathUtil.limit(pwr, 0.4));
     }
 
     public void stop() {

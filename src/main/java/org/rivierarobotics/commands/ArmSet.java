@@ -40,9 +40,4 @@ public class ArmSet extends InstantCommand {
     protected void execute() {
         arm.setAngle(positionTicks);
     }
-
-    @Override
-    protected void end() {
-        arm.getPIDLoop().disable();
-    }
 }

@@ -34,7 +34,7 @@ public class MathUtil {
         return (val - DEADBAND) / (1 - DEADBAND);
     }
 
-    public static double clamp(double value, double max) {
+    public static double limit(double value, double max) {
         if (value > max) {
             return max;
         } else if (value < -max) {

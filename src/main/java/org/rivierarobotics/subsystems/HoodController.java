@@ -110,7 +110,10 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if(!pidLoop.isEnabled()){
+        if(pwr > 0 && pidLoop.isEnabled()) {
+            pidLoop.disable();
+        }
+        if(!pidLoop.isEnabled()) {
             rawSetPower(pwr);
         }
     }
