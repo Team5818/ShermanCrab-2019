@@ -88,9 +88,9 @@ public class ArmController extends Subsystem {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
-        arm.setNeutralMode(NeutralMode.Brake);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        arm.setNeutralMode(NeutralMode.Coast);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -111,9 +111,6 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if(pwr > 0 && pidLoop.isEnabled()) {
-            pidLoop.disable();
-        }
         if(!pidLoop.isEnabled()) {
             rawSetPower(pwr);
         }
@@ -135,5 +132,11 @@ public class ArmController extends Subsystem {
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(command.get());
+    }
+
+    public void onDisable() {
+        arm.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 }

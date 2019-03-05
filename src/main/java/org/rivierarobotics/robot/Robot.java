@@ -84,5 +84,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
+        globalComponent.getArmController().onDisable();
+        globalComponent.getDriveTrain().onDisable();
     }
 }

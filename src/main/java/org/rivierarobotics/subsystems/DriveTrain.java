@@ -65,6 +65,11 @@ public class DriveTrain extends Subsystem {
         return (left.getDistance() + right.getDistance()) / 2;
     }
 
+    public void onDisable() {
+        left.onDisable();
+        right.onDisable();
+    }
+
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(command.get());

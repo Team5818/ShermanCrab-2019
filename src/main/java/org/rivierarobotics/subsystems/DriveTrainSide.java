@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -87,6 +88,10 @@ public class DriveTrainSide {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
+        talonMaster.setNeutralMode(NeutralMode.Coast);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
     }
 
@@ -113,5 +118,10 @@ public class DriveTrainSide {
         talonMaster.set(pwr);
     }
 
+    public void onDisable() {
+        talonMaster.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
 
 }
