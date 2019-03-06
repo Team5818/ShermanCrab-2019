@@ -42,6 +42,7 @@ public class ArmController extends Subsystem {
     private WPI_TalonSRX arm;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
+
     private static final double P;
     private static final double I;
     private static final double D;
@@ -62,13 +63,13 @@ public class ArmController extends Subsystem {
         P = ezWidget("P", 0.0005).getEntry().getDouble(0.0005);
         System.err.println("P: " + P);
 
-        I = ezWidget("I", 0.0).getEntry().getDouble(0);
+        I = ezWidget("I", 0).getEntry().getDouble(0);
         System.err.println("I: " + I);
 
         D = ezWidget("D", 0.0).getEntry().getDouble(0);
         System.err.println("D: " + D);
 
-        F = ezWidget("F", 0.00005).getEntry().getDouble(0.00005);
+        F = ezWidget("F", 0.0).getEntry().getDouble(0);
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
@@ -88,9 +89,7 @@ public class ArmController extends Subsystem {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
-        arm.setNeutralMode(NeutralMode.Coast);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        setCoast();
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -98,6 +97,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setAngle(double angle) {
+        setBrake();
         pidLoop.setSetpoint(angle);
         pidLoop.enable();
     }
@@ -111,6 +111,9 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
+        if(pwr != 0) {
+            pidLoop.disable();
+        }
         if(!pidLoop.isEnabled()) {
             rawSetPower(pwr);
         }
@@ -118,7 +121,10 @@ public class ArmController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        arm.set(MathUtil.limit(pwr, 0.4));
+        pwr = MathUtil.limit(pwr, 0.4);
+        arm.set(pwr);
+        sparkSlaveOne.set(pwr);
+        sparkSlaveTwo.set(pwr);
     }
 
     public void stop() {
@@ -134,9 +140,15 @@ public class ArmController extends Subsystem {
         setDefaultCommand(command.get());
     }
 
-    public void onDisable() {
+    public void setBrake() {
         arm.setNeutralMode(NeutralMode.Brake);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
+
+    public void setCoast() {
+        arm.setNeutralMode(NeutralMode.Coast);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
     }
 }

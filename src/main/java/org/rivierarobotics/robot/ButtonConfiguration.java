@@ -86,32 +86,29 @@ public class ButtonConfiguration {
                 cmds.piston().extend(Piston.DEPLOY_RIGHT)));
 
         JoystickButton deployClose = new JoystickButton(codriverButtons, 3);
-        deployClose.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
+        deployClose.toggleWhenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
                 cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 6);
         hatchPush.whenPressed(cmds.hatch().push());
         hatchPush.whenReleased(cmds.hatch().pushCleanup());
 
-        //limit
+        //clamp
         JoystickButton clampOpen = new JoystickButton(codriverButtons, 4);
         clampOpen.whenPressed(cmds.piston().retract(Piston.CLAMP));
 
         JoystickButton clampClosed = new JoystickButton(codriverButtons, 5);
         clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
-        //arm testing
-        JoystickButton zero = new JoystickButton(codriverButtons, 10);
-        zero.whenPressed(cmds.arm().setPosition(ArmPosition.ZERO_DEGREES));
+        //arm
+        JoystickButton armRocketOne = new JoystickButton(codriverButtons, 12);
+        armRocketOne.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_ROCKET_LEVEL_ONE));
 
-        JoystickButton ninety = new JoystickButton(codriverButtons, 12);
-        ninety.whenPressed(cmds.arm().setPosition(ArmPosition.NINETY_DEGREES));
+        JoystickButton armRocketTwo = new JoystickButton(codriverButtons, 10);
+        armRocketTwo.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_ROCKET_LEVEL_TWO));
 
-        JoystickButton negNinety = new JoystickButton(codriverButtons, 8);
-        negNinety.whenPressed(cmds.arm().setPosition(ArmPosition.NEGATIVE_NINETY_DEGREES));
-
-        JoystickButton disablePIDArm = new JoystickButton(codriverButtons, 1);
-        disablePIDArm.whenPressed(cmds.arm().disablePID());
+        JoystickButton armHatch = new JoystickButton(codriverButtons, 8);
+        armHatch.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_CARGO_SHIP));
 
         //hood testing
         JoystickButton fwd = new JoystickButton(codriverButtons, 11);

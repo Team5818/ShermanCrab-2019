@@ -38,6 +38,10 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
             .add("Angle", 0).getEntry();
+    private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
+            .add("Degrees", 0).getEntry();
+    private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
+            .add("Degrees", 0).getEntry();
 
     @Override
     public void robotInit() {
@@ -57,6 +61,8 @@ public class Robot extends TimedRobot {
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
+        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
+        armOut.setDouble(globalComponent.getArmController().getDegrees());
         Scheduler.getInstance().run();
     }
 
@@ -84,7 +90,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
-        globalComponent.getArmController().onDisable();
+        globalComponent.getArmController().setBrake();
         globalComponent.getDriveTrain().onDisable();
     }
 }
