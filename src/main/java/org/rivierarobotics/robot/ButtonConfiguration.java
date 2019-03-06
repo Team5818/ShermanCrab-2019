@@ -112,7 +112,8 @@ public class ButtonConfiguration {
 
         //hood testing
         JoystickButton fwd = new JoystickButton(codriverButtons, 11);
-        fwd.whenPressed(cmds.hood().setPosition(HoodPosition.NINETY_ARM_ZERO));
+        fwd.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.RESTING_ARM_ZERO),
+                cmds.arm().setPosition(ArmPosition.ZERO_DEGREES)));
 
         JoystickButton back = new JoystickButton(codriverButtons, 7);
         back.whenPressed(cmds.hood().setPosition(HoodPosition.NEGATIVE_NINETY_ARM_ZERO));
