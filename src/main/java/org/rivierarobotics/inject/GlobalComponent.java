@@ -24,6 +24,7 @@ import dagger.Component;
 import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
+import org.rivierarobotics.robot.VisionState;
 import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Singleton;
@@ -39,6 +40,7 @@ public abstract class GlobalComponent {
         getTentacleController();
         getButtonConfiguration();
         getPigeonGyro();
+        getVisionState();
     }
 
     public abstract DriveTrain getDriveTrain();
@@ -54,4 +56,6 @@ public abstract class GlobalComponent {
     public abstract ButtonConfiguration getButtonConfiguration();
 
     public abstract PigeonGyro getPigeonGyro();
+
+    public abstract VisionState getVisionState();
 }

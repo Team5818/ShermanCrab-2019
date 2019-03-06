@@ -38,6 +38,8 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
             .add("Angle", 0).getEntry();
+    private final NetworkTableEntry visionState = Shuffleboard.getTab("Vision")
+            .add("vision", 0).getEntry();
 
     @Override
     public void robotInit() {
@@ -57,6 +59,7 @@ public class Robot extends TimedRobot {
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
+        visionState.setString(String.valueOf(globalComponent.getVisionState().getCurrentMessage()));
         Scheduler.getInstance().run();
     }
 
