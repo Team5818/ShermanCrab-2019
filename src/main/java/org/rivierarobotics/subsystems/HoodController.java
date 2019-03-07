@@ -87,7 +87,7 @@ public class HoodController extends Subsystem {
         this.command = command;
 
         hood.setNeutralMode(NeutralMode.Brake);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower, 0.01);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
         // pidLoop.setContinuous(true);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
@@ -95,10 +95,6 @@ public class HoodController extends Subsystem {
     public void setAngle(double angle) {
         pidLoop.setSetpoint(angle);
         pidLoop.enable();
-    }
-
-    public double getTicks() {
-        return hood.getSensorCollection().getPulseWidthPosition();
     }
 
     public double getAngle() {

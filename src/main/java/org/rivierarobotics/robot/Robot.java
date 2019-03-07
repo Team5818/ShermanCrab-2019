@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
     private GlobalComponent globalComponent;
@@ -63,6 +66,9 @@ public class Robot extends TimedRobot {
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
+
+        armSafety();
+
         Scheduler.getInstance().run();
     }
 
@@ -92,5 +98,25 @@ public class Robot extends TimedRobot {
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
         globalComponent.getDriveTrain().onDisable();
+    }
+
+    private void armSafety() {
+        if(globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degrees &&
+                globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) &&
+                globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT)) {
+            if(ArmController.PWR_MANUAL > 0) {
+                globalComponent.getArmController().stop();
+            } else {
+                if(ArmController.PWR_MANUAL < 0) {
+                    globalComponent.getArmController().setCoast();
+                }
+                ArmController.SAFE = true;
+            }
+        } else {
+            ArmController.SAFE = true;
+
+        }
+        ArmController.DEPLOY_PISTONS_OUT = globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) ||
+                globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT);
     }
 }

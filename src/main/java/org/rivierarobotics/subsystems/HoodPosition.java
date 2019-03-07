@@ -22,7 +22,7 @@ package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
     STARTING_ANGLE(0),
-    RESTING_ARM_ZERO(597),
+    RESTING_ARM_ZERO(1525),
     NINETY_ARM_ZERO(1850),
     NEGATIVE_NINETY_ARM_ZERO(-1200),
 

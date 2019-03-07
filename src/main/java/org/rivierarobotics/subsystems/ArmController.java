@@ -43,6 +43,9 @@ public class ArmController extends Subsystem {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
 
+    public static double PWR_MANUAL = 0;
+    public static boolean SAFE = true;
+    public static boolean DEPLOY_PISTONS_OUT = true;
     private static final double P;
     private static final double I;
     private static final double D;
@@ -51,7 +54,7 @@ public class ArmController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static final double GRAVITY_CONSTANT = -0.042;
+    private static final double GRAVITY_CONSTANT = -0.038;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticks - ArmPosition.ZERO_DEGREES.ticks);
     private PIDController pidLoop;
 
@@ -99,6 +102,10 @@ public class ArmController extends Subsystem {
     }
 
     public void setAngle(double angle) {
+        if(DEPLOY_PISTONS_OUT) {
+            angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticks);
+        }
+
         setBrake();
         pidLoop.setSetpoint(angle);
         pidLoop.enable();
@@ -113,11 +120,14 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if(pwr != 0) {
-            pidLoop.disable();
-        }
-        if(!pidLoop.isEnabled()) {
-            rawSetPower(pwr);
+        PWR_MANUAL = pwr;
+        if(SAFE) {
+            if (pwr != 0 && pidLoop.isEnabled()) {
+                pidLoop.disable();
+            }
+            if (!pidLoop.isEnabled()) {
+                rawSetPower(pwr);
+            }
         }
     }
 
@@ -125,16 +135,24 @@ public class ArmController extends Subsystem {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
         pwr = MathUtil.limit(pwr, 0.4);
         arm.set(pwr);
-        //sparkSlaveOne.set(pwr);
-        //sparkSlaveTwo.set(pwr);
     }
 
     public void stop() {
-        setPower(0.0);
+        SAFE = false;
+        if(pidLoop.isEnabled()) {
+            pidLoop.disable();
+        }
+        pidLoop.setSetpoint(getAngle());
+        pidLoop.enable();
+        setBrake();
     }
 
     public PIDController getPIDLoop() {
         return pidLoop;
+    }
+
+    public WPI_TalonSRX getArm() {
+        return arm;
     }
 
     @Override

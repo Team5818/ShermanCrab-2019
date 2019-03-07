@@ -38,6 +38,7 @@ public class ArmControl extends Command {
         this.arm = arm;
         this.armJoy = armJoy;
         requires(arm);
+        this.arm.getPIDLoop().disable();
     }
 
     @Override

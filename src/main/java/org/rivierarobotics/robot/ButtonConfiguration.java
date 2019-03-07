@@ -102,13 +102,13 @@ public class ButtonConfiguration {
 
         //arm
         JoystickButton armRocketOne = new JoystickButton(codriverButtons, 12);
-        armRocketOne.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_ROCKET_LEVEL_ONE));
+        armRocketOne.whenPressed(cmds.arm().setPosition(ArmPosition.NINETY_DEGREES));
 
         JoystickButton armRocketTwo = new JoystickButton(codriverButtons, 10);
-        armRocketTwo.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_ROCKET_LEVEL_TWO));
+        armRocketTwo.whenPressed(cmds.arm().setPosition(ArmPosition.ZERO_DEGREES));
 
         JoystickButton armHatch = new JoystickButton(codriverButtons, 8);
-        armHatch.whenPressed(cmds.arm().setPosition(ArmPosition.FRONT_CARGO_SHIP));
+        armHatch.whenPressed(cmds.arm().setPosition(ArmPosition.NEGATIVE_NINETY_DEGREES));
 
         //hood testing
         JoystickButton fwd = new JoystickButton(codriverButtons, 11);
