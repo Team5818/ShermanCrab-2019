@@ -33,7 +33,7 @@ public class ArmSet extends InstantCommand {
 
     public ArmSet(@Provided ArmController arm, ArmPosition pos) {
         this.arm = arm;
-        if(ArmController.FRONT) {
+        if (ArmController.FRONT) {
             this.pos = pos.ticksFront;
         } else {
             this.pos = pos.ticksBack;

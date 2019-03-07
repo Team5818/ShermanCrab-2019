@@ -29,7 +29,7 @@ public class HoodCommands {
     private final HoodDisablePIDCreator hoodDisablePIDCreator;
 
     @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator,  HoodDisablePIDCreator hoodDisablePIDCreator) {
+    public HoodCommands(HoodSetCreator hoodSetCreator, HoodDisablePIDCreator hoodDisablePIDCreator) {
         this.hoodSetCreator = hoodSetCreator;
         this.hoodDisablePIDCreator = hoodDisablePIDCreator;
     }

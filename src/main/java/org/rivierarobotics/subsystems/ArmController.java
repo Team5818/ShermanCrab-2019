@@ -104,7 +104,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setAngle(double angle) {
-        if(DEPLOY_PISTONS_OUT) {
+        if (DEPLOY_PISTONS_OUT) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
         }
 
@@ -123,7 +123,7 @@ public class ArmController extends Subsystem {
 
     public void setPower(double pwr) {
         PWR_MANUAL = pwr;
-        if(SAFE) {
+        if (SAFE) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 pidLoop.disable();
             }
@@ -141,7 +141,7 @@ public class ArmController extends Subsystem {
 
     public void stop() {
         SAFE = false;
-        if(pidLoop.isEnabled()) {
+        if (pidLoop.isEnabled()) {
             pidLoop.disable();
         }
         pidLoop.setSetpoint(getAngle());

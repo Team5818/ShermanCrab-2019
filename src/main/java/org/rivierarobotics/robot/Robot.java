@@ -101,13 +101,13 @@ public class Robot extends TimedRobot {
     }
 
     private void armSafety() {
-        if(globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degreesFront &&
+        if (globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degreesFront &&
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) &&
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT)) {
-            if(ArmController.PWR_MANUAL > 0) {
+            if (ArmController.PWR_MANUAL > 0) {
                 globalComponent.getArmController().stop();
             } else {
-                if(ArmController.PWR_MANUAL < 0) {
+                if (ArmController.PWR_MANUAL < 0) {
                     globalComponent.getArmController().setCoast();
                 }
                 ArmController.SAFE = true;

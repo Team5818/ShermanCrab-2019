@@ -20,16 +20,12 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
 
@@ -106,12 +102,12 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if(pwr != 0) {
+        if (pwr != 0) {
             pidLoop.disable();
         }
 
-        if(!pidLoop.isEnabled()) {
-            if(pwr == 0) {
+        if (!pidLoop.isEnabled()) {
+            if (pwr == 0) {
                 pidLoop.setSetpoint(getAngle());
                 pidLoop.enable();
             } else {

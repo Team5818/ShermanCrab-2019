@@ -110,10 +110,10 @@ public class DriveTrainSide {
     }
 
     public void setPower(double pwr) {
-        if(pwr != 0 && pidLoop.isEnabled()) {
+        if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
         }
-        if(!pidLoop.isEnabled()) {
+        if (!pidLoop.isEnabled()) {
             setMotorPower(pwr);
         }
     }
