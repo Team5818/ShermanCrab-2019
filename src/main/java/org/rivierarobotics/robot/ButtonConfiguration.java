@@ -100,29 +100,32 @@ public class ButtonConfiguration {
         JoystickButton clampClosed = new JoystickButton(codriverButtons, 5);
         clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
-        //arm
-        JoystickButton armRocketOne = new JoystickButton(codriverButtons, 12);
-        armRocketOne.whenPressed(cmds.arm().setPosition(ArmPosition.NINETY_DEGREES));
+        //hood & arm
+        JoystickButton selectFront = new JoystickButton(codriverLeft, 1);
+        selectFront.whenPressed(cmds.arm().setSideFront(true));
 
-        JoystickButton armRocketTwo = new JoystickButton(codriverButtons, 10);
-        armRocketTwo.whenPressed(cmds.arm().setPosition(ArmPosition.ZERO_DEGREES));
+        JoystickButton selectBack = new JoystickButton(codriverLeft, 2);
+        selectBack.whenPressed(cmds.arm().setSideFront(false));
 
-        JoystickButton armHatch = new JoystickButton(codriverButtons, 8);
-        armHatch.whenPressed(cmds.arm().setPosition(ArmPosition.NEGATIVE_NINETY_DEGREES));
+        JoystickButton rocketTwo = new JoystickButton(codriverButtons, 12);
+        rocketTwo.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.ROCKET_LEVEL_TWO),
+                cmds.arm().setSidedPosition(ArmPosition.ROCKET_LEVEL_TWO)));
 
-        //hood testing
-        JoystickButton fwd = new JoystickButton(codriverButtons, 11);
-        fwd.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.RESTING_ARM_ZERO),
-                cmds.arm().setPosition(ArmPosition.ZERO_DEGREES)));
+        JoystickButton rocketOne = new JoystickButton(codriverButtons, 10);
+        rocketOne.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setSidedPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
-        JoystickButton back = new JoystickButton(codriverButtons, 7);
-        back.whenPressed(cmds.hood().setPosition(HoodPosition.NEGATIVE_NINETY_ARM_ZERO));
+        JoystickButton cargoShip = new JoystickButton(codriverButtons, 8);
+        cargoShip.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.CARGO_SHIP),
+                cmds.arm().setSidedPosition(ArmPosition.CARGO_SHIP)));
 
-        JoystickButton zed = new JoystickButton(codriverButtons, 9);
-        zed.whenPressed(cmds.hood().setPosition(HoodPosition.RESTING_ARM_ZERO));
+        JoystickButton collect = new JoystickButton(codriverButtons, 11);
+        collect.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.COLLECT),
+                cmds.arm().setSidedPosition(ArmPosition.COLLECT)));
 
-        JoystickButton disablePID = new JoystickButton(codriverLeft, 1);
-        disablePID.whenPressed(cmds.hood().disablePID());
+        JoystickButton humanPlayerStation = new JoystickButton(codriverButtons, 9);
+        humanPlayerStation.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.HUMAN_PLAYER_STATION),
+                cmds.arm().setSidedPosition(ArmPosition.HUMAN_PLAYER_STATION)));
 
     }
 

@@ -97,11 +97,11 @@ public class Robot extends TimedRobot {
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
-        globalComponent.getDriveTrain().onDisable();
+        globalComponent.getDriveTrain().setBrake();
     }
 
     private void armSafety() {
-        if(globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degrees &&
+        if(globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degreesFront &&
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) &&
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT)) {
             if(ArmController.PWR_MANUAL > 0) {
@@ -114,7 +114,6 @@ public class Robot extends TimedRobot {
             }
         } else {
             ArmController.SAFE = true;
-
         }
         ArmController.DEPLOY_PISTONS_OUT = globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) ||
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT);

@@ -21,26 +21,21 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    STARTING_ANGLE(0),
-    RESTING_ARM_ZERO(1525),
-    NINETY_ARM_ZERO(1850),
-    NEGATIVE_NINETY_ARM_ZERO(-1200),
+    STARTING_ANGLE(0, 0),
+    RESTING_ARM_ZERO(1650, 1650),
+    NINETY_ARM_ZERO(1850, -1200),
 
-    FRONT_ROCKET_LEVEL_ONE(1647),
-    FRONT_ROCKET_LEVEL_TWO(4657),
-    FRONT_CARGO_SHIP(-1904),
-    FRONT_HUMAN_PLAYER_STATION(2117),
-    FRONT_COLLECT(2296),
+    ROCKET_LEVEL_ONE(1647, 3179),
+    ROCKET_LEVEL_TWO(4657, 600),
+    CARGO_SHIP(-1904, 146),
+    HUMAN_PLAYER_STATION(2117, 3181),
+    COLLECT(1600, 1700);
 
-    BACK_ROCKET_LEVEL_ONE(3179),
-    BACK_ROCKET_LEVEL_TWO(600),
-    BACK_CARGO_SHIP(146),
-    BACK_HUMAN_PLAYER_STATION(3181),
-    BACK_COLLECT(2866);
+    public final int ticksFront;
+    public final int ticksBack;
 
-    public final int ticks;
-
-    HoodPosition(int ticks) {
-        this.ticks = ticks;
+    HoodPosition(int ticksFront, int ticksBack) {
+        this.ticksFront = ticksFront;
+        this.ticksBack = ticksBack;
     }
 }

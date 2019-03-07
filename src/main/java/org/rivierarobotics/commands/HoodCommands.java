@@ -35,14 +35,10 @@ public class HoodCommands {
     }
 
     public final HoodSet setPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticks);
+        return hoodSetCreator.create(pos.ticksFront);
     }
 
     public final HoodSet setPosition(double pos) {
         return hoodSetCreator.create(pos);
-    }
-
-    public final HoodDisablePID disablePID() {
-        return hoodDisablePIDCreator.create();
     }
 }

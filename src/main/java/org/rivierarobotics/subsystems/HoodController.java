@@ -111,7 +111,13 @@ public class HoodController extends Subsystem {
         }
 
         if(!pidLoop.isEnabled()) {
-            rawSetPower(pwr);
+            if(pwr == 0) {
+                pidLoop.setSetpoint(getAngle());
+                pidLoop.enable();
+            } else {
+                pidLoop.disable();
+                rawSetPower(pwr);
+            }
         }
     }
 

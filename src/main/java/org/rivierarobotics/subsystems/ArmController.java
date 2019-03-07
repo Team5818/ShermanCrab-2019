@@ -46,6 +46,8 @@ public class ArmController extends Subsystem {
     public static double PWR_MANUAL = 0;
     public static boolean SAFE = true;
     public static boolean DEPLOY_PISTONS_OUT = true;
+    public static boolean FRONT = true;
+
     private static final double P;
     private static final double I;
     private static final double D;
@@ -55,7 +57,7 @@ public class ArmController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static final double GRAVITY_CONSTANT = -0.038;
-    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticks - ArmPosition.ZERO_DEGREES.ticks);
+    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
@@ -103,7 +105,7 @@ public class ArmController extends Subsystem {
 
     public void setAngle(double angle) {
         if(DEPLOY_PISTONS_OUT) {
-            angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticks);
+            angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
         }
 
         setBrake();
@@ -116,7 +118,7 @@ public class ArmController extends Subsystem {
     }
 
     public double getDegrees() {
-        return (getAngle() - ArmPosition.ZERO_DEGREES.ticks) * ANGLE_SCALE;
+        return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {

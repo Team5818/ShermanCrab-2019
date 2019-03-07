@@ -122,7 +122,7 @@ public class DriveTrainSide {
         talonMaster.set(pwr);
     }
 
-    public void onDisable() {
+    public void setBrake() {
         talonMaster.setNeutralMode(NeutralMode.Brake);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);

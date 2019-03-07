@@ -28,27 +28,37 @@ public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
     private ArmSetCreator armSetCreator;
     private ArmDisablePIDCreator armDisablePIDCreator;
+    private ArmSelectSideCreator armSelectSideCreator;
 
     @Inject
-    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmDisablePIDCreator armDisablePIDCreator) {
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmDisablePIDCreator armDisablePIDCreator, ArmSelectSideCreator armSelectSideCreator) {
         this.armSetPowerCreator = armSetPowerCreator;
         this.armSetCreator = armSetCreator;
         this.armDisablePIDCreator = armDisablePIDCreator;
+        this.armSelectSideCreator = armSelectSideCreator;
     }
 
     public ArmSetPower setPower(double pwr) {
         return armSetPowerCreator.create(pwr);
     }
 
-    public ArmSet setPosition(ArmPosition pos) {
-        return armSetCreator.create(pos.ticks);
+    public ArmSet setFrontPosition(ArmPosition pos) {
+        return armSetCreator.create(pos.ticksFront);
     }
 
-    public ArmSet setPosition(double pos) {
+    public ArmSet setBackPosition(ArmPosition pos) {
+        return armSetCreator.create(pos.ticksBack);
+    }
+
+    public ArmSet setRawPosition(double pos) {
         return armSetCreator.create(pos);
     }
 
-    public ArmDisablePID disablePID() {
-        return armDisablePIDCreator.create();
+    public ArmSet setSidedPosition(ArmPosition pos) {
+        return armSetCreator.create(pos);
+    }
+
+    public ArmSelectSide setSideFront(boolean side) {
+        return armSelectSideCreator.create(side);
     }
 }

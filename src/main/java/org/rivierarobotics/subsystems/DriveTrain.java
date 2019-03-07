@@ -65,9 +65,9 @@ public class DriveTrain extends Subsystem {
         return (left.getDistance() + right.getDistance()) / 2;
     }
 
-    public void onDisable() {
-        left.onDisable();
-        right.onDisable();
+    public void setBrake() {
+        left.setBrake();
+        right.setBrake();
     }
 
     @Override
