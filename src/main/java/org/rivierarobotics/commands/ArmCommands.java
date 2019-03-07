@@ -27,14 +27,12 @@ import javax.inject.Inject;
 public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
     private ArmSetCreator armSetCreator;
-    private ArmDisablePIDCreator armDisablePIDCreator;
     private ArmSelectSideCreator armSelectSideCreator;
 
     @Inject
-    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmDisablePIDCreator armDisablePIDCreator, ArmSelectSideCreator armSelectSideCreator) {
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmSelectSideCreator armSelectSideCreator) {
         this.armSetPowerCreator = armSetPowerCreator;
         this.armSetCreator = armSetCreator;
-        this.armDisablePIDCreator = armDisablePIDCreator;
         this.armSelectSideCreator = armSelectSideCreator;
     }
 
