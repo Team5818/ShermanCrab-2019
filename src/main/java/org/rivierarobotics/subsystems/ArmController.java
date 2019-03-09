@@ -45,7 +45,7 @@ public class ArmController extends Subsystem {
 
     public static double PWR_MANUAL = 0;
     public static boolean SAFE = true;
-    public static boolean DEPLOY_PISTONS_OUT = true;
+    public static boolean DEPLOY_PISTONS_OUT = false;
     public static boolean FRONT = true;
 
     private static final double P;

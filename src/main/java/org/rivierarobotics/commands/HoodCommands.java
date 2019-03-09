@@ -40,7 +40,7 @@ public class HoodCommands {
         return hoodSetCreator.create(pos.ticksBack);
     }
 
-    public final HoodSet setFrontPosition(double pos) {
+    public final HoodSet setRawPosition(double pos) {
         return hoodSetCreator.create(pos);
     }
 }
