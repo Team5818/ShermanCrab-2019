@@ -74,10 +74,10 @@ public class ButtonConfiguration {
 
         //tentacles
         double tentacleSpeed = 0.5;
-        JoystickButton tentaclesFwd = new JoystickButton(codriverRight, 1);
+        JoystickButton tentaclesFwd = new JoystickButton(driverRight, 1);
         tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
-        JoystickButton tentaclesBack = new JoystickButton(codriverRight, 2);
+        JoystickButton tentaclesBack = new JoystickButton(driverRight, 2);
         tentaclesBack.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
 
         //hatch
@@ -101,32 +101,46 @@ public class ButtonConfiguration {
         clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
         //hood & arm
-        JoystickButton selectFront = new JoystickButton(codriverLeft, 1);
-        selectFront.whenPressed(cmds.arm().setSideFront(true));
 
-        JoystickButton selectBack = new JoystickButton(codriverLeft, 2);
-        selectBack.whenPressed(cmds.arm().setSideFront(false));
+        JoystickButton frontRocketTwo = new JoystickButton(codriverButtons, 12);
+        frontRocketTwo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
-        JoystickButton rocketTwo = new JoystickButton(codriverButtons, 12);
-        rocketTwo.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.ROCKET_LEVEL_TWO),
-                cmds.arm().setSidedPosition(ArmPosition.ROCKET_LEVEL_TWO)));
+        JoystickButton backRocketTwo = new JoystickButton(codriverButtons, 11);
+        backRocketTwo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_TWO),
+                cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_TWO)));
+        
+        JoystickButton frontRocketOne = new JoystickButton(codriverButtons, 10);
+        frontRocketOne.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
-        JoystickButton rocketOne = new JoystickButton(codriverButtons, 10);
-        rocketOne.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.ROCKET_LEVEL_ONE),
-                cmds.arm().setSidedPosition(ArmPosition.ROCKET_LEVEL_ONE)));
+        JoystickButton backRocketOne = new JoystickButton(codriverButtons, 9);
+        backRocketOne.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
-        JoystickButton cargoShip = new JoystickButton(codriverButtons, 8);
-        cargoShip.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.CARGO_SHIP),
-                cmds.arm().setSidedPosition(ArmPosition.CARGO_SHIP)));
+        JoystickButton frontCargo = new JoystickButton(codriverButtons, 8);
+        frontCargo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.CARGO_SHIP),
+                cmds.arm().setFrontPosition(ArmPosition.CARGO_SHIP)));
 
-        JoystickButton collect = new JoystickButton(codriverButtons, 11);
-        collect.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.COLLECT),
-                cmds.arm().setSidedPosition(ArmPosition.COLLECT)));
+        JoystickButton backCargo = new JoystickButton(codriverButtons, 7);
+        backCargo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.CARGO_SHIP),
+                cmds.arm().setBackPosition(ArmPosition.CARGO_SHIP)));
 
-        JoystickButton humanPlayerStation = new JoystickButton(codriverButtons, 9);
-        humanPlayerStation.whenPressed(inOrder(cmds.hood().setPosition(HoodPosition.HUMAN_PLAYER_STATION),
-                cmds.arm().setSidedPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+        JoystickButton frontPlayerStation = new JoystickButton(codriverButtons, 6);
+        frontPlayerStation.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.HUMAN_PLAYER_STATION),
+                cmds.arm().setFrontPosition(ArmPosition.HUMAN_PLAYER_STATION)));
 
+        JoystickButton backPlayerStation = new JoystickButton(codriverButtons, 5);
+        backPlayerStation.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.HUMAN_PLAYER_STATION),
+                cmds.arm().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+
+        JoystickButton frontCollect = new JoystickButton(codriverButtons, 3);
+        frontCollect.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.COLLECT),
+                cmds.arm().setFrontPosition(ArmPosition.COLLECT)));
+
+        JoystickButton backCollect = new JoystickButton(codriverButtons, 2);
+        backCollect.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.COLLECT),
+                cmds.arm().setBackPosition(ArmPosition.COLLECT)));
     }
 
     public void initTest() {

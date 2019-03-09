@@ -32,11 +32,15 @@ public class HoodCommands {
         this.hoodSetCreator = hoodSetCreator;
     }
 
-    public final HoodSet setPosition(HoodPosition pos) {
+    public final HoodSet setFrontPosition(HoodPosition pos) {
         return hoodSetCreator.create(pos.ticksFront);
     }
 
-    public final HoodSet setPosition(double pos) {
+    public final HoodSet setBackPosition(HoodPosition pos) {
+        return hoodSetCreator.create(pos.ticksBack);
+    }
+
+    public final HoodSet setFrontPosition(double pos) {
         return hoodSetCreator.create(pos);
     }
 }
