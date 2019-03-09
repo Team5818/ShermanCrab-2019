@@ -21,16 +21,16 @@
 package org.rivierarobotics.subsystems;
 
 public enum ArmPosition {
-    ZERO_DEGREES(0, 0),
-    NINETY_DEGREES(90, -90),
-    FORTY_FIVE_DEGREES(45, -45),
+    ZERO_DEGREES(0),
+    NINETY_DEGREES(90),
+    FORTY_FIVE_DEGREES(45),
 
-    ROCKET_LEVEL_ONE(62, -62),
-    ROCKET_LEVEL_TWO(25, -25),
-    CARGO_SHIP(40, -40),
-    HUMAN_PLAYER_STATION(22.66, -26.37),
-    COLLECT(97.06, -93.32),
-    HATCH_LIMIT(0, 0);
+    ROCKET_LEVEL_ONE(62),
+    ROCKET_LEVEL_TWO(25),
+    CARGO_SHIP(40),
+    HUMAN_PLAYER_STATION(24),
+    COLLECT(95),
+    HATCH_LIMIT(0);
 
     public final double degreesFront;
     public final double degreesBack;
@@ -40,9 +40,9 @@ public enum ArmPosition {
     private final static double TICKS_AT_NINETY = 2020;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;
 
-    ArmPosition(double degreesFront, double degreesBack) {
-        this.degreesFront = degreesFront;
-        this.degreesBack = degreesBack;
+    ArmPosition(double degrees) {
+        this.degreesFront = degrees;
+        this.degreesBack = -degrees;
         this.ticksFront = (degreesFront * TICKS_TO_DEGREES) + TICKS_AT_ZERO;
         this.ticksBack = (degreesBack * TICKS_TO_DEGREES) + TICKS_AT_ZERO;
     }

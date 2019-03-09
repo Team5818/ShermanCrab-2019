@@ -108,7 +108,7 @@ public class ButtonConfiguration {
         JoystickButton backRocketTwo = new JoystickButton(codriverButtons, 1);
         backRocketTwo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_TWO),
                 cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_TWO)));
-        
+
         JoystickButton frontRocketOne = new JoystickButton(codriverButtons, 5);
         frontRocketOne.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
                 cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_ONE)));

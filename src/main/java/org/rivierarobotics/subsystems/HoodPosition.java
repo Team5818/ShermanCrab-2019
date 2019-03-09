@@ -38,4 +38,30 @@ public enum HoodPosition {
         this.ticksFront = ticksFront;
         this.ticksBack = ticksBack;
     }
+    /*
+    //degrees based hood preset system, still WIP
+    RESTING_ARM_ZERO(1650, 1650),
+    NINETY_ARM_ZERO(1850, -1200),
+
+    ROCKET_LEVEL_ONE(1647, 1941),
+    ROCKET_LEVEL_TWO(3970, -397),
+    CARGO_SHIP(4545, -880),
+    HUMAN_PLAYER_STATION(2117, 3181),
+    COLLECT(1600, 1700);
+
+    public final double degreesFront;
+    public final double degreesBack;
+    public final double ticksFront;
+    public final double ticksBack;
+    public final static double TICKS_AT_RESTING_ZERO = 1650;
+    private final static double TICKS_AT_NINETY = 1975;
+    public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_RESTING_ZERO) / 90;
+
+    HoodPosition(double degrees) {
+        this.degreesFront = degrees;
+        this.degreesBack = -degrees;
+        this.ticksFront = (degreesFront * TICKS_TO_DEGREES) + TICKS_AT_RESTING_ZERO;
+        this.ticksBack = (degreesBack * TICKS_TO_DEGREES) + TICKS_AT_RESTING_ZERO;
+    }
+    */
 }
