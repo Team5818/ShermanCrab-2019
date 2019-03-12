@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -34,6 +35,10 @@ public class HatchController extends Subsystem {
     private final Solenoid deployPistonRight;
     private final Solenoid climbPiston;
 
+    //private final DigitalInput leftSwitch;
+    //private final DigitalInput rightSwitch;
+    //private final Solenoid triangleLED;
+
     @Inject
     public HatchController() {
         clampPiston = new Solenoid(1);
@@ -41,6 +46,10 @@ public class HatchController extends Subsystem {
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
         climbPiston = new Solenoid(6);
+
+        //leftSwitch = new DigitalInput(5);
+        //rightSwitch = new DigitalInput(7);
+        //triangleLED = new Solenoid(0);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -69,6 +78,15 @@ public class HatchController extends Subsystem {
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
+    }
+
+    public boolean getTriangleEngaged() {
+        return false;
+        //return leftSwitch.get() && rightSwitch.get();
+    }
+
+    public void setTriangleLED(boolean state) {
+      //  triangleLED.set(state);
     }
 
     @Override

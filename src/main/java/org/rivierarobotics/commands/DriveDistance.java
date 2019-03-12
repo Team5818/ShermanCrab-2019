@@ -33,7 +33,6 @@ public class DriveDistance extends Command {
     private double startDistance;
     private double currentDistance;
     private double calcDistance;
-    private double calcCurrentDistance;
 
     public DriveDistance(@Provided DriveTrain dt, double distance) {
         this.distance = distance;

@@ -73,7 +73,7 @@ public class ButtonConfiguration {
         shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
         //tentacles
-        double tentacleSpeed = 0.5;
+        double tentacleSpeed = 0.65;
         JoystickButton tentaclesFwd = new JoystickButton(driverRight, 1);
         tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
@@ -89,9 +89,13 @@ public class ButtonConfiguration {
         deployClose.toggleWhenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
                 cmds.piston().retract(Piston.DEPLOY_RIGHT)));
 
-        JoystickButton hatchPush = new JoystickButton(codriverButtons, 7);
+        JoystickButton hatchPush = new JoystickButton(codriverButtons, 8);
         hatchPush.whenPressed(cmds.hatch().push());
         hatchPush.whenReleased(cmds.hatch().pushCleanup());
+
+        JoystickButton sneakySneakyPush = new JoystickButton(driverButtons, 4);
+        sneakySneakyPush.whenPressed(cmds.piston().extend(Piston.PUSH));
+        sneakySneakyPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         //clamp
         JoystickButton clampOpen = new JoystickButton(codriverRight, 1);
@@ -141,7 +145,7 @@ public class ButtonConfiguration {
         backCollect.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.COLLECT),
                 cmds.arm().setBackPosition(ArmPosition.COLLECT)));
 
-        JoystickButton zeroArm = new JoystickButton(codriverButtons, 8);
+        JoystickButton zeroArm = new JoystickButton(codriverButtons, 7);
         zeroArm.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
     }

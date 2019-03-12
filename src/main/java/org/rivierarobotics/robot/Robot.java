@@ -20,6 +20,9 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.cscore.MjpegServer;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -27,9 +30,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
-import org.rivierarobotics.subsystems.ArmController;
-import org.rivierarobotics.subsystems.ArmPosition;
-import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.*;
 
 public class Robot extends TimedRobot {
     private GlobalComponent globalComponent;
@@ -50,7 +51,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
-        CameraServer.getInstance().startAutomaticCapture();
+        CameraServer.getInstance().startAutomaticCapture().setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
     }
 
     @Override
@@ -60,14 +61,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
-        driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
-        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
-        armEncoder.setDouble(globalComponent.getArmController().getAngle());
-        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
-        armOut.setDouble(globalComponent.getArmController().getDegrees());
-
+        displayShuffleboard();
+        currentLimit();
         armSafety();
+        hatchLED();
         Scheduler.getInstance().run();
     }
 
@@ -116,5 +113,28 @@ public class Robot extends TimedRobot {
         }
         ArmController.DEPLOY_PISTONS_OUT = globalComponent.getHatchController().getPistonState(Piston.DEPLOY_LEFT) ||
                 globalComponent.getHatchController().getPistonState(Piston.DEPLOY_RIGHT);
+    }
+
+    private void hatchLED() {
+        globalComponent.getHatchController().setTriangleLED(globalComponent.getHatchController().getTriangleEngaged());
+    }
+
+    private void displayShuffleboard() {
+        driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
+        driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
+        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
+        armEncoder.setDouble(globalComponent.getArmController().getAngle());
+        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
+        armOut.setDouble(globalComponent.getArmController().getDegrees());
+    }
+
+    private void currentLimit() {
+        if(globalComponent.getShifter().getGearState() == Gear.HIGH.state) {
+            globalComponent.getDriveTrain().getLeft().setMaxCurrent(50);
+            globalComponent.getDriveTrain().getRight().setMaxCurrent(50);
+        } else {
+            globalComponent.getDriveTrain().getLeft().setMaxCurrent(100);
+            globalComponent.getDriveTrain().getRight().setMaxCurrent(100);
+        }
     }
 }

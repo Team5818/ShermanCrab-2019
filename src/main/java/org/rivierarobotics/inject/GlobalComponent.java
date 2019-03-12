@@ -39,6 +39,7 @@ public abstract class GlobalComponent {
         getTentacleController();
         getButtonConfiguration();
         getPigeonGyro();
+        getShifter();
     }
 
     public abstract DriveTrain getDriveTrain();
@@ -54,4 +55,6 @@ public abstract class GlobalComponent {
     public abstract ButtonConfiguration getButtonConfiguration();
 
     public abstract PigeonGyro getPigeonGyro();
+
+    public abstract Shifter getShifter();
 }
