@@ -84,8 +84,10 @@ public class HoodController extends Subsystem {
 
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
+
         // pidLoop.setContinuous(true);
-        pidLoop.setOutputRange(-0.4, 0.4);
+        //TODO discuss w/ drivers over hood power limits
+        pidLoop.setOutputRange(-0.7, 0.7);
     }
 
     public void setAngle(double angle) {
@@ -123,10 +125,6 @@ public class HoodController extends Subsystem {
 
     public PIDController getPIDLoop() {
         return pidLoop;
-    }
-
-    public void stop() {
-        setPower(0.0);
     }
 
     @Override

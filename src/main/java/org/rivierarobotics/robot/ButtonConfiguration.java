@@ -93,9 +93,9 @@ public class ButtonConfiguration {
         hatchPush.whenPressed(cmds.hatch().push());
         hatchPush.whenReleased(cmds.hatch().pushCleanup());
 
-        JoystickButton sneakySneakyPush = new JoystickButton(driverButtons, 4);
-        sneakySneakyPush.whenPressed(cmds.piston().extend(Piston.PUSH));
-        sneakySneakyPush.whenReleased(cmds.piston().retract(Piston.PUSH));
+        JoystickButton sneakyPush = new JoystickButton(driverButtons, 4);
+        sneakyPush.whenPressed(cmds.piston().extend(Piston.PUSH));
+        sneakyPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         //clamp
         JoystickButton clampOpen = new JoystickButton(codriverRight, 1);
