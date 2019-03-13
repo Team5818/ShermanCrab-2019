@@ -21,23 +21,22 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    //TODO convert to degrees or make system more intuitive to enter data
-    //TODO make everything relative to resting position, accounting for hood slop
-    STARTING_ANGLE(0, 0),
-    RESTING_ARM_ZERO(1650, 1650),
-    NINETY_ARM_ZERO(RESTING_ARM_ZERO.ticksFront + 200, RESTING_ARM_ZERO.ticksBack - 2850),
+    RESTING_ARM_ZERO(0, 0),
+    NINETY_ARM_ZERO(200, -2850),
 
-    ROCKET_LEVEL_ONE(RESTING_ARM_ZERO.ticksFront - 3, RESTING_ARM_ZERO.ticksBack + 291),
-    ROCKET_LEVEL_TWO(RESTING_ARM_ZERO.ticksFront + 1786, RESTING_ARM_ZERO.ticksBack - 2047),
-    CARGO_SHIP(RESTING_ARM_ZERO.ticksFront + 2895, RESTING_ARM_ZERO.ticksBack - 2530),
-    HUMAN_PLAYER_STATION(RESTING_ARM_ZERO.ticksFront + 467, RESTING_ARM_ZERO.ticksBack + 1531),
-    COLLECT(RESTING_ARM_ZERO.ticksFront - 50, RESTING_ARM_ZERO.ticksBack + 50);
+    ROCKET_LEVEL_ONE(-3, 291),
+    ROCKET_LEVEL_TWO(1786, -2047),
+    CARGO_SHIP(2895, -2530),
+    HUMAN_PLAYER_STATION(467, 1531),
+    COLLECT(-50, 50);
 
     public final int ticksFront;
     public final int ticksBack;
+    //TODO [CompBot] [Measurement] modify restingArmZero to resting angle of hood
+    private final int restingArmZero = 1650;
 
     HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = ticksFront;
-        this.ticksBack = ticksBack;
+        this.ticksFront = restingArmZero + ticksFront;
+        this.ticksBack = restingArmZero + ticksBack;
     }
 }

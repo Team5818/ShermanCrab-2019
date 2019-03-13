@@ -101,6 +101,7 @@ public class DriveTrainSide {
     }
 
     public int getTicks() {
+        //TODO [PracticeBot] [Testing] determine if distanceInvert is needed for encoder positions and modify as necessary
         return talonMaster.getSensorCollection().getQuadraturePosition() * distanceInvert;
     }
 
@@ -124,13 +125,15 @@ public class DriveTrainSide {
     }
 
     public void setBrake() {
+        //TODO [PracticeBot] [Software] fix motor grinding noises w/o setting brake mode or only setting once
         talonMaster.setNeutralMode(NeutralMode.Brake);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setMaxCurrent(int maxCurrent) {
-        if(!GEAR_LIMITED) {
+        //TODO [PracticeBot] [Testing] test current limits in high and low gear
+        if (!GEAR_LIMITED) {
             talonMaster.configContinuousCurrentLimit(maxCurrent);
             sparkSlaveOne.setSmartCurrentLimit(maxCurrent);
             sparkSlaveTwo.setSmartCurrentLimit(maxCurrent);

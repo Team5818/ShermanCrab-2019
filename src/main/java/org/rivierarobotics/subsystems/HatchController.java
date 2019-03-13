@@ -20,7 +20,6 @@
 
 package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -35,12 +34,15 @@ public class HatchController extends Subsystem {
     private final Solenoid deployPistonRight;
     private final Solenoid climbPiston;
 
+    //TODO [PracticeBot] [Software] uncomment limit switch code in HatchController
+    //TODO [PracticeBot] [CompBot] [Testing] ensure that limit switch logic works
     //private final DigitalInput leftSwitch;
     //private final DigitalInput rightSwitch;
     //private final Solenoid triangleLED;
 
     @Inject
     public HatchController() {
+        //TODO [CompBot] [Testing] ensure that all solenoids are assigned correctly
         clampPiston = new Solenoid(1);
         pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
@@ -86,7 +88,7 @@ public class HatchController extends Subsystem {
     }
 
     public void setTriangleLED(boolean state) {
-      //  triangleLED.set(state);
+        //  triangleLED.set(state);
     }
 
     @Override

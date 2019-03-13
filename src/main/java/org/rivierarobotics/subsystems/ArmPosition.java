@@ -29,13 +29,13 @@ public enum ArmPosition {
     ROCKET_LEVEL_TWO(25),
     CARGO_SHIP(40),
     HUMAN_PLAYER_STATION(24),
-    COLLECT(95),
-    HATCH_LIMIT(0);
+    COLLECT(95);
 
     public final double degreesFront;
     public final double degreesBack;
     public final double ticksFront;
     public final double ticksBack;
+    //TODO [CompBot] [Measurement] modify TICKS_AT_ZERO and TICKS_AT_NINETY for arm
     public final static double TICKS_AT_ZERO = 1071;
     private final static double TICKS_AT_NINETY = 2020;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;

@@ -28,7 +28,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.Gear;
+import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
     private GlobalComponent globalComponent;
@@ -127,12 +130,10 @@ public class Robot extends TimedRobot {
     }
 
     private void currentLimit() {
-        if(globalComponent.getShifter().getGearState() == Gear.HIGH.state) {
-            globalComponent.getDriveTrain().getLeft().setMaxCurrent(50);
-            globalComponent.getDriveTrain().getRight().setMaxCurrent(50);
+        if (globalComponent.getShifter().getGearState() == Gear.HIGH.state) {
+            globalComponent.getDriveTrain().setMaxCurrent(50, 50);
         } else {
-            globalComponent.getDriveTrain().getLeft().setMaxCurrent(100);
-            globalComponent.getDriveTrain().getRight().setMaxCurrent(100);
+            globalComponent.getDriveTrain().setMaxCurrent(100, 100);
         }
     }
 }
