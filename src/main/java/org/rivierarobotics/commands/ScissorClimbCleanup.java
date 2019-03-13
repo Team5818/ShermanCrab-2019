@@ -18,25 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum HoodPosition {
-    //TODO [IMPORTANT] [PracticeBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
-    RESTING_ARM_ZERO(0, 0),
-    NINETY_ARM_ZERO(200, -2850),
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.WinchPosition;
 
-    ROCKET_LEVEL_ONE(-3, 291),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2530),
-    HUMAN_PLAYER_STATION(467, 1531),
-    COLLECT(-50, 50);
+import javax.inject.Inject;
 
-    public final int ticksFront;
-    public final int ticksBack;
-    private final int restingArmZero = -1205;
+public class ScissorClimbCleanup extends CommandGroup {
 
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+    @Inject
+    public ScissorClimbCleanup(PistonCommands piston, ArmCommands arm, WinchCommands winch, DriveCommands drive) {
+        addSequential(winch.set(WinchPosition.IN));
+        addSequential(drive.atPower(0.0, true));
+        addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
     }
 }

@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         globalComponent.getButtonConfiguration().initTeleop();
+        //TODO [PracticeBot] [Software] uncomment following code for auto engaging clamp pistons when entering enabled
+        //globalComponent.getHatchController().retractPiston(Piston.CLAMP);
     }
 
     @Override
@@ -91,6 +93,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        globalComponent.getHatchController().extendPiston(Piston.CLAMP);
+
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();

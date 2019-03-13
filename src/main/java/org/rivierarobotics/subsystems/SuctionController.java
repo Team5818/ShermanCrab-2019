@@ -22,22 +22,25 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import org.rivierarobotics.commands.HoodControl;
+import org.rivierarobotics.commands.ArmControl;
+import org.rivierarobotics.commands.SuctionMotorIdle;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
-public class HoodController extends Subsystem {
-    private Provider<HoodControl> command;
-    private final WPI_TalonSRX hood;
-    private PIDController pidLoop;
+public class SuctionController extends Subsystem {
+    private Provider<SuctionMotorIdle> command;
+    private WPI_TalonSRX suction;
 
     private static final double P;
     private static final double I;
@@ -47,78 +50,87 @@ public class HoodController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static double TICKS_TO_DEGREES;
+    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
+    private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
+        return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
     }
 
     static {
-        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
-        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
-
-        P = ezWidget("P", 0.01).getEntry().getDouble(0.01);
+        P = ezWidget("P", 0.0005).getEntry().getDouble(0.0005);
         System.err.println("P: " + P);
 
-        I = ezWidget("I", 0.0).getEntry().getDouble(0);
+        I = ezWidget("I", 0).getEntry().getDouble(0);
         System.err.println("I: " + I);
 
         D = ezWidget("D", 0.0).getEntry().getDouble(0);
         System.err.println("D: " + D);
 
-        F = ezWidget("F", 0.0).getEntry().getDouble(0.0);
+        F = ezWidget("F", 0.0).getEntry().getDouble(0);
         System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC / 10;
+        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
         System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
 
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC / 10;
+        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
         System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
     @Inject
-    public HoodController(Provider<HoodControl> command, int h) {
-        hood = new WPI_TalonSRX(h);
-        this.command = command;
+    public SuctionController(Provider<SuctionMotorIdle> command, int ch) {
+        suction = new WPI_TalonSRX(ch);
+        suction.setInverted(false);
+        suction.setNeutralMode(NeutralMode.Coast);
 
-        hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        // pidLoop.setContinuous(true);
-        pidLoop.setOutputRange(-0.7, 0.7);
+        this.command = command;
     }
 
     public void setAngle(double angle) {
+        suction.setNeutralMode(NeutralMode.Brake);
         pidLoop.setSetpoint(angle);
         pidLoop.enable();
     }
 
-    public double getAngle() {
-        return hood.getSensorCollection().getPulseWidthPosition();
+    public int getAngle() {
+        return suction.getSensorCollection().getPulseWidthPosition();
     }
 
     public double getDegrees() {
-        return (getAngle() / TICKS_TO_DEGREES);
+        return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {
-        //TODO [PracticeBot] [Software] add hood gravity offset on manual mode
-        if (pwr != 0) {
+        if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
         }
-
         if (!pidLoop.isEnabled()) {
             rawSetPower(pwr);
         }
     }
 
-    public void rawSetPower(double pwr) {
-        hood.set(pwr);
+    private void rawSetPower(double pwr) {
+        suction.set(pwr);
+    }
+
+    public void stop() {
+        if (pidLoop.isEnabled()) {
+            pidLoop.disable();
+        }
+        pidLoop.setSetpoint(getAngle());
+        pidLoop.enable();
+        suction.setNeutralMode(NeutralMode.Brake);
     }
 
     public PIDController getPIDLoop() {
         return pidLoop;
+    }
+
+    public WPI_TalonSRX getSuction() {
+        return suction;
     }
 
     @Override

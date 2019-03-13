@@ -101,7 +101,6 @@ public class DriveTrainSide {
     }
 
     public int getTicks() {
-        //TODO [PracticeBot] [Testing] determine if distanceInvert is needed for encoder positions and modify as necessary
         return talonMaster.getSensorCollection().getQuadraturePosition() * distanceInvert;
     }
 

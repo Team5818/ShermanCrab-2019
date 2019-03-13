@@ -20,23 +20,16 @@
 
 package org.rivierarobotics.subsystems;
 
-public enum HoodPosition {
-    //TODO [IMPORTANT] [PracticeBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
-    RESTING_ARM_ZERO(0, 0),
-    NINETY_ARM_ZERO(200, -2850),
+public enum SuctionMotorPosition {
+    ZERO_DEGREES(0),
+    NINETY_DEGREES(0),
+    ONE_HUNDRED_THIRTY_FIVE_DEGREES(0),
+    CLIMB_HOLD(0),
+    CLIMB_INIT(0);
 
-    ROCKET_LEVEL_ONE(-3, 291),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2530),
-    HUMAN_PLAYER_STATION(467, 1531),
-    COLLECT(-50, 50);
+    public final int ticks;
 
-    public final int ticksFront;
-    public final int ticksBack;
-    private final int restingArmZero = -1205;
-
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+    SuctionMotorPosition(int ticks) {
+        this.ticks = ticks;
     }
 }

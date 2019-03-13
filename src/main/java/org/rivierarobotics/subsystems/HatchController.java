@@ -32,13 +32,18 @@ public class HatchController extends Subsystem {
     private final Solenoid pushPiston;
     private final Solenoid deployPistonLeft;
     private final Solenoid deployPistonRight;
+
     private final Solenoid climbPiston;
+    private final Solenoid lockClimbPiston;
+    private final Solenoid helperClimbPiston;
 
     //TODO [PracticeBot] [Software] uncomment limit switch code in HatchController
     //TODO [PracticeBot] [CompBot] [Testing] ensure that limit switch logic works
     //private final DigitalInput leftSwitch;
     //private final DigitalInput rightSwitch;
     //private final Solenoid triangleLED;
+
+
 
     @Inject
     public HatchController() {
@@ -47,7 +52,12 @@ public class HatchController extends Subsystem {
         pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
+        //climbPiston for use with piston climb
         climbPiston = new Solenoid(6);
+
+        //lockClimbPiston & helperClimbPiston for use with scissor climb
+        lockClimbPiston = new Solenoid(6);
+        helperClimbPiston = new Solenoid(6);
 
         //leftSwitch = new DigitalInput(5);
         //rightSwitch = new DigitalInput(7);
@@ -65,6 +75,10 @@ public class HatchController extends Subsystem {
             return deployPistonRight;
         } else if (piston == Piston.CLIMB) {
             return climbPiston;
+        } else if (piston == Piston.HELPER_CLIMB) {
+            return helperClimbPiston;
+        } else if (piston == Piston.LOCK_CLIMB) {
+            return lockClimbPiston;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }

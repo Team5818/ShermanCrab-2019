@@ -40,6 +40,8 @@ public abstract class GlobalComponent {
         getButtonConfiguration();
         getPigeonGyro();
         getShifter();
+        getSuctionMotorController();
+        getWinchController();
     }
 
     public abstract DriveTrain getDriveTrain();
@@ -57,4 +59,8 @@ public abstract class GlobalComponent {
     public abstract PigeonGyro getPigeonGyro();
 
     public abstract Shifter getShifter();
+
+    public abstract SuctionController getSuctionMotorController();
+
+    public abstract WinchController getWinchController();
 }

@@ -18,25 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum HoodPosition {
-    //TODO [IMPORTANT] [PracticeBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
-    RESTING_ARM_ZERO(0, 0),
-    NINETY_ARM_ZERO(200, -2850),
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import org.rivierarobotics.subsystems.SuctionController;
+import org.rivierarobotics.subsystems.SuctionMotorPosition;
 
-    ROCKET_LEVEL_ONE(-3, 291),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2530),
-    HUMAN_PLAYER_STATION(467, 1531),
-    COLLECT(-50, 50);
+import javax.inject.Inject;
 
-    public final int ticksFront;
-    public final int ticksBack;
-    private final int restingArmZero = -1205;
+public class SuctionMotorIdle extends InstantCommand {
+    private final SuctionController suction;
 
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+    @Inject
+    public SuctionMotorIdle(SuctionController suction) {
+        this.suction = suction;
+        requires(suction);
+    }
+
+    @Override
+    protected void execute() {
+       suction.setAngle(SuctionMotorPosition.NINETY_DEGREES.ticks);
     }
 }

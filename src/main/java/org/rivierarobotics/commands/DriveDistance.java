@@ -49,7 +49,6 @@ public class DriveDistance extends Command {
 
     @Override
     protected void execute() {
-        //TODO [PracticeBot] [Software] [Testing] add DriveDistance button and test command accordingly
         currentDistance = dt.getDistance();
     }
 

@@ -18,25 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum HoodPosition {
-    //TODO [IMPORTANT] [PracticeBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
-    RESTING_ARM_ZERO(0, 0),
-    NINETY_ARM_ZERO(200, -2850),
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.WinchPosition;
 
-    ROCKET_LEVEL_ONE(-3, 291),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2530),
-    HUMAN_PLAYER_STATION(467, 1531),
-    COLLECT(-50, 50);
+@GenerateCreator
+public class WinchSet extends InstantCommand {
+    private final ArmController arm;
+    private final WinchPosition pos;
 
-    public final int ticksFront;
-    public final int ticksBack;
-    private final int restingArmZero = -1205;
+    public WinchSet(@Provided ArmController arm, WinchPosition pos) {
+        this.arm = arm;
+        this.pos = pos;
+        requires(arm);
+    }
 
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+    @Override
+    protected void execute() {
+        arm.setAngle(pos.ticks);
     }
 }
