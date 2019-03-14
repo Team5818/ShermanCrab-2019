@@ -63,7 +63,6 @@ public class ButtonConfiguration {
     }
 
     public void initTeleop() {
-        //TODO [CompBot] [Testing] ensure that all buttons work correctly
         clearButtons();
 
         //shift
@@ -152,7 +151,6 @@ public class ButtonConfiguration {
     }
 
     public void initTest() {
-        //TODO [PracticeBot] [Software] get test mode buttons to work
         clearButtons();
         for (int i = 1; i <= 6; i++) {
             DoubleConsumer out = TestControllers.get(i)::set;

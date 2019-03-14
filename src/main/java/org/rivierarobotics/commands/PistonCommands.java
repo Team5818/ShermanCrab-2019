@@ -23,16 +23,13 @@ package org.rivierarobotics.commands;
 import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class PistonCommands {
     private final ExtendPistonCreator extendPistonCreator;
     private final RetractPistonCreator retractPistonCreator;
 
-
     @Inject
-    public PistonCommands(ExtendPistonCreator extendPistonCreator,
-                          RetractPistonCreator retractPistonCreator) {
+    public PistonCommands(ExtendPistonCreator extendPistonCreator, RetractPistonCreator retractPistonCreator) {
         this.extendPistonCreator = extendPistonCreator;
         this.retractPistonCreator = retractPistonCreator;
     }

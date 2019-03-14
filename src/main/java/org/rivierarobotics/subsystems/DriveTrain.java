@@ -70,11 +70,6 @@ public class DriveTrain extends Subsystem {
         right.setBrake();
     }
 
-    public void setMaxCurrent(int leftAmps, int rightAmps) {
-        left.setMaxCurrent(leftAmps);
-        right.setMaxCurrent(rightAmps);
-    }
-
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(command.get());

@@ -86,6 +86,7 @@ public class HoodController extends Subsystem {
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         // pidLoop.setContinuous(true);
+        //TODO discuss w/ drivers over hood power limits
         pidLoop.setOutputRange(-0.7, 0.7);
     }
 
@@ -103,13 +104,18 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        //TODO [PracticeBot] [Software] add hood gravity offset on manual mode
         if (pwr != 0) {
             pidLoop.disable();
         }
 
         if (!pidLoop.isEnabled()) {
-            rawSetPower(pwr);
+            if (pwr == 0) {
+                pidLoop.setSetpoint(getAngle());
+                pidLoop.enable();
+            } else {
+                pidLoop.disable();
+                rawSetPower(pwr);
+            }
         }
     }
 

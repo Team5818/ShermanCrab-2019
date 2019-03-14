@@ -28,24 +28,38 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class HatchController extends Subsystem {
+public class PistonController extends Subsystem {
     private final Solenoid clampPiston;
     private final Solenoid pushPiston;
     private final Solenoid deployPistonLeft;
     private final Solenoid deployPistonRight;
-    private final Solenoid climbPiston;
 
-    //private final DigitalInput leftSwitch;
-    //private final DigitalInput rightSwitch;
-    //private final Solenoid triangleLED;
+    //TODO [PracticeBot] [Software] make climb solenoids final if implemented
+    /*private Solenoid climbPiston;
+    private Solenoid lockClimbPiston;
+    private Solenoid helperClimbPiston;
+
+    //TODO [PracticeBot] [Software] uncomment limit switch code in PistonController, make limit switches final
+    //TODO [PracticeBot] [CompBot] [Testing] ensure that limit switch logic works
+    private DigitalInput leftSwitch;
+    private DigitalInput rightSwitch;
+    private Solenoid triangleLED;
+*/
+
 
     @Inject
-    public HatchController() {
+    public PistonController() {
+        //TODO [CompBot] [Testing] ensure that all solenoids are assigned correctly
         clampPiston = new Solenoid(1);
         pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
-        climbPiston = new Solenoid(6);
+        //climbPiston for use with piston climb
+        //climbPiston = new Solenoid(6);
+
+        //lockClimbPiston & helperClimbPiston for use with scissor climb
+        //lockClimbPiston = new Solenoid(6);
+        //helperClimbPiston = new Solenoid(6);
 
         //leftSwitch = new DigitalInput(5);
         //rightSwitch = new DigitalInput(7);
@@ -61,9 +75,13 @@ public class HatchController extends Subsystem {
             return deployPistonLeft;
         } else if (piston == Piston.DEPLOY_RIGHT) {
             return deployPistonRight;
-        } else if (piston == Piston.CLIMB) {
+        } /*else if (piston == Piston.CLIMB) {
             return climbPiston;
-        } else {
+        } else if (piston == Piston.HELPER_CLIMB) {
+            return helperClimbPiston;
+        } else if (piston == Piston.LOCK_CLIMB) {
+            return lockClimbPiston;
+        } */else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }
     }
@@ -86,7 +104,7 @@ public class HatchController extends Subsystem {
     }
 
     public void setTriangleLED(boolean state) {
-      //  triangleLED.set(state);
+        //  triangleLED.set(state);
     }
 
     @Override

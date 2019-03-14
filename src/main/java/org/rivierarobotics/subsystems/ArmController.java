@@ -135,7 +135,7 @@ public class ArmController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        pwr = MathUtil.limit(pwr, 0.6);
+        pwr = MathUtil.limit(pwr, 0.4);
         arm.set(pwr);
     }
 

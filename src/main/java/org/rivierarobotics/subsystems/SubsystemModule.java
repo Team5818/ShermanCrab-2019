@@ -24,7 +24,6 @@ import dagger.Module;
 import dagger.Provides;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.commands.HoodControl;
-import org.rivierarobotics.commands.SuctionMotorIdle;
 import org.rivierarobotics.inject.Sided;
 
 import javax.inject.Provider;
@@ -32,7 +31,6 @@ import javax.inject.Singleton;
 
 @Module
 public class SubsystemModule {
-    //TODO [CompBot] [Measurement] make sure all talons and sparks are assigned correctly (& shift solenoid)
     private static final int L_DRIVE_TALON_MASTER = 4;
     private static final int L_DRIVE_SPARK_SLAVE_ONE = 5;
     private static final int L_DRIVE_SPARK_SLAVE_TWO = 6;
@@ -47,8 +45,6 @@ public class SubsystemModule {
 
     private static final int HOOD_TALON = 10;
     private static final int TENTACLE_TALON = 11;
-    private static final int SUCTION_TALON = 12;
-    private static final int WINCH_TALON = 13;
 
     private static final int SHIFT_SOLENOID = 0;
 
@@ -88,17 +84,5 @@ public class SubsystemModule {
     @Singleton
     public static TentacleController provideTentacleController() {
         return new TentacleController(TENTACLE_TALON);
-    }
-
-    @Provides
-    @Singleton
-    public static SuctionController provideSuctionMotorController(Provider<SuctionMotorIdle> command) {
-        return new SuctionController(command, SUCTION_TALON);
-    }
-
-    @Provides
-    @Singleton
-    public static WinchController provideWinchControler() {
-        return new WinchController(WINCH_TALON);
     }
 }

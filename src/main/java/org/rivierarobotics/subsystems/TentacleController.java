@@ -39,6 +39,10 @@ public class TentacleController extends Subsystem {
         tentacles.set(pwr);
     }
 
+    public void stop() {
+        setPower(0.0);
+    }
+
     @Override
     protected void initDefaultCommand() {
     }
