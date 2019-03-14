@@ -42,6 +42,8 @@ public abstract class CommandComponent {
 
     public abstract TestCommands test();
 
+    public abstract ClimbCommands climb();
+
     @Module(subcomponents = CommandComponent.class)
     public interface CCModule {
     }

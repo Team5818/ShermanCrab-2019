@@ -148,6 +148,13 @@ public class ButtonConfiguration {
         JoystickButton zeroArm = new JoystickButton(codriverButtons, 7);
         zeroArm.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
+
+        //climb
+        JoystickButton scissorClimb = new JoystickButton(driverButtons, 11);
+        scissorClimb.whenPressed(cmds.climb().scissor());
+
+        JoystickButton scissorEnd = new JoystickButton(driverButtons, 12);
+        scissorEnd.cancelWhenPressed(cmds.climb().scissor());
     }
 
     public void initTest() {

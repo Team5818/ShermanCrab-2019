@@ -38,8 +38,13 @@ public class ScissorClimb extends CommandGroup {
         addSequential(arm.setFrontPosition(ArmPosition.SCISSOR_CLIMB));
         addSequential(winch.set(WinchPosition.OUT));
         addSequential(new TimedCommand(0.25));
-        addSequential(drive.atPower(0.25, false));
-        addSequential(new TimedCommand(0.5));
         addSequential(piston.retract(Piston.HELPER_CLIMB));
+        addSequential(new TimedCommand(3.5));
+
+        while(!isFinished()) {
+            addSequential(drive.atPower(0.25, false));
+        }
+
+
     }
 }

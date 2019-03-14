@@ -22,25 +22,18 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import org.rivierarobotics.commands.ArmControl;
-import org.rivierarobotics.commands.SuctionMotorIdle;
 import org.rivierarobotics.util.AbstractPIDSource;
-import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
 public class WinchController extends Subsystem {
-    private Provider<SuctionMotorIdle> command;
-    private WPI_TalonSRX suction;
+    private WPI_TalonSRX winch;
 
     private static final double P;
     private static final double I;
@@ -50,11 +43,10 @@ public class WinchController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
+        return Shuffleboard.getTab("Winch Controller").addPersistent(name, def);
     }
 
     static {
@@ -80,27 +72,22 @@ public class WinchController extends Subsystem {
 
     @Inject
     public WinchController(int ch) {
-        suction = new WPI_TalonSRX(ch);
-        suction.setInverted(false);
-        suction.setNeutralMode(NeutralMode.Coast);
+        winch = new WPI_TalonSRX(ch);
+        winch.setInverted(false);
+        winch.setNeutralMode(NeutralMode.Coast);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        this.command = command;
     }
 
     public void setAngle(double angle) {
-        suction.setNeutralMode(NeutralMode.Brake);
+        winch.setNeutralMode(NeutralMode.Brake);
         pidLoop.setSetpoint(angle);
         pidLoop.enable();
     }
 
     public int getAngle() {
-        return suction.getSensorCollection().getPulseWidthPosition();
-    }
-
-    public double getDegrees() {
-        return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
+        return winch.getSensorCollection().getPulseWidthPosition();
     }
 
     public void setPower(double pwr) {
@@ -113,7 +100,7 @@ public class WinchController extends Subsystem {
     }
 
     private void rawSetPower(double pwr) {
-        suction.set(pwr);
+        winch.set(pwr);
     }
 
     public void stop() {
@@ -122,15 +109,15 @@ public class WinchController extends Subsystem {
         }
         pidLoop.setSetpoint(getAngle());
         pidLoop.enable();
-        suction.setNeutralMode(NeutralMode.Brake);
+        winch.setNeutralMode(NeutralMode.Brake);
     }
 
     public PIDController getPIDLoop() {
         return pidLoop;
     }
 
-    public WPI_TalonSRX getSuction() {
-        return suction;
+    public WPI_TalonSRX getWinch() {
+        return winch;
     }
 
     @Override

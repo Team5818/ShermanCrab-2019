@@ -104,18 +104,13 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
+        //TODO [PracticeBot] [Software] add hood gravity offset on manual mode
         if (pwr != 0) {
             pidLoop.disable();
         }
 
         if (!pidLoop.isEnabled()) {
-            if (pwr == 0) {
-                pidLoop.setSetpoint(getAngle());
-                pidLoop.enable();
-            } else {
-                pidLoop.disable();
-                rawSetPower(pwr);
-            }
+            rawSetPower(pwr);
         }
     }
 
