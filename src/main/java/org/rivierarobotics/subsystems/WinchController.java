@@ -87,7 +87,7 @@ public class WinchController extends Subsystem {
     }
 
     public int getAngle() {
-        return winch.getSensorCollection().getPulseWidthPosition();
+        return winch.getSensorCollection().getQuadraturePosition();
     }
 
     public void setPower(double pwr) {

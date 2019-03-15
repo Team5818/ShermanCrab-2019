@@ -46,8 +46,6 @@ public class Robot extends TimedRobot {
             .add("Degrees", 0).getEntry();
     private final NetworkTableEntry winchEncoder = Shuffleboard.getTab("Winch Controller")
             .add("Distance", 0).getEntry();
-    private final NetworkTableEntry suctionEncoder = Shuffleboard.getTab("Suction Controller")
-            .add("Angle", 0).getEntry();
 
     @Override
     public void robotInit() {
@@ -127,7 +125,8 @@ public class Robot extends TimedRobot {
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
-        winchEncoder.setDouble(globalComponent.getArmController().getDegrees());
+        armOut.setDouble(globalComponent.getArmController().getDegrees());
+        winchEncoder.setDouble(globalComponent.getWinchController().getAngle());
     }
 
     private void currentLimit() {
@@ -135,8 +134,8 @@ public class Robot extends TimedRobot {
             globalComponent.getDriveTrain().getLeft().setMaxCurrent(50);
             globalComponent.getDriveTrain().getRight().setMaxCurrent(50);
         } else {
-            globalComponent.getDriveTrain().getLeft().setMaxCurrent(100);
-            globalComponent.getDriveTrain().getRight().setMaxCurrent(100);
+            globalComponent.getDriveTrain().getLeft().setMaxCurrent(70);
+            globalComponent.getDriveTrain().getRight().setMaxCurrent(70);
         }
     }
 }

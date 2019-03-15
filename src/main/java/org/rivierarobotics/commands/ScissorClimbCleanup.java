@@ -31,7 +31,6 @@ public class ScissorClimbCleanup extends CommandGroup {
 
     @Inject
     public ScissorClimbCleanup(ArmCommands arm, WinchCommands winch, DriveCommands drive) {
-        addSequential(winch.set(WinchPosition.IN));
         addSequential(drive.atPower(0.0, true));
         addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
     }

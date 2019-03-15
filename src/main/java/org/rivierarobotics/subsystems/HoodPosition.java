@@ -28,7 +28,7 @@ public enum HoodPosition {
     ROCKET_LEVEL_ONE(-3, 291),
     ROCKET_LEVEL_TWO(1786, -2047),
     CARGO_SHIP(2895, -2530),
-    HUMAN_PLAYER_STATION(467, 1531),
+    HUMAN_PLAYER_STATION(467, -520),
     COLLECT(-50, 50);
 
     public final int ticksFront;

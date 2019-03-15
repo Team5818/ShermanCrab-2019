@@ -21,7 +21,7 @@
 package org.rivierarobotics.subsystems;
 
 public enum WinchPosition {
-    OUT(0), IN(0);
+    OUT(5449), IN(0);
 
     public final int ticks;
 
