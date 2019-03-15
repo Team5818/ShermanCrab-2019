@@ -1,61 +1,50 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.robot.JevoisDataParsing;
 import org.rivierarobotics.subsystems.DriveTrain;
 
 import java.util.ArrayList;
 
-public class VisionCommand extends Command {
+@GenerateCreator
+public class Vision extends Command {
     public JevoisDataParsing data;
     private DriveTrain dt;
-    private static final double RECTANGLE_CENTER_YCOORD = 50;
-    private static final double CENTER_COORD_BUFFER = 5;
-    private static final int CAMERA_PIXEL_WIDTH = 160;
-    private static final int CENTERED_IMAGE_PIXEL_LEFT = 40;
-    private static final int CENTERED_IMAGE_PIXEL_RIGHT = 60;
-    private static final double TARGET_LENGTH = 15;
+    private static final double RECTANGLE_CENTER_YCOORD = -237.5;
+    private static final double CENTER_COORD_BUFFER = 50;
+    private static final int CAMERA_PIXEL_WIDTH = 320; //WRONG
+    private static final double CENTERED_IMAGE_PIXEL_X = -615.5;
+    private static final double TARGET_LENGTH = 800; //858.9
 
-    public VisionCommand(@Provided DriveTrain dt, JevoisDataParsing data) {
+    public Vision(@Provided DriveTrain dt) {
         this.dt = dt;
-        this.data = data;
+        this.data = new JevoisDataParsing();
         requires(dt);
     }
 
     @Override
     protected void execute() {
         ArrayList<String[]> blobs = screenBlobs();
-        double objectOne = getCenter(getXCoords(0, blobs)[0], getYCoords(0, blobs)[0], getXCoords(0, blobs)[1],
-                getYCoords(0, blobs)[1], getXCoords(0, blobs)[2], getYCoords(0, blobs)[2])[0] / CAMERA_PIXEL_WIDTH;
-        double objectTwo = getCenter(getXCoords(1, blobs)[0], getYCoords(1, blobs)[0], getXCoords(1, blobs)[1],
-                getYCoords(1, blobs)[1], getXCoords(1, blobs)[2], getYCoords(1, blobs)[2])[0] / CAMERA_PIXEL_WIDTH;
+        double objectOne = getCenter(getXCoords(0, blobs)[0], getYCoords(0, blobs)[0],
+                getXCoords(0, blobs)[2], getYCoords(0, blobs)[2])[0] / CAMERA_PIXEL_WIDTH;
 
+        double power = .2;
 
-        double power = .4;
-        if (objectOne > objectTwo) {
-            if (objectTwo < CENTERED_IMAGE_PIXEL_LEFT) {
-                dt.setPower(power, (objectTwo + 1) * power);
-            } else if (objectTwo > CENTERED_IMAGE_PIXEL_LEFT) {
-                dt.setPower((objectTwo + 1) * power, power);
-            } else {
-                dt.setPower(power, power);
-            }
-        } else if (objectTwo > objectOne) {
-            if (objectOne < CENTERED_IMAGE_PIXEL_RIGHT) {
-                dt.setPower(power, (objectOne + 1) * power);
-            } else if (objectOne > CENTERED_IMAGE_PIXEL_RIGHT) {
-                dt.setPower((objectOne + 1) * power, power);
-            } else {
-                dt.setPower(power, power);
-            }
+        if (objectOne > CENTERED_IMAGE_PIXEL_X) {
+            dt.setPower(power, (objectOne + 1) * power);
+        } else if (objectOne < CENTERED_IMAGE_PIXEL_X) {
+            dt.setPower((objectOne + 1) * power, power);
+        } else {
+            dt.setPower(power, power);
         }
 
     }
 
     @Override
     protected boolean isFinished() {
-        if (getTargetLength(0) > TARGET_LENGTH && getTargetLength(1) > TARGET_LENGTH) {
+        if (getTargetLength(0) > TARGET_LENGTH - CENTER_COORD_BUFFER) {
             return true;
         } else {
             return false;
@@ -69,8 +58,8 @@ public class VisionCommand extends Command {
                 blobs.remove(x);
             }
         }
-        if (blobs.size() > 2) {
-            for (int i = 2; i < blobs.size(); i++) {
+        if (blobs.size() > 1) {
+            for (int i = 1; i < blobs.size(); i++) {
                 blobs.remove(i);
             }
 
@@ -115,9 +104,11 @@ public class VisionCommand extends Command {
         ArrayList<String[]> blobs = screenBlobs();
         double[] lengths = new double[4];
         for (int i = 0; i < 3; i++) {
-            lengths[i] = calculateDistance(getXCoords(component, blobs)[i], getYCoords(component, blobs)[i], getXCoords(component, blobs)[i + 1], getYCoords(component, blobs)[i + 1]);
+            lengths[i] = calculateDistance(getXCoords(component, blobs)[i], getYCoords(component, blobs)[i],
+                    getXCoords(component, blobs)[i + 1], getYCoords(component, blobs)[i + 1]);
         }
-        lengths[3] = calculateDistance(getXCoords(component, blobs)[3], getYCoords(component, blobs)[3], getXCoords(component, blobs)[0], getYCoords(component, blobs)[0]);
+        lengths[3] = calculateDistance(getXCoords(component, blobs)[3], getYCoords(component, blobs)[3],
+                getXCoords(component, blobs)[0], getYCoords(component, blobs)[0]);
         double sideOne = average(lengths[0], lengths[2]);
         double sideTwo = average(lengths[1], lengths[3]);
         if (sideOne > sideTwo) {
@@ -185,17 +176,19 @@ public class VisionCommand extends Command {
 
     public double[] getCenter(int component) {
         double[] centerCoords = new double[2];
-        for (int i = 0; i < 2; i++) {
-            centerCoords[i] = calculateDistance(getXCoords(component)[i], getYCoords(component)[i], getXCoords(component)[i+1], getYCoords(component)[i+1]);
-        }
+        int xAddition = Math.abs(getXCoords(component)[0] - getXCoords(component)[3]) / 2;
+        int yAddition = Math.abs(getYCoords(component)[0] - getYCoords(component)[3]) / 2;
+        centerCoords[0] = getXCoords(component)[0] + xAddition;
+        centerCoords[1] = getYCoords(component)[0] + yAddition;
         return centerCoords;
     }
 
-    public double[] getCenter(int x1, int y1, int x2, int y2, int x3, int y3) {
+    public double[] getCenter(double x1, double y1, double x2, double y2) {
         double[] centerCoords = new double[2];
-        centerCoords[0] = calculateDistance(x1, y1, x2, y2);
-        centerCoords[1] = calculateDistance(x2, y2, x3, y3);
-
+        double xAddition = Math.abs(x2 - x1) / 2;
+        double yAddition = Math.abs(y2 - y1) / 2;
+        centerCoords[0] = x1 + xAddition;
+        centerCoords[1] = y1 + yAddition;
         return centerCoords;
     }
 

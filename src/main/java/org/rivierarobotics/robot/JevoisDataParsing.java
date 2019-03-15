@@ -9,7 +9,7 @@ public class JevoisDataParsing {
     private String data;
     private ArrayList<String> lines;
 
-    private JevoisDataParsing() {
+    public JevoisDataParsing() {
         port = new SerialPort(115200, SerialPort.Port.kUSB1);
         data = "";
         lines = new ArrayList<String>();
@@ -47,6 +47,7 @@ public class JevoisDataParsing {
                 break;
             }
         }
+
         return blobs;
     }
 
