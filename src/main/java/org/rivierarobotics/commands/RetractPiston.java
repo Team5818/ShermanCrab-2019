@@ -23,22 +23,22 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HatchController;
 import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.PistonController;
 
 @GenerateCreator
 public class RetractPiston extends InstantCommand {
-    private final HatchController hc;
+    private final PistonController pc;
     private final Piston piston;
 
-    public RetractPiston(@Provided HatchController hc, Piston piston) {
-        this.hc = hc;
+    public RetractPiston(@Provided PistonController pc, Piston piston) {
+        this.pc = pc;
         this.piston = piston;
-        requires(hc);
+        requires(pc);
     }
 
     @Override
     protected void execute() {
-        hc.retractPiston(piston);
+        pc.retractPiston(piston);
     }
 }

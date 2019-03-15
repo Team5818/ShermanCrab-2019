@@ -54,7 +54,7 @@ public class SuctionController extends Subsystem {
     private PIDController pidLoop;
 
     private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
+        return Shuffleboard.getTab("Suction Controller").addPersistent(name, def);
     }
 
     static {
@@ -82,7 +82,7 @@ public class SuctionController extends Subsystem {
     public SuctionController(Provider<SuctionMotorIdle> command, int ch) {
         suction = new WPI_TalonSRX(ch);
         suction.setInverted(false);
-        suction.setNeutralMode(NeutralMode.Coast);
+        suction.setNeutralMode(NeutralMode.Brake);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 

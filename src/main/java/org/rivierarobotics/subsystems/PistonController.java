@@ -34,17 +34,15 @@ public class PistonController extends Subsystem {
     private final Solenoid deployPistonLeft;
     private final Solenoid deployPistonRight;
 
-    //TODO [PracticeBot] [Software] make climb solenoids final if implemented
-    /*private Solenoid climbPiston;
-    private Solenoid lockClimbPiston;
-    private Solenoid helperClimbPiston;
+    //private Solenoid climbPiston;
+    private final Solenoid lockClimbPiston;
+    private final Solenoid helperClimbPiston;
 
     //TODO [PracticeBot] [Software] uncomment limit switch code in PistonController, make limit switches final
     //TODO [PracticeBot] [CompBot] [Testing] ensure that limit switch logic works
-    private DigitalInput leftSwitch;
-    private DigitalInput rightSwitch;
-    private Solenoid triangleLED;
-*/
+    //private DigitalInput leftSwitch;
+    //private DigitalInput rightSwitch;
+    //private Solenoid triangleLED;
 
 
     @Inject
@@ -54,12 +52,10 @@ public class PistonController extends Subsystem {
         pushPiston = new Solenoid(2);
         deployPistonLeft = new Solenoid(3);
         deployPistonRight = new Solenoid(4);
-        //climbPiston for use with piston climb
         //climbPiston = new Solenoid(6);
 
-        //lockClimbPiston & helperClimbPiston for use with scissor climb
-        //lockClimbPiston = new Solenoid(6);
-        //helperClimbPiston = new Solenoid(6);
+        lockClimbPiston = new Solenoid(6);
+        helperClimbPiston = new Solenoid(7);
 
         //leftSwitch = new DigitalInput(5);
         //rightSwitch = new DigitalInput(7);
@@ -75,13 +71,13 @@ public class PistonController extends Subsystem {
             return deployPistonLeft;
         } else if (piston == Piston.DEPLOY_RIGHT) {
             return deployPistonRight;
-        } /*else if (piston == Piston.CLIMB) {
-            return climbPiston;
+        //} else if (piston == Piston.CLIMB) {
+            //return climbPiston;
         } else if (piston == Piston.HELPER_CLIMB) {
             return helperClimbPiston;
         } else if (piston == Piston.LOCK_CLIMB) {
             return lockClimbPiston;
-        } */else {
+        } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }
     }

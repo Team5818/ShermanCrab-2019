@@ -150,11 +150,17 @@ public class ButtonConfiguration {
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
 
         //climb
-        JoystickButton scissorClimb = new JoystickButton(driverButtons, 11);
+        JoystickButton scissorClimb = new JoystickButton(driverButtons, 12);
         scissorClimb.whenPressed(cmds.climb().scissor());
 
-        JoystickButton scissorEnd = new JoystickButton(driverButtons, 12);
+        JoystickButton scissorEnd = new JoystickButton(driverButtons, 11);
         scissorEnd.cancelWhenPressed(cmds.climb().scissor());
+
+        JoystickButton scissorReset = new JoystickButton(driverButtons, 10);
+        scissorReset.whenPressed(cmds.climb().scissorCleanup());
+
+        JoystickButton lockClimbPiston = new JoystickButton(driverButtons, 9);
+        lockClimbPiston.whenPressed(cmds.piston().extend(Piston.LOCK_CLIMB));
     }
 
     public void initTest() {

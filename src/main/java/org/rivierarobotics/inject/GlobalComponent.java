@@ -33,7 +33,7 @@ import javax.inject.Singleton;
 public abstract class GlobalComponent {
     public void robotInit() {
         getDriveTrain();
-        getHatchController();
+        getPistonController();
         getArmController();
         getHoodController();
         getTentacleController();
@@ -46,7 +46,7 @@ public abstract class GlobalComponent {
 
     public abstract DriveTrain getDriveTrain();
 
-    public abstract HatchController getHatchController();
+    public abstract PistonController getPistonController();
 
     public abstract ArmController getArmController();
 

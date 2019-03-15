@@ -74,7 +74,7 @@ public class WinchController extends Subsystem {
     public WinchController(int ch) {
         winch = new WPI_TalonSRX(ch);
         winch.setInverted(false);
-        winch.setNeutralMode(NeutralMode.Coast);
+        winch.setNeutralMode(NeutralMode.Brake);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
