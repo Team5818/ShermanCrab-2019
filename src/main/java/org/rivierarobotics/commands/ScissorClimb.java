@@ -41,11 +41,6 @@ public class ScissorClimb extends CommandGroup {
         addSequential(new TimedCommand(3.0));
         addSequential(piston.retract(Piston.HELPER_CLIMB));
         addSequential(new TimedCommand(0.5));
-
-        while(!isFinished()) {
-            addSequential(drive.atPower(0.25, false));
-        }
-
-
+        addSequential(drive.atPower(0.25, false));
     }
 }

@@ -24,7 +24,6 @@ import dagger.Module;
 import dagger.Provides;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.commands.HoodControl;
-import org.rivierarobotics.commands.SuctionMotorIdle;
 import org.rivierarobotics.inject.Sided;
 
 import javax.inject.Provider;
@@ -47,7 +46,6 @@ public class SubsystemModule {
 
     private static final int HOOD_TALON = 10;
     private static final int TENTACLE_TALON = 11;
-    private static final int SUCTION_TALON = 12;
     private static final int WINCH_TALON = 13;
 
     private static final int SHIFT_SOLENOID = 0;
@@ -92,13 +90,7 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static SuctionController provideSuctionMotorController(Provider<SuctionMotorIdle> command) {
-        return new SuctionController(command, SUCTION_TALON);
-    }
-
-    @Provides
-    @Singleton
-    public static WinchController provideWinchControler() {
+    public static WinchController provideWinchController() {
         return new WinchController(WINCH_TALON);
     }
 }

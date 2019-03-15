@@ -24,35 +24,14 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class ClimbCommands {
-    public static boolean SUCTION_DONE = false;
-    private final Provider<PistonClimb> pistonClimbProvider;
-    private final Provider<PistonClimbCleanup> pistonClimbCleanupProvider;
     private final Provider<ScissorClimb> scissorClimbProvider;
     private final Provider<ScissorClimbCleanup> scissorClimbCleanupProvider;
-    private final Provider<SuctionClimb> suctionClimbProvider;
-    private final Provider<SuctionClimbCleanup> SuctionClimbCleanupProvider;
 
     @Inject
-    public ClimbCommands(Provider<PistonClimb> pistonClimbProvider,
-                         Provider<PistonClimbCleanup> pistonClimbCleanupProvider,
-                         Provider<ScissorClimb> scissorClimbProvider,
-                         Provider<ScissorClimbCleanup> scissorClimbCleanupProvider,
-                         Provider<SuctionClimb> suctionClimbProvider,
-                         Provider<SuctionClimbCleanup> SuctionClimbCleanupProvider) {
-        this.pistonClimbProvider = pistonClimbProvider;
-        this.pistonClimbCleanupProvider = pistonClimbCleanupProvider;
+    public ClimbCommands(Provider<ScissorClimb> scissorClimbProvider,
+                         Provider<ScissorClimbCleanup> scissorClimbCleanupProvider) {
         this.scissorClimbProvider = scissorClimbProvider;
         this.scissorClimbCleanupProvider = scissorClimbCleanupProvider;
-        this.suctionClimbProvider = suctionClimbProvider;
-        this.SuctionClimbCleanupProvider = SuctionClimbCleanupProvider;
-    }
-
-    public final PistonClimb piston() {
-        return pistonClimbProvider.get();
-    }
-
-    public final PistonClimbCleanup pistonCleanup() {
-        return pistonClimbCleanupProvider.get();
     }
 
     public final ScissorClimb scissor() {
@@ -61,15 +40,5 @@ public class ClimbCommands {
 
     public final ScissorClimbCleanup scissorCleanup() {
         return scissorClimbCleanupProvider.get();
-    }
-
-    public final SuctionClimb suction() {
-        SUCTION_DONE = false;
-        return suctionClimbProvider.get();
-    }
-
-    public final SuctionClimbCleanup suctionCleanup() {
-        SUCTION_DONE = true;
-        return SuctionClimbCleanupProvider.get();
     }
 }

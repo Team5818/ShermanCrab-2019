@@ -38,7 +38,6 @@ public abstract class GlobalComponent {
         getHoodController();
         getTentacleController();
         getWinchController();
-        getSuctionController();
         getButtonConfiguration();
         getPigeonGyro();
         getShifter();
@@ -55,8 +54,6 @@ public abstract class GlobalComponent {
     public abstract TentacleController getTentacleController();
 
     public abstract WinchController getWinchController();
-
-    public abstract SuctionController getSuctionController();
 
     public abstract ButtonConfiguration getButtonConfiguration();
 

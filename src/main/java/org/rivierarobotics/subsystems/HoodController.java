@@ -87,7 +87,7 @@ public class HoodController extends Subsystem {
 
         // pidLoop.setContinuous(true);
         //TODO discuss w/ drivers over hood power limits
-        pidLoop.setOutputRange(-0.7, 0.7);
+        pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
