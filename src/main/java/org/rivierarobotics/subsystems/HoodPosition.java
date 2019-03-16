@@ -38,6 +38,5 @@ public enum HoodPosition {
     HoodPosition(int ticksFront, int ticksBack) {
         this.ticksFront = restingArmZero + ticksFront;
         this.ticksBack = restingArmZero + ticksBack;
-
     }
 }

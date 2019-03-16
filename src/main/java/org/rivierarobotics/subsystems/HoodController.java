@@ -49,6 +49,7 @@ public class HoodController extends Subsystem {
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static double TICKS_TO_DEGREES = 1;
+    private static int offset = 0;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -79,7 +80,7 @@ public class HoodController extends Subsystem {
     }
 
     public void setAngle(double angle) {
-        pidLoop.setSetpoint(angle);
+        pidLoop.setSetpoint(angle + offset);
         pidLoop.enable();
     }
 
@@ -107,6 +108,14 @@ public class HoodController extends Subsystem {
 
     public void rawSetPower(double pwr) {
         hood.set(pwr);
+    }
+
+    public void setOffset(int offset) {
+        HoodController.offset = offset;
+    }
+
+    public int getOffset() {
+        return HoodController.offset;
     }
 
     public PIDController getPIDLoop() {

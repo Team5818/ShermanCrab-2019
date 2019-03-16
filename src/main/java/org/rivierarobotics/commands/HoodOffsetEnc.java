@@ -20,18 +20,19 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import org.rivierarobotics.subsystems.ArmPosition;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.WinchPosition;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.HoodController;
 
-import javax.inject.Inject;
+@GenerateCreator
+public class HoodOffsetEnc extends InstantCommand {
+    public HoodOffsetEnc(@Provided HoodController hoodController) {
+        if(hoodController.getOffset() == 0) {
+            hoodController.setOffset(4096);
+        } else {
+            hoodController.setOffset(0);
+        }
 
-public class ScissorClimbCleanup extends CommandGroup {
-
-    @Inject
-    public ScissorClimbCleanup(ArmCommands arm, WinchCommands winch, DriveCommands drive) {
-        addSequential(drive.atPower(0.0, true));
-        addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
     }
 }

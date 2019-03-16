@@ -25,20 +25,13 @@ import javax.inject.Provider;
 
 public class ClimbCommands {
     private final Provider<ScissorClimb> scissorClimbProvider;
-    private final Provider<ScissorClimbCleanup> scissorClimbCleanupProvider;
 
     @Inject
-    public ClimbCommands(Provider<ScissorClimb> scissorClimbProvider,
-                         Provider<ScissorClimbCleanup> scissorClimbCleanupProvider) {
+    public ClimbCommands(Provider<ScissorClimb> scissorClimbProvider) {
         this.scissorClimbProvider = scissorClimbProvider;
-        this.scissorClimbCleanupProvider = scissorClimbCleanupProvider;
     }
 
     public final ScissorClimb scissor() {
         return scissorClimbProvider.get();
-    }
-
-    public final ScissorClimbCleanup scissorCleanup() {
-        return scissorClimbCleanupProvider.get();
     }
 }

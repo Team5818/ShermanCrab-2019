@@ -157,11 +157,11 @@ public class ButtonConfiguration {
         scissorEnd.whenPressed(cmds.drive().atPower(0.0, true));
         scissorEnd.cancelWhenPressed(cmds.climb().scissor());
 
-        JoystickButton scissorReset = new JoystickButton(driverButtons, 10);
-        scissorReset.whenPressed(cmds.climb().scissorCleanup());
-
-        JoystickButton lockClimbPiston = new JoystickButton(driverButtons, 9);
+        JoystickButton lockClimbPiston = new JoystickButton(driverButtons, 10);
         lockClimbPiston.whenPressed(cmds.piston().extend(Piston.LOCK_CLIMB));
+
+        JoystickButton addHoodEnc = new JoystickButton(driverButtons, 9);
+        addHoodEnc.whenPressed(cmds.hood().offsetEnc());
     }
 
     public void initTest() {
