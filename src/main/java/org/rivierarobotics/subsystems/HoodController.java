@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,15 +40,15 @@ public class HoodController extends Subsystem {
     private final WPI_TalonSRX hood;
     private PIDController pidLoop;
 
-    private static final double P;
-    private static final double I;
-    private static final double D;
-    private static final double F;
+    private static final double P = 0.0003;
+    private static final double I = 0;
+    private static final double D = 0;
+    private static final double F = 0;
     private static final int VELOCITY_TICKS_PER_100MS;
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static double TICKS_TO_DEGREES;
+    private static double TICKS_TO_DEGREES = 1;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
@@ -56,18 +57,6 @@ public class HoodController extends Subsystem {
     static {
         TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
         System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
-
-        P = ezWidget("P", 0.01).getEntry().getDouble(0.01);
-        System.err.println("P: " + P);
-
-        I = ezWidget("I", 0.0).getEntry().getDouble(0);
-        System.err.println("I: " + I);
-
-        D = ezWidget("D", 0.0).getEntry().getDouble(0);
-        System.err.println("D: " + D);
-
-        F = ezWidget("F", 0.0).getEntry().getDouble(0.0);
-        System.err.println("F: " + F);
 
         // CHANGE UNITS STUFF
         VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC / 10;
@@ -86,7 +75,6 @@ public class HoodController extends Subsystem {
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         // pidLoop.setContinuous(true);
-        //TODO discuss w/ drivers over hood power limits
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
@@ -107,6 +95,9 @@ public class HoodController extends Subsystem {
         //TODO [PracticeBot] [Software] add hood gravity offset on manual mode
         if (pwr != 0) {
             pidLoop.disable();
+            hood.setNeutralMode(NeutralMode.Coast);
+        } else {
+            hood.setNeutralMode(NeutralMode.Brake);
         }
 
         if (!pidLoop.isEnabled()) {

@@ -73,7 +73,7 @@ public class ButtonConfiguration {
         shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
         //tentacles
-        double tentacleSpeed = 0.65;
+        double tentacleSpeed = 0.75;
         JoystickButton tentaclesFwd = new JoystickButton(driverRight, 1);
         tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
@@ -154,6 +154,7 @@ public class ButtonConfiguration {
         scissorClimb.whenPressed(cmds.climb().scissor());
 
         JoystickButton scissorEnd = new JoystickButton(driverButtons, 11);
+        scissorEnd.whenPressed(cmds.drive().atPower(0.0, true));
         scissorEnd.cancelWhenPressed(cmds.climb().scissor());
 
         JoystickButton scissorReset = new JoystickButton(driverButtons, 10);

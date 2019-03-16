@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -51,12 +52,14 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
-        CameraServer.getInstance().startAutomaticCapture().setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
+        UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
+        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
     }
 
     @Override
     public void teleopInit() {
         globalComponent.getButtonConfiguration().initTeleop();
+        globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
@@ -64,17 +67,20 @@ public class Robot extends TimedRobot {
         displayShuffleboard();
         currentLimit();
         armSafety();
-        hatchLED();
         Scheduler.getInstance().run();
     }
 
     @Override
     public void autonomousInit() {
         globalComponent.getButtonConfiguration().initTeleop();
+        globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
     public void autonomousPeriodic() {
+        displayShuffleboard();
+        currentLimit();
+        armSafety();
         Scheduler.getInstance().run();
     }
 
@@ -89,7 +95,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledPeriodic() {
+    public void disabledInit() {
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
@@ -113,10 +119,6 @@ public class Robot extends TimedRobot {
         }
         ArmController.DEPLOY_PISTONS_OUT = globalComponent.getPistonController().getPistonState(Piston.DEPLOY_LEFT) ||
                 globalComponent.getPistonController().getPistonState(Piston.DEPLOY_RIGHT);
-    }
-
-    private void hatchLED() {
-        globalComponent.getPistonController().setTriangleLED(globalComponent.getPistonController().getTriangleEngaged());
     }
 
     private void displayShuffleboard() {

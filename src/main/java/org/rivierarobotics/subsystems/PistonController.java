@@ -38,13 +38,6 @@ public class PistonController extends Subsystem {
     private final Solenoid lockClimbPiston;
     private final Solenoid helperClimbPiston;
 
-    //TODO [PracticeBot] [Software] uncomment limit switch code in PistonController, make limit switches final
-    //TODO [PracticeBot] [CompBot] [Testing] ensure that limit switch logic works
-    //private DigitalInput leftSwitch;
-    //private DigitalInput rightSwitch;
-    //private Solenoid triangleLED;
-
-
     @Inject
     public PistonController() {
         //TODO [CompBot] [Testing] ensure that all solenoids are assigned correctly
@@ -56,10 +49,6 @@ public class PistonController extends Subsystem {
 
         lockClimbPiston = new Solenoid(6);
         helperClimbPiston = new Solenoid(7);
-
-        //leftSwitch = new DigitalInput(5);
-        //rightSwitch = new DigitalInput(7);
-        //triangleLED = new Solenoid(0);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -92,15 +81,6 @@ public class PistonController extends Subsystem {
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
-    }
-
-    public boolean getTriangleEngaged() {
-        return false;
-        //return leftSwitch.get() && rightSwitch.get();
-    }
-
-    public void setTriangleLED(boolean state) {
-        //  triangleLED.set(state);
     }
 
     @Override

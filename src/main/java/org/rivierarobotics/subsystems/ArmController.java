@@ -56,7 +56,7 @@ public class ArmController extends Subsystem {
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
     private static final int VELOCITY_TICKS_PER_SEC = 1;
     private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static final double GRAVITY_CONSTANT = -0.038;
+    private static final double GRAVITY_CONSTANT = -0.042;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private PIDController pidLoop;
 
