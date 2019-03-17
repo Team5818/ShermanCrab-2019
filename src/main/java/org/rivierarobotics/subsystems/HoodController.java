@@ -22,6 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -45,13 +46,18 @@ public class HoodController extends Subsystem {
     private static final double D = 0;
     private static final double F = 0;
     private static boolean offsetDone = false;
-    public static int OFFSET = 0;
+    public int offset = 0;
     /* Accounts for 6:11 chain ratio */
-    public static int MAX_ROT = 4096 * 6 / 11;
+    public static int MAX_ROT = ((4096 * 11) / 12);
+    private static final NetworkTableEntry SETPOINT_ANGLE;
 
 
     private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
+        return Shuffleboard.getTab("Hood Controller").add(name, def);
+    }
+
+    static {
+        SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
     }
 
     @Inject
@@ -64,14 +70,13 @@ public class HoodController extends Subsystem {
 
         //pidLoop.setContinuous(false);
         //OFFSET = getRestingZero();
-        //pidLoop.setInputRange(0 + OFFSET, MAX_ROT + OFFSET);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        //TODO [Regional] [Software] remove to revert or test quadrature. This is Andrew's hood rotation limiting code.
         //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
-        pidLoop.setSetpoint(angle + OFFSET);
+        pidLoop.setSetpoint(angle + offset);
+        //SETPOINT_ANGLE.setDouble(angle + offset);
         pidLoop.enable();
     }
 
@@ -89,9 +94,11 @@ public class HoodController extends Subsystem {
         } else {
             hood.setNeutralMode(NeutralMode.Brake);
         }
+        if(pwr == 0) {
+
+        }
 
         if (!pidLoop.isEnabled()) {
-            //TODO [Regional] [Software] remove to revert, manual limiting to 180degree range
             /*double currAngle = getAngle() + OFFSET;
             if(currAngle < MAX_ROT || currAngle > 0 || (currAngle >= MAX_ROT && pwr < 0) || (currAngle <= 0 && pwr > 0) || pwr == 0) {
                 rawSetPower(pwr);
@@ -104,13 +111,12 @@ public class HoodController extends Subsystem {
             hood.set(pwr);
     }
 
-    //TODO [Regional] [Software] remove getRestingZero() and resetQuadratureEncoder() to revert to working code
     public int getRestingZero() {
-        if(OFFSET == 0 && !offsetDone) {
+        if(offset == 0 && !offsetDone) {
             offsetDone = true;
             return getAngle();
         } else {
-            return OFFSET;
+            return offset;
         }
     }
 
