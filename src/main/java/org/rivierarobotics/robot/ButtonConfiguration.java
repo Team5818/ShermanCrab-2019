@@ -165,8 +165,9 @@ public class ButtonConfiguration {
         JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
         lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
 
-        /*JoystickButton addHoodEnc = new JoystickButton(driverButtons, 9);
-        addHoodEnc.whenPressed(cmds.hood().offsetEnc());*/
+        //TODO [Regional] [Software] uncomment for hood quadrature/relative to work
+        JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
+        hoodOffset.whenPressed(cmds.hood().offsetEnc());
     }
 
     public void initTest() {

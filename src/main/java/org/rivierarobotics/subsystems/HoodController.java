@@ -26,9 +26,9 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
-import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -44,27 +44,14 @@ public class HoodController extends Subsystem {
     private static final double I = 0;
     private static final double D = 0;
     private static final double F = 0;
-    private static final int VELOCITY_TICKS_PER_100MS;
-    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    private static final int VELOCITY_TICKS_PER_SEC = 1;
-    private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static double TICKS_TO_DEGREES = 1;
-    private static int offset = 0;
+    private static boolean offsetDone = false;
+    public static int OFFSET = 0;
+    /* Accounts for 6:11 chain ratio */
+    public static int MAX_ROT = 4096 * 6 / 11;
+
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
-    }
-
-    static {
-        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
-        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
-
-        // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC / 10;
-        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
-
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC / 10;
-        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
     @Inject
@@ -75,25 +62,27 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        // pidLoop.setContinuous(true);
+        //pidLoop.setContinuous(false);
+        //OFFSET = getRestingZero();
+        //pidLoop.setInputRange(0 + OFFSET, MAX_ROT + OFFSET);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        pidLoop.setSetpoint(angle);
+        //TODO [Regional] [Software] remove to revert or test quadrature. This is Andrew's hood rotation limiting code.
+        //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
+        pidLoop.setSetpoint(angle + OFFSET);
         pidLoop.enable();
     }
 
-    public double getAngle() {
-        return hood.getSensorCollection().getPulseWidthPosition();
-    }
-
-    public double getDegrees() {
-        return (getAngle() / TICKS_TO_DEGREES);
+    public int getAngle() {
+        //TODO [Regional] [Software] change to getQuadraturePosition() for quadrature/relative testing
+        int angle = hood.getSensorCollection().getPulseWidthPosition();
+        SmartDashboard.putNumber("hood encoder", angle);
+        return angle;
     }
 
     public void setPower(double pwr) {
-        //TODO [PracticeBot] [Software] add hood gravity offset on manual mode
         if (pwr != 0) {
             pidLoop.disable();
             hood.setNeutralMode(NeutralMode.Coast);
@@ -102,12 +91,31 @@ public class HoodController extends Subsystem {
         }
 
         if (!pidLoop.isEnabled()) {
+            //TODO [Regional] [Software] remove to revert, manual limiting to 180degree range
+            /*double currAngle = getAngle() + OFFSET;
+            if(currAngle < MAX_ROT || currAngle > 0 || (currAngle >= MAX_ROT && pwr < 0) || (currAngle <= 0 && pwr > 0) || pwr == 0) {
+                rawSetPower(pwr);
+            }*/
             rawSetPower(pwr);
         }
     }
 
     public void rawSetPower(double pwr) {
-        hood.set(pwr);
+            hood.set(pwr);
+    }
+
+    //TODO [Regional] [Software] remove getRestingZero() and resetQuadratureEncoder() to revert to working code
+    public int getRestingZero() {
+        if(OFFSET == 0 && !offsetDone) {
+            offsetDone = true;
+            return getAngle();
+        } else {
+            return OFFSET;
+        }
+    }
+
+    public void resetQuadratureEncoder() {
+        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2,0);
     }
 
     public PIDController getPIDLoop() {

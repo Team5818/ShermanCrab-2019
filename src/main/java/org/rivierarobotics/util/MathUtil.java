@@ -43,4 +43,14 @@ public class MathUtil {
             return value;
         }
     }
+
+    public static double fitHoodRotation(double angle, double min, double max) {
+        if(angle > max) {
+            return max;
+        } else if(angle < min) {
+            return min;
+        } else {
+            return angle;
+        }
+    }
 }

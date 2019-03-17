@@ -28,7 +28,6 @@ import org.rivierarobotics.subsystems.PigeonGyro;
 
 @GenerateCreator
 public class Rotate extends Command {
-    // TODO fix PID for the drivetrain so DEGREE_BUFFER can be removed or modified
     private static final int DEGREE_BUFFER = 7;
     private DriveTrain dt;
     private PigeonGyro gyro;

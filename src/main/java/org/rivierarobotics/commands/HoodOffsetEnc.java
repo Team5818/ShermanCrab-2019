@@ -27,7 +27,19 @@ import org.rivierarobotics.subsystems.HoodController;
 
 @GenerateCreator
 public class HoodOffsetEnc extends InstantCommand {
+    private static HoodController hoodController;
+
     public HoodOffsetEnc(@Provided HoodController hoodController) {
-       // hoodController.getHood().getSensorCollection().setQuadraturePosition(0,0);
+        this.hoodController = hoodController;
+        requires(hoodController);
+    }
+
+    @Override
+    protected void execute() {
+        if(HoodController.OFFSET == 0) {
+            HoodController.OFFSET = HoodController.MAX_ROT;
+        } else {
+            HoodController.OFFSET = 0;
+        }
     }
 }

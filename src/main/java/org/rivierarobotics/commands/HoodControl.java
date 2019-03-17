@@ -48,7 +48,7 @@ public class HoodControl extends Command {
 
     @Override
     protected void end() {
-        //TODO [Regional] [Software] test that this solves hood moving randomly problem
+        //TODO [Regional] [Testing] test that this solves hood moving randomly problem
         hood.setPower(0.0);
     }
 

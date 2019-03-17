@@ -21,9 +21,8 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    //TODO [IMPORTANT] [CompBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
+    //TODO [CompBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
     RESTING_ARM_ZERO(0, 0),
-    NINETY_ARM_ZERO(200, -2850),
 
     ROCKET_LEVEL_ONE(-3, 100),
     ROCKET_LEVEL_TWO(1786, -2047),
@@ -33,6 +32,7 @@ public enum HoodPosition {
 
     public final int ticksFront;
     public final int ticksBack;
+    //TODO [Regional] [Software] set resting to zero when testing quadrature/relative, HoodController.OFFSET
     private final int restingArmZero = -15855;
 
     HoodPosition(int ticksFront, int ticksBack) {
