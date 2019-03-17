@@ -20,7 +20,6 @@
 
 package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -31,24 +30,18 @@ import javax.inject.Singleton;
 public class PistonController extends Subsystem {
     private final Solenoid clampPiston;
     private final Solenoid pushPiston;
-    private final Solenoid deployPistonLeft;
-    private final Solenoid deployPistonRight;
+    private final Solenoid deployPiston;
 
-    //private Solenoid climbPiston;
-    private final Solenoid lockClimbPiston;
     private final Solenoid helperClimbPiston;
+    private final Solenoid lockClimbPiston;
 
     @Inject
     public PistonController() {
-        //TODO [CompBot] [Testing] ensure that all solenoids are assigned correctly
         clampPiston = new Solenoid(1);
         pushPiston = new Solenoid(2);
-        deployPistonLeft = new Solenoid(3);
-        deployPistonRight = new Solenoid(4);
-        //climbPiston = new Solenoid(6);
-
-        lockClimbPiston = new Solenoid(6);
-        helperClimbPiston = new Solenoid(7);
+        deployPiston = new Solenoid(3);
+        helperClimbPiston = new Solenoid(4);
+        lockClimbPiston = new Solenoid(5);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -56,12 +49,8 @@ public class PistonController extends Subsystem {
             return clampPiston;
         } else if (piston == Piston.PUSH) {
             return pushPiston;
-        } else if (piston == Piston.DEPLOY_LEFT) {
-            return deployPistonLeft;
-        } else if (piston == Piston.DEPLOY_RIGHT) {
-            return deployPistonRight;
-        //} else if (piston == Piston.CLIMB) {
-            //return climbPiston;
+        } else if (piston == Piston.DEPLOY) {
+            return deployPiston;
         } else if (piston == Piston.HELPER_CLIMB) {
             return helperClimbPiston;
         } else if (piston == Piston.LOCK_CLIMB) {
@@ -81,6 +70,10 @@ public class PistonController extends Subsystem {
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
+    }
+
+    public void swap(Piston piston) {
+        pistonFor(piston).set(!pistonFor(piston).get());
     }
 
     @Override

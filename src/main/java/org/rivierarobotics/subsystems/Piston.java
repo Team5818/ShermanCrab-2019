@@ -21,7 +21,7 @@
 package org.rivierarobotics.subsystems;
 
 public enum Piston {
-    CLAMP(false), PUSH(true), DEPLOY_LEFT(true), DEPLOY_RIGHT(true), CLIMB(true), LOCK_CLIMB(true), HELPER_CLIMB(true);
+    CLAMP(false), PUSH(true), DEPLOY(true), HELPER_CLIMB(true), LOCK_CLIMB(true);
 
     public final boolean extend;
 

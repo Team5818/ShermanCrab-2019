@@ -22,26 +22,16 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
-import org.rivierarobotics.subsystems.ArmPosition;
 import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.WinchPosition;
 
 import javax.inject.Inject;
 
 public class ScissorClimb extends CommandGroup {
 
     @Inject
-    public ScissorClimb(PistonCommands piston, ArmCommands arm, WinchCommands winch, DriveCommands drive) {
-        addSequential(piston.retract(Piston.LOCK_CLIMB));
+    public ScissorClimb(PistonCommands piston) {
+        addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(new TimedCommand(0.5));
         addSequential(piston.extend(Piston.HELPER_CLIMB));
-        addSequential(arm.setFrontPosition(ArmPosition.FORTY_FIVE_DEGREES));
-        addSequential(winch.set(WinchPosition.IN));
-        addSequential(new TimedCommand(1.0));
-        addSequential(arm.setFrontPosition(ArmPosition.SCISSOR_CLIMB));
-        addSequential(new TimedCommand(1.0));
-        addSequential(piston.retract(Piston.HELPER_CLIMB));
-        addSequential(new TimedCommand(1.0));
-        addSequential(drive.atPower(0.25, false));
     }
 }

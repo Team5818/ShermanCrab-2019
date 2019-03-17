@@ -26,13 +26,19 @@ import javax.inject.Inject;
 
 public class WinchCommands {
     private final WinchSetCreator winchSetCreator;
+    private final WinchAtPowerCreator winchAtPowerCreator;
 
     @Inject
-    public WinchCommands(WinchSetCreator winchSetCreator) {
+    public WinchCommands(WinchSetCreator winchSetCreator, WinchAtPowerCreator winchAtPowerCreator) {
         this.winchSetCreator = winchSetCreator;
+        this.winchAtPowerCreator = winchAtPowerCreator;
     }
 
     public final WinchSet set(WinchPosition pos) {
         return winchSetCreator.create(pos);
+    }
+
+    public final WinchAtPower atPower(double pwr) {
+        return winchAtPowerCreator.create(pwr);
     }
 }

@@ -23,26 +23,21 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.WinchController;
 
 @GenerateCreator
-public class DriveAtPower extends InstantCommand {
-    private final double power;
-    private final DriveTrain driveTrain;
+public class WinchAtPower extends InstantCommand {
+    private final WinchController winchController;
+    private final double pwr;
 
-    public DriveAtPower(@Provided DriveTrain driveTrain, double power) {
-        this.power = power;
-        this.driveTrain = driveTrain;
-        requires(driveTrain);
+    public WinchAtPower(@Provided WinchController winchController, double pwr) {
+        this.winchController = winchController;
+        this.pwr = pwr;
+        requires(winchController);
     }
 
     @Override
-    protected void execute() {
-        driveTrain.setPower(power, power);
-    }
-
-    @Override
-    protected void end() {
-        driveTrain.setPower(0,0);
+    protected void initialize() {
+        winchController.getWinch().set(pwr);
     }
 }

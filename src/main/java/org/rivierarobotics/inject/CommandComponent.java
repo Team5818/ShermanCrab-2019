@@ -44,6 +44,8 @@ public abstract class CommandComponent {
 
     public abstract ClimbCommands climb();
 
+    public abstract WinchCommands winch();
+
     @Module(subcomponents = CommandComponent.class)
     public interface CCModule {
     }

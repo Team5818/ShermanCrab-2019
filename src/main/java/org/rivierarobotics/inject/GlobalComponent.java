@@ -60,4 +60,5 @@ public abstract class GlobalComponent {
     public abstract PigeonGyro getPigeonGyro();
 
     public abstract Shifter getShifter();
+
 }

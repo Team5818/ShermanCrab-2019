@@ -21,7 +21,7 @@
 package org.rivierarobotics.util;
 
 public class MathUtil {
-    private static final double DEADBAND = 0.05;
+    private static final double DEADBAND = 0.08;
 
     public static double fitDeadband(double val) {
         double abs = Math.abs(val);

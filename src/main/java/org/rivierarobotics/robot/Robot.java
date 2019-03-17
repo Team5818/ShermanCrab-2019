@@ -104,8 +104,7 @@ public class Robot extends TimedRobot {
 
     private void armSafety() {
         if (globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degreesFront &&
-                globalComponent.getPistonController().getPistonState(Piston.DEPLOY_LEFT) &&
-                globalComponent.getPistonController().getPistonState(Piston.DEPLOY_RIGHT)) {
+                globalComponent.getPistonController().getPistonState(Piston.DEPLOY)) {
             if (ArmController.PWR_MANUAL > 0) {
                 globalComponent.getArmController().stop();
             } else {
@@ -117,8 +116,7 @@ public class Robot extends TimedRobot {
         } else {
             ArmController.SAFE = true;
         }
-        ArmController.DEPLOY_PISTONS_OUT = globalComponent.getPistonController().getPistonState(Piston.DEPLOY_LEFT) ||
-                globalComponent.getPistonController().getPistonState(Piston.DEPLOY_RIGHT);
+        ArmController.DEPLOY_PISTONS_OUT = globalComponent.getPistonController().getPistonState(Piston.DEPLOY);
     }
 
     private void displayShuffleboard() {
@@ -128,7 +126,6 @@ public class Robot extends TimedRobot {
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
-        winchEncoder.setDouble(globalComponent.getWinchController().getAngle());
     }
 
     private void currentLimit() {

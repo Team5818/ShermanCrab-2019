@@ -82,12 +82,10 @@ public class ButtonConfiguration {
 
         //hatch
         JoystickButton deployOpen = new JoystickButton(codriverLeft, 2);
-        deployOpen.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
-                cmds.piston().extend(Piston.DEPLOY_RIGHT)));
+        deployOpen.whenPressed(cmds.piston().extend(Piston.DEPLOY));
 
         JoystickButton deployClose = new JoystickButton(codriverLeft, 1);
-        deployClose.toggleWhenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
-                cmds.piston().retract(Piston.DEPLOY_RIGHT)));
+        deployClose.toggleWhenPressed(cmds.piston().retract(Piston.DEPLOY));
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 8);
         hatchPush.whenPressed(cmds.hatch().push());
@@ -150,18 +148,25 @@ public class ButtonConfiguration {
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
 
         //climb
-        JoystickButton scissorClimb = new JoystickButton(driverButtons, 12);
+        JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
         scissorClimb.whenPressed(cmds.climb().scissor());
 
-        JoystickButton scissorEnd = new JoystickButton(driverButtons, 11);
-        scissorEnd.whenPressed(cmds.drive().atPower(0.0, true));
-        scissorEnd.cancelWhenPressed(cmds.climb().scissor());
+        JoystickButton scissorStart = new JoystickButton(driverButtons, 12);
+        scissorStart.whenPressed(cmds.winch().atPower(-0.5));
+        scissorStart.whenReleased(cmds.winch().atPower(0.0));
 
-        JoystickButton lockClimbPiston = new JoystickButton(driverButtons, 10);
-        lockClimbPiston.whenPressed(cmds.piston().extend(Piston.LOCK_CLIMB));
+        JoystickButton scissorEnd = new JoystickButton(driverButtons, 8);
+        scissorEnd.whenPressed(cmds.winch().atPower(0.5));
+        scissorEnd.whenReleased(cmds.winch().atPower(0.0));
 
-        JoystickButton addHoodEnc = new JoystickButton(driverButtons, 9);
-        addHoodEnc.whenPressed(cmds.hood().offsetEnc());
+        JoystickButton retractHelper = new JoystickButton(driverButtons, 11);
+        retractHelper.whenPressed(cmds.piston().retract(Piston.HELPER_CLIMB));
+
+        JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
+        lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
+
+        /*JoystickButton addHoodEnc = new JoystickButton(driverButtons, 9);
+        addHoodEnc.whenPressed(cmds.hood().offsetEnc());*/
     }
 
     public void initTest() {

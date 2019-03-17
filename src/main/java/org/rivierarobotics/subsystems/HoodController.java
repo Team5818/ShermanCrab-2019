@@ -80,7 +80,7 @@ public class HoodController extends Subsystem {
     }
 
     public void setAngle(double angle) {
-        pidLoop.setSetpoint(angle + offset);
+        pidLoop.setSetpoint(angle);
         pidLoop.enable();
     }
 
@@ -110,16 +110,12 @@ public class HoodController extends Subsystem {
         hood.set(pwr);
     }
 
-    public void setOffset(int offset) {
-        HoodController.offset = offset;
-    }
-
-    public int getOffset() {
-        return HoodController.offset;
-    }
-
     public PIDController getPIDLoop() {
         return pidLoop;
+    }
+
+    public WPI_TalonSRX getHood() {
+        return hood;
     }
 
     @Override

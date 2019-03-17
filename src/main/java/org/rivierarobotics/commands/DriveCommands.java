@@ -51,7 +51,7 @@ public class DriveCommands {
         return rotateCreator.create(degrees);
     }
 
-    public DriveAtPower atPower(double power, boolean stop) {
-        return driveAtPowerCreator.create(power, stop);
+    public DriveAtPower atPower(double power) {
+        return driveAtPowerCreator.create(power);
     }
 }

@@ -35,85 +35,23 @@ import javax.inject.Singleton;
 public class WinchController extends Subsystem {
     private WPI_TalonSRX winch;
 
-    private static final double P;
-    private static final double I;
-    private static final double D;
-    private static final double F;
-    private static final int VELOCITY_TICKS_PER_100MS;
-    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    private static final int VELOCITY_TICKS_PER_SEC = 1;
-    private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private PIDController pidLoop;
-
-    private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Winch Controller").addPersistent(name, def);
-    }
-
-    static {
-        P = ezWidget("P", 0.0005).getEntry().getDouble(0.0005);
-        System.err.println("P: " + P);
-
-        I = ezWidget("I", 0).getEntry().getDouble(0);
-        System.err.println("I: " + I);
-
-        D = ezWidget("D", 0.0).getEntry().getDouble(0);
-        System.err.println("D: " + D);
-
-        F = ezWidget("F", 0.0).getEntry().getDouble(0);
-        System.err.println("F: " + F);
-
-        // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
-        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
-
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
-        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
-    }
-
     @Inject
     public WinchController(int ch) {
-        winch = new WPI_TalonSRX(ch);
+        winch = new WPI_TalonSRX(13);
         winch.setInverted(false);
         winch.setNeutralMode(NeutralMode.Brake);
-
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
-
-    }
-
-    public void setAngle(double angle) {
-        winch.setNeutralMode(NeutralMode.Brake);
-        pidLoop.setSetpoint(angle);
-        pidLoop.enable();
     }
 
     public int getAngle() {
-        return 0;//winch.getSensorCollection().getQuadraturePosition();
+        return 0;
     }
 
     public void setPower(double pwr) {
-        if (pwr != 0 && pidLoop.isEnabled()) {
-            pidLoop.disable();
-        }
-        if (!pidLoop.isEnabled()) {
-            rawSetPower(pwr);
-        }
+        rawSetPower(pwr);
     }
 
     private void rawSetPower(double pwr) {
         winch.set(pwr);
-    }
-
-    public void stop() {
-        if (pidLoop.isEnabled()) {
-            pidLoop.disable();
-        }
-        pidLoop.setSetpoint(getAngle());
-        pidLoop.enable();
-        winch.setNeutralMode(NeutralMode.Brake);
-    }
-
-    public PIDController getPIDLoop() {
-        return pidLoop;
     }
 
     public WPI_TalonSRX getWinch() {

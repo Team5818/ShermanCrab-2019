@@ -23,26 +23,22 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.PistonController;
 
 @GenerateCreator
-public class DriveAtPower extends InstantCommand {
-    private final double power;
-    private final DriveTrain driveTrain;
+public class PistonSwap extends InstantCommand {
+    private final Piston piston;
+    private final PistonController pistonController;
 
-    public DriveAtPower(@Provided DriveTrain driveTrain, double power) {
-        this.power = power;
-        this.driveTrain = driveTrain;
-        requires(driveTrain);
+    public PistonSwap(@Provided PistonController pistonController, Piston piston) {
+        this.piston = piston;
+        this.pistonController = pistonController;
+        requires(pistonController);
     }
 
     @Override
-    protected void execute() {
-        driveTrain.setPower(power, power);
-    }
-
-    @Override
-    protected void end() {
-        driveTrain.setPower(0,0);
+    protected void initialize() {
+        pistonController.swap(piston);
     }
 }
