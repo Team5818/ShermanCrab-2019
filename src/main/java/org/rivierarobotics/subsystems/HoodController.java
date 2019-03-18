@@ -94,21 +94,14 @@ public class HoodController extends Subsystem {
         } else {
             hood.setNeutralMode(NeutralMode.Brake);
         }
-        if(pwr == 0) {
-
-        }
 
         if (!pidLoop.isEnabled()) {
-            /*double currAngle = getAngle() + OFFSET;
-            if(currAngle < MAX_ROT || currAngle > 0 || (currAngle >= MAX_ROT && pwr < 0) || (currAngle <= 0 && pwr > 0) || pwr == 0) {
-                rawSetPower(pwr);
-            }*/
             rawSetPower(pwr);
         }
     }
 
     public void rawSetPower(double pwr) {
-            hood.set(pwr);
+        hood.set(pwr);
     }
 
     public int getRestingZero() {

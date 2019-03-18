@@ -47,11 +47,6 @@ public class HoodControl extends Command {
     }
 
     @Override
-    protected void end() {
-        hood.setPower(0.0);
-    }
-
-    @Override
     protected boolean isFinished() {
         return false;
     }
