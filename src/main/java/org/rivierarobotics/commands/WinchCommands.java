@@ -25,17 +25,21 @@ import org.rivierarobotics.subsystems.WinchPosition;
 import javax.inject.Inject;
 
 public class WinchCommands {
-    private final WinchSetCreator winchSetCreator;
+    private final WinchSetPositionCreator winchSetPositionCreator;
     private final WinchAtPowerCreator winchAtPowerCreator;
 
     @Inject
-    public WinchCommands(WinchSetCreator winchSetCreator, WinchAtPowerCreator winchAtPowerCreator) {
-        this.winchSetCreator = winchSetCreator;
+    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator, WinchAtPowerCreator winchAtPowerCreator) {
+        this.winchSetPositionCreator = winchSetPositionCreator;
         this.winchAtPowerCreator = winchAtPowerCreator;
     }
 
-    public final WinchSet set(WinchPosition pos) {
-        return winchSetCreator.create(pos);
+    public final WinchSetPosition set(WinchPosition pos) {
+        return winchSetPositionCreator.create(pos.ticks);
+    }
+
+    public final WinchSetPosition set(double pos) {
+        return winchSetPositionCreator.create(pos);
     }
 
     public final WinchAtPower atPower(double pwr) {

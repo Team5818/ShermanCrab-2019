@@ -23,21 +23,22 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.subsystems.DriveTrain;
 
 @GenerateCreator
-public class HoodSet extends InstantCommand {
-    private final HoodController hood;
-    private final double pos;
+public class SetMaxDriveCurrent extends InstantCommand {
+    private final DriveTrain driveTrain;
+    private final int pwr;
 
-    public HoodSet(@Provided HoodController hood, double pos) {
-        this.hood = hood;
-        this.pos = pos;
-        requires(hood);
+    public SetMaxDriveCurrent(@Provided DriveTrain driveTrain, int pwr) {
+        this.driveTrain = driveTrain;
+        this.pwr = pwr;
+        requires(driveTrain);
     }
 
     @Override
     protected void execute() {
-        hood.setAngle(pos);
+        driveTrain.getLeft().setMaxCurrent(pwr);
+        driveTrain.getRight().setMaxCurrent(pwr);
     }
 }

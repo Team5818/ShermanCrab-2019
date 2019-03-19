@@ -18,16 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.Gear;
 
-    public final boolean state;
-    public final int maxCurrent;
+import javax.inject.Inject;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+public class FullShiftLow extends CommandGroup {
+
+    @Inject
+    public FullShiftLow(DriveCommands driveCommands, GearCommands gearCommands) {
+        addSequential(new TimedCommand(0.2));
+        addSequential(gearCommands.airShift(Gear.LOW));
+        addSequential(driveCommands.setMaxCurrent(Gear.LOW));
+        addSequential(new TimedCommand(0.2));
     }
 }

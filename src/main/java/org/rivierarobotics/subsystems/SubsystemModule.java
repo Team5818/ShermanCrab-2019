@@ -31,7 +31,6 @@ import javax.inject.Singleton;
 
 @Module
 public class SubsystemModule {
-    //TODO [CompBot] [Measurement] make sure all talons and sparks are assigned correctly (& shift solenoid)
     private static final int L_DRIVE_TALON_MASTER = 4;
     private static final int L_DRIVE_SPARK_SLAVE_ONE = 5;
     private static final int L_DRIVE_SPARK_SLAVE_TWO = 6;

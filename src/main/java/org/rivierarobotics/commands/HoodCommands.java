@@ -25,25 +25,25 @@ import org.rivierarobotics.subsystems.HoodPosition;
 import javax.inject.Inject;
 
 public class HoodCommands {
-    private final HoodSetCreator hoodSetCreator;
+    private final HoodSetPositionCreator hoodSetPositionCreator;
     private final HoodOffsetEncCreator hoodOffsetEncCreator;
 
     @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator, HoodOffsetEncCreator hoodOffsetEncCreator) {
-        this.hoodSetCreator = hoodSetCreator;
+    public HoodCommands(HoodSetPositionCreator hoodSetPositionCreator, HoodOffsetEncCreator hoodOffsetEncCreator) {
+        this.hoodSetPositionCreator = hoodSetPositionCreator;
         this.hoodOffsetEncCreator = hoodOffsetEncCreator;
     }
 
-    public final HoodSet setFrontPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticksFront);
+    public final HoodSetPosition setFrontPosition(HoodPosition pos) {
+        return hoodSetPositionCreator.create(pos.ticksFront);
     }
 
-    public final HoodSet setBackPosition(HoodPosition pos) {
-        return hoodSetCreator.create(pos.ticksBack);
+    public final HoodSetPosition setBackPosition(HoodPosition pos) {
+        return hoodSetPositionCreator.create(pos.ticksBack);
     }
 
-    public final HoodSet setRawPosition(double pos) {
-        return hoodSetCreator.create(pos);
+    public final HoodSetPosition setRawPosition(double pos) {
+        return hoodSetPositionCreator.create(pos);
     }
 
     public final HoodOffsetEnc offsetEnc() {

@@ -27,7 +27,10 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.HoodPosition;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.TestControllers;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -65,12 +68,12 @@ public class ButtonConfiguration {
     public void initTeleop() {
         clearButtons();
 
-        //shift
+        //airShift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
-        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
+        shiftHigh.whenPressed(cmds.gear().shiftHigh());
 
         JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
-        shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
+        shiftLow.whenPressed(cmds.gear().shiftLow());
 
         //tentacles
         double tentacleSpeed = 0.75;
@@ -91,9 +94,9 @@ public class ButtonConfiguration {
         hatchPush.whenPressed(cmds.hatch().push());
         hatchPush.whenReleased(cmds.hatch().pushCleanup());
 
-        JoystickButton sneakyPush = new JoystickButton(driverButtons, 4);
-        sneakyPush.whenPressed(cmds.piston().extend(Piston.PUSH));
-        sneakyPush.whenReleased(cmds.piston().retract(Piston.PUSH));
+        JoystickButton sneakPush = new JoystickButton(driverButtons, 4);
+        sneakPush.whenPressed(cmds.piston().extend(Piston.PUSH));
+        sneakPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         //clamp
         JoystickButton clampOpen = new JoystickButton(codriverRight, 1);
@@ -147,16 +150,19 @@ public class ButtonConfiguration {
         zeroArm.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
 
+        JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
+        hoodOffset.whenPressed(cmds.hood().offsetEnc());
+
         //climb
         JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
         scissorClimb.whenPressed(cmds.climb().scissor());
 
         JoystickButton scissorStart = new JoystickButton(driverButtons, 12);
-        scissorStart.whenPressed(cmds.winch().atPower(-0.5));
+        scissorStart.whenPressed(cmds.winch().atPower(0.5));
         scissorStart.whenReleased(cmds.winch().atPower(0.0));
 
         JoystickButton scissorEnd = new JoystickButton(driverButtons, 8);
-        scissorEnd.whenPressed(cmds.winch().atPower(0.5));
+        scissorEnd.whenPressed(cmds.winch().atPower(-0.5));
         scissorEnd.whenReleased(cmds.winch().atPower(0.0));
 
         JoystickButton retractHelper = new JoystickButton(driverButtons, 11);
@@ -164,10 +170,6 @@ public class ButtonConfiguration {
 
         JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
         lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
-
-        //TODO [Regional] [Software] uncomment for hood quadrature/relative to work
-        JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
-        hoodOffset.whenPressed(cmds.hood().offsetEnc());
     }
 
     public void initTest() {

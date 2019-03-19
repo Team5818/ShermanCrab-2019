@@ -22,11 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import org.rivierarobotics.util.AbstractPIDSource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,20 +33,20 @@ public class WinchController extends Subsystem {
 
     @Inject
     public WinchController(int ch) {
-        winch = new WPI_TalonSRX(13);
-        winch.setInverted(false);
+        winch = new WPI_TalonSRX(ch);
+        winch.setInverted(true);
         winch.setNeutralMode(NeutralMode.Brake);
     }
 
     public int getAngle() {
-        return 0;
+        return winch.getSensorCollection().getPulseWidthPosition();
+    }
+
+    public void setPosition(double position) {
+
     }
 
     public void setPower(double pwr) {
-        rawSetPower(pwr);
-    }
-
-    private void rawSetPower(double pwr) {
         winch.set(pwr);
     }
 

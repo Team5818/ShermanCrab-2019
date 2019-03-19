@@ -23,32 +23,21 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.ArmController;
-import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.WinchController;
 
 @GenerateCreator
-public class ArmSet extends InstantCommand {
-    private final ArmController arm;
+public class WinchSetPosition extends InstantCommand {
+    private final WinchController winch;
     private final double pos;
 
-    public ArmSet(@Provided ArmController arm, ArmPosition pos) {
-        this.arm = arm;
-        if (ArmController.FRONT) {
-            this.pos = pos.ticksFront;
-        } else {
-            this.pos = pos.ticksBack;
-        }
-        requires(arm);
-    }
-
-    public ArmSet(@Provided ArmController arm, double pos) {
-        this.arm = arm;
+    public WinchSetPosition(@Provided WinchController winch, double pos) {
+        this.winch = winch;
         this.pos = pos;
-        requires(arm);
+        requires(winch);
     }
 
     @Override
     protected void execute() {
-        arm.setAngle(pos);
+        winch.setPosition(pos);
     }
 }

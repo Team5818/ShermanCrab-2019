@@ -29,7 +29,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
     private GlobalComponent globalComponent;
@@ -41,8 +42,6 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
             .add("Angle", 0).getEntry();
-    private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
-            .add("Degrees", 0).getEntry();
     private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
             .add("Degrees", 0).getEntry();
 
@@ -62,7 +61,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        //TODO [Regional] [Software] resets quadrature encoder for hood testing. remove for reverting or uncomment for absolute limiting
+        //TODO [Regional] [Software] resets quadrature encoder for hood testing. remove for reverting or uncomment for quadrature
         //globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
@@ -71,7 +70,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         displayShuffleboard();
-        currentLimit();
         armSafety();
         Scheduler.getInstance().run();
     }
@@ -79,7 +77,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         displayShuffleboard();
-        currentLimit();
         armSafety();
         Scheduler.getInstance().run();
     }
@@ -103,18 +100,8 @@ public class Robot extends TimedRobot {
     }
 
     private void armSafety() {
-        if (globalComponent.getArmController().getDegrees() > ArmPosition.ZERO_DEGREES.degreesFront &&
-                globalComponent.getPistonController().getPistonState(Piston.DEPLOY)) {
-            if (ArmController.PWR_MANUAL > 0) {
-                globalComponent.getArmController().stop();
-            } else {
-                if (ArmController.PWR_MANUAL < 0) {
-                    globalComponent.getArmController().setCoast();
-                }
-                ArmController.SAFE = true;
-            }
-        } else {
-            ArmController.SAFE = true;
+        if (globalComponent.getPistonController().getPistonState(Piston.DEPLOY)) {
+            globalComponent.getArmController().safety();
         }
         ArmController.DEPLOY_PISTONS_OUT = globalComponent.getPistonController().getPistonState(Piston.DEPLOY);
     }
@@ -125,15 +112,5 @@ public class Robot extends TimedRobot {
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
-    }
-
-    private void currentLimit() {
-        if(globalComponent.getShifter().getGearState() == Gear.HIGH.state) {
-            globalComponent.getDriveTrain().getLeft().setMaxCurrent(50);
-            globalComponent.getDriveTrain().getRight().setMaxCurrent(50);
-        } else {
-            globalComponent.getDriveTrain().getLeft().setMaxCurrent(70);
-            globalComponent.getDriveTrain().getRight().setMaxCurrent(70);
-        }
     }
 }

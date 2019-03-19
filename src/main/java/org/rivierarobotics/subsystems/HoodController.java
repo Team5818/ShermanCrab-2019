@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
 
@@ -67,8 +66,10 @@ public class HoodController extends Subsystem {
         hood = new WPI_TalonSRX(h);
         this.command = command;
 
+        /* Disables limit switches on malfunctioning encoder */
         hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
         hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -84,10 +85,7 @@ public class HoodController extends Subsystem {
     }
 
     public int getAngle() {
-        //TODO [Regional] [Software] change to getQuadraturePosition() for quadrature/relative testing
-        int angle = hood.getSensorCollection().getPulseWidthPosition();
-        SmartDashboard.putNumber("hood encoder", angle);
-        return angle;
+        return hood.getSensorCollection().getPulseWidthPosition();
     }
 
     public void setPower(double pwr) {
@@ -103,12 +101,12 @@ public class HoodController extends Subsystem {
         }
     }
 
-    public void rawSetPower(double pwr) {
+    private void rawSetPower(double pwr) {
         hood.set(pwr);
     }
 
     public int getRestingZero() {
-        if(offset == 0 && !offsetDone) {
+        if (offset == 0 && !offsetDone) {
             offsetDone = true;
             return getAngle();
         } else {
@@ -117,7 +115,7 @@ public class HoodController extends Subsystem {
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2,0);
+        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2, 0);
     }
 
     public PIDController getPIDLoop() {

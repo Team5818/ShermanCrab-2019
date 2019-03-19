@@ -25,14 +25,18 @@ import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.ArmController;
 import org.rivierarobotics.subsystems.ArmPosition;
-import org.rivierarobotics.subsystems.WinchPosition;
 
 @GenerateCreator
-public class WinchSet extends InstantCommand {
+public class ArmSetPosition extends InstantCommand {
     private final ArmController arm;
-    private final WinchPosition pos;
+    private final double pos;
 
-    public WinchSet(@Provided ArmController arm, WinchPosition pos) {
+    public ArmSetPosition(@Provided ArmController arm, ArmPosition pos) {
+        this(arm, arm.FRONT ? pos.ticksFront : pos.ticksBack);
+        requires(arm);
+    }
+
+    public ArmSetPosition(@Provided ArmController arm, double pos) {
         this.arm = arm;
         this.pos = pos;
         requires(arm);
@@ -40,6 +44,6 @@ public class WinchSet extends InstantCommand {
 
     @Override
     protected void execute() {
-        arm.setAngle(pos.ticks);
+        arm.setAngle(pos);
     }
 }

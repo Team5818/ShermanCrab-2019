@@ -21,7 +21,6 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    //TODO [CompBot] [Software] work on rotation-based positions. deal with overflow from multiple cycles.
     RESTING_ARM_ZERO(0, 0),
 
     ROCKET_LEVEL_ONE(-3, 100),

@@ -26,13 +26,15 @@ import javax.inject.Inject;
 
 public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
-    private ArmSetCreator armSetCreator;
+    private ArmSetPositionCreator armSetPositionCreator;
     private ArmSelectSideCreator armSelectSideCreator;
 
     @Inject
-    public ArmCommands(ArmSetPowerCreator armSetPowerCreator, ArmSetCreator armSetCreator, ArmSelectSideCreator armSelectSideCreator) {
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator,
+                       ArmSetPositionCreator armSetPositionCreator,
+                       ArmSelectSideCreator armSelectSideCreator) {
         this.armSetPowerCreator = armSetPowerCreator;
-        this.armSetCreator = armSetCreator;
+        this.armSetPositionCreator = armSetPositionCreator;
         this.armSelectSideCreator = armSelectSideCreator;
     }
 
@@ -40,20 +42,20 @@ public class ArmCommands {
         return armSetPowerCreator.create(pwr);
     }
 
-    public ArmSet setFrontPosition(ArmPosition pos) {
-        return armSetCreator.create(pos.ticksFront);
+    public ArmSetPosition setFrontPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos.ticksFront);
     }
 
-    public ArmSet setBackPosition(ArmPosition pos) {
-        return armSetCreator.create(pos.ticksBack);
+    public ArmSetPosition setBackPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos.ticksBack);
     }
 
-    public ArmSet setRawPosition(double pos) {
-        return armSetCreator.create(pos);
+    public ArmSetPosition setRawPosition(double pos) {
+        return armSetPositionCreator.create(pos);
     }
 
-    public ArmSet setSidedPosition(ArmPosition pos) {
-        return armSetCreator.create(pos);
+    public ArmSetPosition setSidedPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos);
     }
 
     public ArmSelectSide setSideFront(boolean side) {

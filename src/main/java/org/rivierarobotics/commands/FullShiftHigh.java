@@ -18,35 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.Gear;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
-public class PigeonGyro extends Subsystem {
-    private PigeonIMU gyro;
+public class FullShiftHigh extends CommandGroup {
 
     @Inject
-    public PigeonGyro() {
-        gyro = new PigeonIMU(20);
-    }
-
-    private double[] getYPR() {
-        double[] ypr = {0, 0, 0};
-        gyro.getYawPitchRoll(ypr);
-        return ypr;
-    }
-
-    public double getYaw() {
-        return getYPR()[0];
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-
+    public FullShiftHigh(DriveCommands driveCommands, GearCommands gearCommands) {
+        addSequential(new TimedCommand(0.2));
+        addSequential(gearCommands.airShift(Gear.HIGH));
+        addSequential(driveCommands.setMaxCurrent(Gear.HIGH));
+        addSequential(new TimedCommand(0.2));
     }
 }

@@ -43,10 +43,10 @@ public class ArmController extends Subsystem {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
 
-    public static double PWR_MANUAL = 0;
-    public static boolean SAFE = true;
+    private double pwrManual = 0;
+    private boolean safe = true;
+    public boolean FRONT = true;
     public static boolean DEPLOY_PISTONS_OUT = false;
-    public static boolean FRONT = true;
 
     private static final double P;
     private static final double I;
@@ -122,8 +122,8 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        PWR_MANUAL = pwr;
-        if (SAFE) {
+        pwrManual = pwr;
+        if (safe) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 pidLoop.disable();
             }
@@ -140,13 +140,22 @@ public class ArmController extends Subsystem {
     }
 
     public void stop() {
-        SAFE = false;
+        safe = false;
         if (pidLoop.isEnabled()) {
             pidLoop.disable();
         }
         pidLoop.setSetpoint(getAngle());
         pidLoop.enable();
         setBrake();
+    }
+
+    public void safety() {
+        if (pwrManual < 0) {
+            setCoast();
+            safe = true;
+        } else {
+            stop();
+        }
     }
 
     public PIDController getPIDLoop() {

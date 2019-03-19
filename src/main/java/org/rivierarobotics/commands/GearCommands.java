@@ -23,23 +23,38 @@ package org.rivierarobotics.commands;
 import org.rivierarobotics.subsystems.Gear;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class GearCommands {
     private final ShiftGearCreator shiftGearCreator;
     private final SwapGearCreator swapGearCreator;
+    private final Provider<FullShiftHigh> fullShiftHighProvider;
+    private final Provider<FullShiftLow> fullShiftLowProvider;
 
     @Inject
     public GearCommands(ShiftGearCreator shiftGearCreator,
-                        SwapGearCreator swapGearCreator) {
+                        SwapGearCreator swapGearCreator,
+                        Provider<FullShiftHigh> fullShiftHighProvider,
+                        Provider<FullShiftLow> fullShiftLowProvider) {
         this.shiftGearCreator = shiftGearCreator;
         this.swapGearCreator = swapGearCreator;
+        this.fullShiftHighProvider = fullShiftHighProvider;
+        this.fullShiftLowProvider = fullShiftLowProvider;
     }
 
-    public ShiftGear shift(Gear gear) {
+    public ShiftGear airShift(Gear gear) {
         return shiftGearCreator.create(gear);
     }
 
     public SwapGear swap() {
         return swapGearCreator.create();
+    }
+
+    public FullShiftHigh shiftHigh() {
+        return fullShiftHighProvider.get();
+    }
+
+    public FullShiftLow shiftLow() {
+        return fullShiftLowProvider.get();
     }
 }

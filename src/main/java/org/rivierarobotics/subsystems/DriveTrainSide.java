@@ -39,7 +39,6 @@ public class DriveTrainSide {
     private static final int ACCELERATION_INCHES_PER_SEC_PER_SEC = 1;
     private static final int VELOCITY_TICKS_PER_100MS;
     private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    public static boolean GEAR_LIMITED = true;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Drive Train").addPersistent(name, def);
@@ -130,13 +129,10 @@ public class DriveTrainSide {
     }
 
     public void setMaxCurrent(int maxCurrent) {
-        if(!GEAR_LIMITED) {
-            talonMaster.configContinuousCurrentLimit(maxCurrent);
-            sparkSlaveOne.setSmartCurrentLimit(maxCurrent);
-            sparkSlaveTwo.setSmartCurrentLimit(maxCurrent);
-            talonMaster.enableCurrentLimit(true);
-            GEAR_LIMITED = true;
-        }
+        talonMaster.configContinuousCurrentLimit(maxCurrent);
+        sparkSlaveOne.setSmartCurrentLimit(maxCurrent);
+        sparkSlaveTwo.setSmartCurrentLimit(maxCurrent);
+        talonMaster.enableCurrentLimit(true);
     }
 
 }
