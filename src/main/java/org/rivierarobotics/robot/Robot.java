@@ -70,14 +70,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         displayShuffleboard();
-        armSafety();
         Scheduler.getInstance().run();
     }
 
     @Override
     public void teleopPeriodic() {
         displayShuffleboard();
-        armSafety();
         Scheduler.getInstance().run();
     }
 
@@ -97,13 +95,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         //Scheduler.getInstance().run();
-    }
-
-    private void armSafety() {
-        if (globalComponent.getPistonController().getPistonState(Piston.DEPLOY)) {
-            globalComponent.getArmController().safety();
-        }
-        ArmController.DEPLOY_PISTONS_OUT = globalComponent.getPistonController().getPistonState(Piston.DEPLOY);
     }
 
     private void displayShuffleboard() {

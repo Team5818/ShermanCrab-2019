@@ -38,6 +38,6 @@ public class ArmSelectSide extends InstantCommand {
 
     @Override
     protected void execute() {
-        arm.FRONT = this.front;
+        arm.front = this.front;
     }
 }

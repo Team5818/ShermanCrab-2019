@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.MathUtil;
@@ -43,22 +44,20 @@ public class ArmController extends Subsystem {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
 
+    private final PistonController pistonController;
+
     private double pwrManual = 0;
     private boolean safe = true;
-    public boolean FRONT = true;
-    public static boolean DEPLOY_PISTONS_OUT = false;
+    public boolean front = true;
 
     private static final double P;
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int VELOCITY_TICKS_PER_100MS;
-    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    private static final int VELOCITY_TICKS_PER_SEC = 1;
-    private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
     private static final double GRAVITY_CONSTANT = -0.042;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private PIDController pidLoop;
+
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
@@ -76,17 +75,10 @@ public class ArmController extends Subsystem {
 
         F = ezWidget("F", 0.0).getEntry().getDouble(0);
         System.err.println("F: " + F);
-
-        // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
-        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
-
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
-        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
     @Inject
-    public ArmController(Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
+    public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
         arm = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -100,11 +92,12 @@ public class ArmController extends Subsystem {
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
+        this.pistonController = pistonController;
         this.command = command;
     }
 
     public void setAngle(double angle) {
-        if (DEPLOY_PISTONS_OUT) {
+        if (pistonController.getPistonState(Piston.DEPLOY)) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
         }
 
@@ -122,6 +115,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
+        safety();
         pwrManual = pwr;
         if (safe) {
             if (pwr != 0 && pidLoop.isEnabled()) {
@@ -150,12 +144,26 @@ public class ArmController extends Subsystem {
     }
 
     public void safety() {
-        if (pwrManual < 0) {
-            setCoast();
-            safe = true;
-        } else {
-            stop();
+        if (pistonController.getPistonState(Piston.DEPLOY)) {
+            if (pwrManual < 0) {
+                setCoast();
+                safe = true;
+            } else {
+                stop();
+            }
         }
+    }
+
+    public void setBrake() {
+        arm.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
+
+    public void setCoast() {
+        arm.setNeutralMode(NeutralMode.Coast);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
     }
 
     public PIDController getPIDLoop() {
@@ -169,17 +177,5 @@ public class ArmController extends Subsystem {
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(command.get());
-    }
-
-    public void setBrake() {
-        arm.setNeutralMode(NeutralMode.Brake);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    }
-
-    public void setCoast() {
-        arm.setNeutralMode(NeutralMode.Coast);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
     }
 }

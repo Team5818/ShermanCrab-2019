@@ -22,6 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import dagger.Module;
 import dagger.Provides;
+import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.inject.Sided;
@@ -71,8 +72,8 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static ArmController provideArmMotorGroup(Provider<ArmControl> command) {
-        return new ArmController(command, ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
+    public static ArmController provideArmMotorGroup(@Provided PistonController pistonController, Provider<ArmControl> command) {
+        return new ArmController(pistonController, command, ARM_TALON_MASTER, ARM_SPARK_SLAVE_ONE, ARM_SPARK_SLAVE_TWO);
     }
 
     @Provides
