@@ -22,3 +22,7 @@ dependencies {
 		annotationProcessor(lib("compiler"))
 	}
 }
+
+repositories {
+	jcenter()
+}
