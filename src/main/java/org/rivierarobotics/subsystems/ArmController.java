@@ -46,7 +46,6 @@ public class ArmController extends Subsystem {
 
     private final PistonController pistonController;
 
-    private double pwrManual = 0;
     private boolean safe = true;
     public boolean front = true;
 
@@ -115,8 +114,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        safety();
-        pwrManual = pwr;
+        safety(pwr);
         if (safe) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 pidLoop.disable();
@@ -133,7 +131,7 @@ public class ArmController extends Subsystem {
         arm.set(pwr);
     }
 
-    public void stop() {
+    private void stop() {
         safe = false;
         if (pidLoop.isEnabled()) {
             pidLoop.disable();
@@ -143,9 +141,9 @@ public class ArmController extends Subsystem {
         setBrake();
     }
 
-    public void safety() {
+    private void safety(double pwr) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
-            if (pwrManual < 0) {
+            if (pwr < 0) {
                 setCoast();
                 safe = true;
             } else {
