@@ -27,7 +27,7 @@ import org.rivierarobotics.subsystems.HoodController;
 
 @GenerateCreator
 public class HoodOffsetEnc extends InstantCommand {
-    private static HoodController hoodController;
+    private final HoodController hoodController;
 
     public HoodOffsetEnc(@Provided HoodController hoodController) {
         this.hoodController = hoodController;
