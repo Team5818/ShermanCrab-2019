@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -27,11 +27,15 @@ import javax.inject.Inject;
 public class PistonCommands {
     private final ExtendPistonCreator extendPistonCreator;
     private final RetractPistonCreator retractPistonCreator;
+    private final PistonSwapCreator pistonSwapCreator;
 
     @Inject
-    public PistonCommands(ExtendPistonCreator extendPistonCreator, RetractPistonCreator retractPistonCreator) {
+    public PistonCommands(ExtendPistonCreator extendPistonCreator,
+                          RetractPistonCreator retractPistonCreator,
+                          PistonSwapCreator pistonSwapCreator) {
         this.extendPistonCreator = extendPistonCreator;
         this.retractPistonCreator = retractPistonCreator;
+        this.pistonSwapCreator = pistonSwapCreator;
     }
 
     public final ExtendPiston extend(Piston piston) {
@@ -40,5 +44,9 @@ public class PistonCommands {
 
     public final RetractPiston retract(Piston piston) {
         return retractPistonCreator.create(piston);
+    }
+
+    public final PistonSwap swap(Piston piston) {
+        return pistonSwapCreator.create(piston);
     }
 }

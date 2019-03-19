@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -31,18 +31,31 @@ import javax.inject.Singleton;
 @Component(modules = {SubsystemModule.class, ControlsModule.class, CCModule.class})
 @Singleton
 public abstract class GlobalComponent {
+    public void robotInit() {
+        getDriveTrain();
+        getPistonController();
+        getArmController();
+        getHoodController();
+        getTentacleController();
+        getWinchController();
+        getButtonConfiguration();
+        getShifter();
+    }
+
     public abstract DriveTrain getDriveTrain();
 
-    public abstract PigeonGyro getPigeonGyro();
-
-    public abstract HoodController getHoodController();
+    public abstract PistonController getPistonController();
 
     public abstract ArmController getArmController();
 
+    public abstract HoodController getHoodController();
+
     public abstract TentacleController getTentacleController();
+
+    public abstract WinchController getWinchController();
 
     public abstract ButtonConfiguration getButtonConfiguration();
 
-    public abstract HatchController getHatchController();
+    public abstract Shifter getShifter();
 
 }

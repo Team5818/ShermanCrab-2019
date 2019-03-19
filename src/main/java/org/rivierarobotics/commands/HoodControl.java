@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -42,7 +42,7 @@ public class HoodControl extends Command {
 
     @Override
     protected void execute() {
-        double armJoyY = -hoodRotateJoy.getY();
+        double armJoyY = hoodRotateJoy.getY();
         hood.setPower(MathUtil.fitDeadband(armJoyY));
     }
 

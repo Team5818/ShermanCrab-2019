@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -27,20 +27,21 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class HatchController extends Subsystem {
+public class PistonController extends Subsystem {
     private final Solenoid clampPiston;
     private final Solenoid pushPiston;
-    private final Solenoid deployPistonLeft;
-    private final Solenoid deployPistonRight;
-    private final Solenoid climbPiston;
+    private final Solenoid deployPiston;
+
+    private final Solenoid helperClimbPiston;
+    private final Solenoid lockClimbPiston;
 
     @Inject
-    public HatchController() {
+    public PistonController() {
         clampPiston = new Solenoid(1);
         pushPiston = new Solenoid(2);
-        deployPistonLeft = new Solenoid(3);
-        deployPistonRight = new Solenoid(4);
-        climbPiston = new Solenoid(6);
+        deployPiston = new Solenoid(3);
+        helperClimbPiston = new Solenoid(4);
+        lockClimbPiston = new Solenoid(5);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -48,12 +49,12 @@ public class HatchController extends Subsystem {
             return clampPiston;
         } else if (piston == Piston.PUSH) {
             return pushPiston;
-        } else if (piston == Piston.DEPLOY_LEFT) {
-            return deployPistonLeft;
-        } else if (piston == Piston.DEPLOY_RIGHT) {
-            return deployPistonRight;
-        } else if (piston == Piston.CLIMB) {
-            return climbPiston;
+        } else if (piston == Piston.DEPLOY) {
+            return deployPiston;
+        } else if (piston == Piston.HELPER_CLIMB) {
+            return helperClimbPiston;
+        } else if (piston == Piston.LOCK_CLIMB) {
+            return lockClimbPiston;
         } else {
             throw new IllegalArgumentException("Invalid piston value " + piston);
         }
@@ -69,6 +70,10 @@ public class HatchController extends Subsystem {
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
+    }
+
+    public void swap(Piston piston) {
+        pistonFor(piston).set(!pistonFor(piston).get());
     }
 
     @Override

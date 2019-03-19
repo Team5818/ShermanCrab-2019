@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -34,10 +35,6 @@ public class DriveTrainSide {
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final int VELOCITY_INCHES_PER_SEC = 1;
-    private static final int ACCELERATION_INCHES_PER_SEC_PER_SEC = 1;
-    private static final int VELOCITY_TICKS_PER_100MS;
-    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Drive Train").addPersistent(name, def);
@@ -58,12 +55,6 @@ public class DriveTrainSide {
 
         F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
         System.err.println("F: " + F);
-
-        VELOCITY_TICKS_PER_100MS = (int) (VELOCITY_INCHES_PER_SEC * INCHES_TO_TICKS * 10);
-        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
-
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = (int) (ACCELERATION_INCHES_PER_SEC_PER_SEC * INCHES_TO_TICKS * 10);
-        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
     }
 
     private WPI_TalonSRX talonMaster;
@@ -87,6 +78,10 @@ public class DriveTrainSide {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
 
+        talonMaster.setNeutralMode(NeutralMode.Coast);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
     }
 
@@ -105,13 +100,29 @@ public class DriveTrainSide {
     }
 
     public void setPower(double pwr) {
-        pidLoop.disable();
-        setMotorPower(pwr);
+        if (pwr != 0 && pidLoop.isEnabled()) {
+            pidLoop.disable();
+        }
+        if (!pidLoop.isEnabled()) {
+            setMotorPower(pwr);
+        }
     }
 
     private void setMotorPower(double pwr) {
         talonMaster.set(pwr);
     }
 
+    public void setBrake() {
+        talonMaster.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
+
+    public void setMaxCurrent(int maxCurrent) {
+        talonMaster.configContinuousCurrentLimit(maxCurrent);
+        sparkSlaveOne.setSmartCurrentLimit(maxCurrent);
+        sparkSlaveTwo.setSmartCurrentLimit(maxCurrent);
+        talonMaster.enableCurrentLimit(true);
+    }
 
 }

@@ -20,25 +20,29 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.PistonController;
+import org.rivierarobotics.subsystems.WinchPosition;
 
-@GenerateCreator
-public class RetractPiston extends InstantCommand {
-    private final PistonController pc;
-    private final Piston piston;
+import javax.inject.Inject;
 
-    public RetractPiston(@Provided PistonController pc, Piston piston) {
-        this.pc = pc;
-        this.piston = piston;
-        requires(pc);
+public class WinchCommands {
+    private final WinchSetPositionCreator winchSetPositionCreator;
+    private final WinchAtPowerCreator winchAtPowerCreator;
+
+    @Inject
+    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator, WinchAtPowerCreator winchAtPowerCreator) {
+        this.winchSetPositionCreator = winchSetPositionCreator;
+        this.winchAtPowerCreator = winchAtPowerCreator;
     }
 
-    @Override
-    protected void execute() {
-        pc.retractPiston(piston);
+    public final WinchSetPosition set(WinchPosition pos) {
+        return winchSetPositionCreator.create(pos.ticks);
+    }
+
+    public final WinchSetPosition set(double pos) {
+        return winchSetPositionCreator.create(pos);
+    }
+
+    public final WinchAtPower atPower(double pwr) {
+        return winchAtPowerCreator.create(pwr);
     }
 }

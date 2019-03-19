@@ -1,7 +1,7 @@
 import com.techshroom.inciseblue.commonLib
 
 plugins {
-    id("org.rivierarobotics.gradlerioredux") version "0.4.0"
+    id("org.rivierarobotics.gradlerioredux") version "0.5.0"
     id("net.ltgt.apt-idea") version "0.21"
     id("net.ltgt.apt-eclipse") version "0.21"
 }
@@ -21,4 +21,8 @@ dependencies {
 		implementation(lib())
 		annotationProcessor(lib("compiler"))
 	}
+}
+
+repositories {
+	jcenter()
 }

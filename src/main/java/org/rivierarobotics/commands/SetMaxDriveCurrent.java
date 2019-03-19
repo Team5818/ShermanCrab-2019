@@ -18,16 +18,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.DriveTrain;
 
-    public final boolean state;
-    public final int maxCurrent;
+@GenerateCreator
+public class SetMaxDriveCurrent extends InstantCommand {
+    private final DriveTrain driveTrain;
+    private final int pwr;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    public SetMaxDriveCurrent(@Provided DriveTrain driveTrain, int pwr) {
+        this.driveTrain = driveTrain;
+        this.pwr = pwr;
+        requires(driveTrain);
+    }
+
+    @Override
+    protected void execute() {
+        driveTrain.getLeft().setMaxCurrent(pwr);
+        driveTrain.getRight().setMaxCurrent(pwr);
     }
 }

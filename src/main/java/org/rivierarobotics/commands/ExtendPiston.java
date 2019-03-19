@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -23,22 +23,22 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HatchController;
 import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.PistonController;
 
 @GenerateCreator
 public class ExtendPiston extends InstantCommand {
-    private final HatchController hc;
+    private final PistonController pc;
     private final Piston piston;
 
-    public ExtendPiston(@Provided HatchController hc, Piston piston) {
-        this.hc = hc;
+    public ExtendPiston(@Provided PistonController pc, Piston piston) {
+        this.pc = pc;
         this.piston = piston;
-        requires(hc);
+        requires(pc);
     }
 
     @Override
     protected void execute() {
-        hc.extendPiston(piston);
+        pc.extendPiston(piston);
     }
 }

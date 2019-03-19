@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -20,17 +20,45 @@
 
 package org.rivierarobotics.commands;
 
+import org.rivierarobotics.subsystems.ArmPosition;
+
 import javax.inject.Inject;
 
 public class ArmCommands {
     private ArmSetPowerCreator armSetPowerCreator;
+    private ArmSetPositionCreator armSetPositionCreator;
+    private ArmSelectSideCreator armSelectSideCreator;
 
     @Inject
-    public ArmCommands(ArmSetPowerCreator armSetPowerCreator) {
+    public ArmCommands(ArmSetPowerCreator armSetPowerCreator,
+                       ArmSetPositionCreator armSetPositionCreator,
+                       ArmSelectSideCreator armSelectSideCreator) {
         this.armSetPowerCreator = armSetPowerCreator;
+        this.armSetPositionCreator = armSetPositionCreator;
+        this.armSelectSideCreator = armSelectSideCreator;
     }
 
     public ArmSetPower setPower(double pwr) {
         return armSetPowerCreator.create(pwr);
+    }
+
+    public ArmSetPosition setFrontPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos.ticksFront);
+    }
+
+    public ArmSetPosition setBackPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos.ticksBack);
+    }
+
+    public ArmSetPosition setRawPosition(double pos) {
+        return armSetPositionCreator.create(pos);
+    }
+
+    public ArmSetPosition setSidedPosition(ArmPosition pos) {
+        return armSetPositionCreator.create(pos);
+    }
+
+    public ArmSelectSide setSideFront(boolean side) {
+        return armSelectSideCreator.create(side);
     }
 }

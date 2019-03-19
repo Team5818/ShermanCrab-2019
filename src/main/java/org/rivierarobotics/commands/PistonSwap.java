@@ -18,16 +18,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.PistonController;
 
-    public final boolean state;
-    public final int maxCurrent;
+@GenerateCreator
+public class PistonSwap extends InstantCommand {
+    private final Piston piston;
+    private final PistonController pistonController;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    public PistonSwap(@Provided PistonController pistonController, Piston piston) {
+        this.piston = piston;
+        this.pistonController = pistonController;
+        requires(pistonController);
+    }
+
+    @Override
+    protected void initialize() {
+        pistonController.swap(piston);
     }
 }

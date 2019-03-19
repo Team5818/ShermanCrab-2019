@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -18,35 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.Gear;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
-public class PigeonGyro extends Subsystem {
-    private PigeonIMU gyro;
-
-    @Inject
-    public PigeonGyro() {
-        gyro = new PigeonIMU(20);
-    }
-
-    private double[] getYPR() {
-        double[] ypr = {0, 0, 0};
-        gyro.getYawPitchRoll(ypr);
-        return ypr;
-    }
-
-    public double getYaw() {
-        return getYPR()[0];
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-
+@GenerateCreator
+public class FullShift extends CommandGroup {
+    public FullShift(@Provided DriveCommands driveCommands, @Provided GearCommands gearCommands, Gear gear) {
+        addSequential(new TimedCommand(0.2));
+        addSequential(gearCommands.airShift(gear));
+        addSequential(driveCommands.setMaxCurrent(gear));
+        addSequential(new TimedCommand(0.2));
     }
 }

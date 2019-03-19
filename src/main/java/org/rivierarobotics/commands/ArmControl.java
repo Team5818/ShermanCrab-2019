@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -38,14 +38,13 @@ public class ArmControl extends Command {
         this.arm = arm;
         this.armJoy = armJoy;
         requires(arm);
+        this.arm.getPIDLoop().disable();
     }
 
     @Override
     protected void execute() {
         double armJoyY = -armJoy.getY();
-        double val = MathUtil.fitDeadband(armJoyY);
-        val = MathUtil.clamp(val, 0.4);
-        arm.setPower(val);
+        arm.setPower(MathUtil.fitDeadband(armJoyY));
     }
 
     @Override

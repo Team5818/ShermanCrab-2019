@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -20,6 +20,8 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -27,6 +29,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
     private GlobalComponent globalComponent;
@@ -38,57 +42,66 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
             .add("Angle", 0).getEntry();
+    private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
+            .add("Degrees", 0).getEntry();
 
     @Override
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
-        globalComponent.getDriveTrain();
-        globalComponent.getArmController();
-        globalComponent.getHoodController();
-        globalComponent.getPigeonGyro();
-        globalComponent.getTentacleController();
-        globalComponent.getHatchController();
-        CameraServer.getInstance().startAutomaticCapture();
+        globalComponent.robotInit();
+        UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
+        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
     }
 
     @Override
     public void teleopInit() {
         globalComponent.getButtonConfiguration().initTeleop();
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        double distance = globalComponent.getDriveTrain().getLeft().getDistance();
-        driveEncoderLeft.setDouble(distance);
-        distance = globalComponent.getDriveTrain().getRight().getDistance();
-        driveEncoderRight.setDouble(distance);
-        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
-        armEncoder.setDouble(globalComponent.getArmController().getAngle());
-        Scheduler.getInstance().run();
+        globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
     public void autonomousInit() {
+        //TODO [Regional] [Software] resets quadrature encoder for hood testing. remove for reverting or uncomment for quadrature
+        //globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
+        globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
     public void autonomousPeriodic() {
+        displayShuffleboard();
         Scheduler.getInstance().run();
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        displayShuffleboard();
+        Scheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledInit() {
+        globalComponent.getArmController().getPIDLoop().disable();
+        globalComponent.getHoodController().getPIDLoop().disable();
+        globalComponent.getArmController().setBrake();
+        globalComponent.getDriveTrain().setBrake();
     }
 
     @Override
     public void testInit() {
-        globalComponent.getButtonConfiguration().initTest();
+        //globalComponent.getButtonConfiguration().initTest();
     }
 
     @Override
     public void testPeriodic() {
-        Scheduler.getInstance().run();
+        //Scheduler.getInstance().run();
     }
 
-    @Override
-    public void disabledPeriodic() {
-
+    private void displayShuffleboard() {
+        driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
+        driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
+        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
+        armEncoder.setDouble(globalComponent.getArmController().getAngle());
+        armOut.setDouble(globalComponent.getArmController().getDegrees());
     }
 }

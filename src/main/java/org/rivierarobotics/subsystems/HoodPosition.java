@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -21,11 +21,21 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    NINETY_DEGREES(90), ONE_HUNDRED_EIGHTY_DEGREES(180), ZERO_DEGREES(0);
+    RESTING_ARM_ZERO(0, 0),
 
-    public final int degrees;
+    ROCKET_LEVEL_ONE(-3, 100),
+    ROCKET_LEVEL_TWO(1786, -2047),
+    CARGO_SHIP(2895, -2727),
+    HUMAN_PLAYER_STATION(467, -520),
+    COLLECT(330, -330);
 
-    HoodPosition(int degrees) {
-        this.degrees = degrees;
+    public final int ticksFront;
+    public final int ticksBack;
+    //TODO [Regional] [Software] set resting to zero when testing quadrature/relative, HoodController.OFFSET
+    private final int restingArmZero = 1890;
+
+    HoodPosition(int ticksFront, int ticksBack) {
+        this.ticksFront = restingArmZero + ticksFront;
+        this.ticksBack = restingArmZero + ticksBack;
     }
 }

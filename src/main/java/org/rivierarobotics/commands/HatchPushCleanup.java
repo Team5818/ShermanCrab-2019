@@ -18,16 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import org.rivierarobotics.subsystems.Piston;
 
-    public final boolean state;
-    public final int maxCurrent;
+import javax.inject.Inject;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+public class HatchPushCleanup extends CommandGroup {
+
+    @Inject
+    public HatchPushCleanup(PistonCommands piston) {
+        addSequential(piston.retract(Piston.PUSH));
     }
+
 }

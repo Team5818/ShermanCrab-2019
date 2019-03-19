@@ -20,14 +20,42 @@
 
 package org.rivierarobotics.subsystems;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-    public final boolean state;
-    public final int maxCurrent;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+@Singleton
+public class WinchController extends Subsystem {
+    private WPI_TalonSRX winch;
+
+    @Inject
+    public WinchController(int ch) {
+        winch = new WPI_TalonSRX(ch);
+        winch.setInverted(true);
+        winch.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public int getAngle() {
+        return winch.getSensorCollection().getPulseWidthPosition();
+    }
+
+    public void setPosition(double position) {
+
+    }
+
+    public void setPower(double pwr) {
+        winch.set(pwr);
+    }
+
+    public WPI_TalonSRX getWinch() {
+        return winch;
+    }
+
+    @Override
+    protected void initDefaultCommand() {
+
     }
 }

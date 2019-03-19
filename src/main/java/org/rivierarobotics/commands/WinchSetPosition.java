@@ -18,16 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.WinchController;
 
-    public final boolean state;
-    public final int maxCurrent;
+@GenerateCreator
+public class WinchSetPosition extends InstantCommand {
+    private final WinchController winch;
+    private final double pos;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    public WinchSetPosition(@Provided WinchController winch, double pos) {
+        this.winch = winch;
+        this.pos = pos;
+        requires(winch);
+    }
+
+    @Override
+    protected void execute() {
+        winch.setPosition(pos);
     }
 }

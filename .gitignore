@@ -8,3 +8,6 @@ build/
 /.apt_generated/
 .idea/
 out/
+*.iml
+*.ipr
+*.iws

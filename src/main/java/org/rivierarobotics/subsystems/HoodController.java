@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -20,14 +20,17 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
+import org.rivierarobotics.util.AbstractPIDSource;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -37,47 +40,25 @@ import javax.inject.Singleton;
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
     private final WPI_TalonSRX hood;
+    private PIDController pidLoop;
 
-    private static final int TIMEOUT = 30;
-    private static final double P;
-    private static final double I;
-    private static final double D;
-    private static final double F;
-    private static final int SLOT_IDX = 0;
-    private static final int PID_LOOP_IDX = 0;
-    private static final int VELOCITY_TICKS_PER_100MS;
-    private static final int ACCELERATION_TICKS_PER_100MS_PER_SEC;
-    private static final int VELOCITY_TICKS_PER_SEC = 1;
-    private static final int ACCELERATION_TICKS_PER_SEC_PER_SEC = 1;
-    private static double TICKS_TO_DEGREES;
-    private static final int TICK_BUFFER = 0;
+    private static final double P = 0.0003;
+    private static final double I = 0;
+    private static final double D = 0;
+    private static final double F = 0;
+    private static boolean offsetDone = false;
+    public int offset = 0;
+    /* Accounts for 6:11 chain ratio */
+    public static int MAX_ROT = ((4096 * 11) / 12);
+    private static final NetworkTableEntry SETPOINT_ANGLE;
+
 
     private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Hood Controller").addPersistent(name, def);
+        return Shuffleboard.getTab("Hood Controller").add(name, def);
     }
 
     static {
-        TICKS_TO_DEGREES = ezWidget("Ticks to Degrees", 1).getEntry().getDouble(1);
-        System.err.println("Ticks to Degrees: " + TICKS_TO_DEGREES);
-
-        P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
-        System.err.println("P: " + P);
-
-        I = ezWidget("I", 0.0).getEntry().getDouble(0);
-        System.err.println("I: " + I);
-
-        D = ezWidget("D", 0.0).getEntry().getDouble(0);
-        System.err.println("D: " + D);
-
-        F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
-        System.err.println("F: " + F);
-
-        // CHANGE UNITS STUFF
-        VELOCITY_TICKS_PER_100MS = VELOCITY_TICKS_PER_SEC * 10;
-        System.err.println("velocity: " + VELOCITY_TICKS_PER_100MS);
-
-        ACCELERATION_TICKS_PER_100MS_PER_SEC = ACCELERATION_TICKS_PER_SEC_PER_SEC * 10;
-        System.err.println("accel: " + ACCELERATION_TICKS_PER_100MS_PER_SEC);
+        SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
     }
 
     @Inject
@@ -85,49 +66,64 @@ public class HoodController extends Subsystem {
         hood = new WPI_TalonSRX(h);
         this.command = command;
 
-        /* Reset encoder before reading values */
-        hood.setSelectedSensorPosition(0);
+        /* Disables limit switches on malfunctioning encoder */
+        hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+        hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
-        /* Factory default hardware to prevent unexpected behavior */
-        hood.configFactoryDefault();
+        hood.setNeutralMode(NeutralMode.Brake);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        /* Configure Sensor Source for Primary PID */
-        hood.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_LOOP_IDX, TIMEOUT);
-
-        /* Set relevant frame periods to be at least as fast as periodic rate */
-        hood.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
-
-        /* Set the peak and nominal outputs */
-        hood.configNominalOutputForward(0, TIMEOUT);
-        hood.configNominalOutputReverse(0, TIMEOUT);
-        hood.configPeakOutputForward(1, TIMEOUT);
-        hood.configPeakOutputReverse(-1, TIMEOUT);
-
-        /* Set Motion Magic gains in slot0 - see documentation */
-        hood.selectProfileSlot(SLOT_IDX, PID_LOOP_IDX);
-        hood.config_kF(SLOT_IDX, F * 1023, TIMEOUT);
-        hood.config_kP(SLOT_IDX, P * 1023, TIMEOUT);
-        hood.config_kI(SLOT_IDX, I * 1023, TIMEOUT);
-        hood.config_kD(SLOT_IDX, D * 1023, TIMEOUT);
-
-        hood.configMotionCruiseVelocity(VELOCITY_TICKS_PER_100MS, TIMEOUT);
-        hood.configMotionAcceleration(ACCELERATION_TICKS_PER_100MS_PER_SEC, TIMEOUT);
+        //OFFSET = getRestingZero();
+        pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        hood.set(ControlMode.MotionMagic, angle);
+        //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
+        pidLoop.setSetpoint(angle + offset);
+        SETPOINT_ANGLE.setDouble(angle + offset);
+        pidLoop.enable();
     }
 
-    public double getAngle() {
-        return ((hood.getSensorCollection().getPulseWidthPosition() + TICK_BUFFER) / TICKS_TO_DEGREES);
+    public int getAngle() {
+        return hood.getSensorCollection().getPulseWidthPosition();
     }
 
     public void setPower(double pwr) {
+        if (pwr != 0) {
+            pidLoop.disable();
+            hood.setNeutralMode(NeutralMode.Coast);
+        } else {
+            hood.setNeutralMode(NeutralMode.Brake);
+        }
+
+        if (!pidLoop.isEnabled()) {
+            rawSetPower(pwr);
+        }
+    }
+
+    private void rawSetPower(double pwr) {
         hood.set(pwr);
     }
 
-    public void stop() {
-        setPower(0.0);
+    public int getRestingZero() {
+        if (offset == 0 && !offsetDone) {
+            offsetDone = true;
+            return getAngle();
+        } else {
+            return offset;
+        }
+    }
+
+    public void resetQuadratureEncoder() {
+        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2, 0);
+    }
+
+    public PIDController getPIDLoop() {
+        return pidLoop;
+    }
+
+    public WPI_TalonSRX getHood() {
+        return hood;
     }
 
     @Override

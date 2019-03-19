@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -25,18 +25,28 @@ import org.rivierarobotics.subsystems.HoodPosition;
 import javax.inject.Inject;
 
 public class HoodCommands {
-    private final HoodSetCreator hoodSetCreator;
+    private final HoodSetPositionCreator hoodSetPositionCreator;
+    private final HoodOffsetEncCreator hoodOffsetEncCreator;
 
     @Inject
-    public HoodCommands(HoodSetCreator hoodSetCreator) {
-        this.hoodSetCreator = hoodSetCreator;
+    public HoodCommands(HoodSetPositionCreator hoodSetPositionCreator, HoodOffsetEncCreator hoodOffsetEncCreator) {
+        this.hoodSetPositionCreator = hoodSetPositionCreator;
+        this.hoodOffsetEncCreator = hoodOffsetEncCreator;
     }
 
-    public final HoodSet set(HoodPosition pos) {
-        return hoodSetCreator.create(pos.degrees);
+    public final HoodSetPosition setFrontPosition(HoodPosition pos) {
+        return hoodSetPositionCreator.create(pos.ticksFront);
     }
 
-    public final HoodSet set(int pos) {
-        return hoodSetCreator.create(pos);
+    public final HoodSetPosition setBackPosition(HoodPosition pos) {
+        return hoodSetPositionCreator.create(pos.ticksBack);
+    }
+
+    public final HoodSetPosition setRawPosition(double pos) {
+        return hoodSetPositionCreator.create(pos);
+    }
+
+    public final HoodOffsetEnc offsetEnc() {
+        return hoodOffsetEncCreator.create();
     }
 }

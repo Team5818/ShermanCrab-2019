@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -21,7 +21,7 @@
 package org.rivierarobotics.util;
 
 public class MathUtil {
-    private static final double DEADBAND = 0.05;
+    private static final double DEADBAND = 0.08;
 
     public static double fitDeadband(double val) {
         double abs = Math.abs(val);
@@ -34,13 +34,23 @@ public class MathUtil {
         return (val - DEADBAND) / (1 - DEADBAND);
     }
 
-    public static double clamp(double value, double max) {
+    public static double limit(double value, double max) {
         if (value > max) {
             return max;
         } else if (value < -max) {
             return -max;
         } else {
             return value;
+        }
+    }
+
+    public static double fitHoodRotation(double angle, double min, double max) {
+        if (angle > max) {
+            return max;
+        } else if (angle < min) {
+            return min;
+        } else {
+            return angle;
         }
     }
 }

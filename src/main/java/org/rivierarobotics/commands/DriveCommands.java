@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -20,23 +20,28 @@
 
 package org.rivierarobotics.commands;
 
+import org.rivierarobotics.subsystems.Gear;
+
 import javax.inject.Inject;
 
 public class DriveCommands {
     private final DriveForwardCreator driveForwardCreator;
     private final DriveDistanceCreator driveDistanceCreator;
-    private final RotateCreator rotateCreator;
+    private final DriveAtPowerCreator driveAtPowerCreator;
+    private final SetMaxDriveCurrentCreator setMaxDriveCurrentCreator;
 
     @Inject
     public DriveCommands(DriveForwardCreator driveForwardCreator,
                          DriveDistanceCreator driveDistanceCreator,
-                         RotateCreator rotateCreator) {
+                         DriveAtPowerCreator driveAtPowerCreator,
+                         SetMaxDriveCurrentCreator setMaxDriveCurrentCreator) {
         this.driveForwardCreator = driveForwardCreator;
         this.driveDistanceCreator = driveDistanceCreator;
-        this.rotateCreator = rotateCreator;
+        this.driveAtPowerCreator = driveAtPowerCreator;
+        this.setMaxDriveCurrentCreator = setMaxDriveCurrentCreator;
     }
 
-    public DriveForward forward(double power, double distance) {
+    public DriveForward drive(double power, double distance) {
         return driveForwardCreator.create(power, distance);
     }
 
@@ -44,7 +49,15 @@ public class DriveCommands {
         return driveDistanceCreator.create(distance);
     }
 
-    public Rotate rotate(double degrees) {
-        return rotateCreator.create(degrees);
+    public DriveAtPower atPower(double power) {
+        return driveAtPowerCreator.create(power);
+    }
+
+    public SetMaxDriveCurrent setMaxCurrent(Gear gear) {
+        return setMaxDriveCurrentCreator.create(gear.maxCurrent);
+    }
+
+    public SetMaxDriveCurrent setMaxCurrent(int pwr) {
+        return setMaxDriveCurrentCreator.create(pwr);
     }
 }

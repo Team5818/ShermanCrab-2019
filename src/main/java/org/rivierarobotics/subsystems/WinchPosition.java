@@ -20,14 +20,12 @@
 
 package org.rivierarobotics.subsystems;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+public enum WinchPosition {
+    OUT(5449), IN(0);
 
-    public final boolean state;
-    public final int maxCurrent;
+    public final int ticks;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    WinchPosition(int ticks) {
+        this.ticks = ticks;
     }
 }

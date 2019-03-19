@@ -18,16 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.ArmPosition;
 
-    public final boolean state;
-    public final int maxCurrent;
+@GenerateCreator
+public class ArmSetPosition extends InstantCommand {
+    private final ArmController arm;
+    private final double pos;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    public ArmSetPosition(@Provided ArmController arm, ArmPosition pos) {
+        this(arm, arm.front ? pos.ticksFront : pos.ticksBack);
+        requires(arm);
+    }
+
+    public ArmSetPosition(@Provided ArmController arm, double pos) {
+        this.arm = arm;
+        this.pos = pos;
+        requires(arm);
+    }
+
+    @Override
+    protected void execute() {
+        arm.setAngle(pos);
     }
 }

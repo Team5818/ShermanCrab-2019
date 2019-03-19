@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -27,9 +27,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.Gear;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.TestControllers;
+import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -67,38 +65,108 @@ public class ButtonConfiguration {
     public void initTeleop() {
         clearButtons();
 
-        //shift
+        //airShift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
         shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
         JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
         shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
-        //hatch
-        JoystickButton hatchDeploy = new JoystickButton(driverButtons, 12);
-        hatchDeploy.whenPressed(inOrder(cmds.piston().extend(Piston.DEPLOY_LEFT),
-                cmds.piston().extend(Piston.DEPLOY_RIGHT)));
-        hatchDeploy.whenReleased(inOrder(cmds.piston().retract(Piston.DEPLOY_LEFT),
-                cmds.piston().retract(Piston.DEPLOY_RIGHT)));
+        //tentacles
+        double tentacleSpeed = 0.75;
+        JoystickButton tentaclesFwd = new JoystickButton(driverRight, 1);
+        tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
-        JoystickButton hatchPush = new JoystickButton(codriverButtons, 6);
+        JoystickButton tentaclesBack = new JoystickButton(driverRight, 2);
+        tentaclesBack.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
+
+        //hatch
+        JoystickButton deployOpen = new JoystickButton(codriverLeft, 2);
+        deployOpen.whenPressed(cmds.piston().extend(Piston.DEPLOY));
+
+        JoystickButton deployClose = new JoystickButton(codriverLeft, 1);
+        deployClose.toggleWhenPressed(cmds.piston().retract(Piston.DEPLOY));
+
+        JoystickButton hatchPush = new JoystickButton(codriverButtons, 8);
         hatchPush.whenPressed(cmds.hatch().push());
+        hatchPush.whenReleased(cmds.hatch().pushCleanup());
+
+        JoystickButton sneakPush = new JoystickButton(driverButtons, 4);
+        sneakPush.whenPressed(cmds.piston().extend(Piston.PUSH));
+        sneakPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         //clamp
-        JoystickButton clampActionToggle = new JoystickButton(codriverButtons, 10);
-        clampActionToggle.whenPressed(cmds.piston().extend(Piston.CLAMP));
-        clampActionToggle.whenReleased(cmds.piston().retract(Piston.CLAMP));
+        JoystickButton clampOpen = new JoystickButton(codriverRight, 1);
+        clampOpen.whenPressed(cmds.piston().retract(Piston.CLAMP));
 
-        JoystickButton tentaclesFwd = new JoystickButton(codriverButtons, 3);
-        tentaclesFwd.whileHeld(cmds.tentacle().spin(1.0));
+        JoystickButton clampClosed = new JoystickButton(codriverRight, 2);
+        clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
-        JoystickButton tentaclesBack = new JoystickButton(codriverButtons, 2);
-        tentaclesBack.whileHeld(cmds.tentacle().spin(-1.0));
+        //hood & arm
+        JoystickButton frontRocketTwo = new JoystickButton(codriverButtons, 4);
+        frontRocketTwo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_TWO),
+                cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_TWO)));
 
-        JoystickButton climb = new JoystickButton(driverButtons, 11);
-        climb.whenPressed(cmds.piston().extend(Piston.CLIMB));
-        climb.whenReleased(cmds.piston().retract(Piston.CLIMB));
+        JoystickButton backRocketTwo = new JoystickButton(codriverButtons, 1);
+        backRocketTwo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_TWO),
+                cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_TWO)));
 
+        JoystickButton frontRocketOne = new JoystickButton(codriverButtons, 5);
+        frontRocketOne.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_ONE)));
+
+        JoystickButton backRocketOne = new JoystickButton(codriverButtons, 2);
+        backRocketOne.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_ONE),
+                cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_ONE)));
+
+        JoystickButton frontCargo = new JoystickButton(codriverButtons, 6);
+        frontCargo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.CARGO_SHIP),
+                cmds.arm().setFrontPosition(ArmPosition.CARGO_SHIP)));
+
+        JoystickButton backCargo = new JoystickButton(codriverButtons, 3);
+        backCargo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.CARGO_SHIP),
+                cmds.arm().setBackPosition(ArmPosition.CARGO_SHIP)));
+
+        JoystickButton frontPlayerStation = new JoystickButton(codriverButtons, 12);
+        frontPlayerStation.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.HUMAN_PLAYER_STATION),
+                cmds.arm().setFrontPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+
+        JoystickButton backPlayerStation = new JoystickButton(codriverButtons, 10);
+        backPlayerStation.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.HUMAN_PLAYER_STATION),
+                cmds.arm().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+
+        JoystickButton frontCollect = new JoystickButton(codriverButtons, 11);
+        frontCollect.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.COLLECT),
+                cmds.arm().setFrontPosition(ArmPosition.COLLECT)));
+
+        JoystickButton backCollect = new JoystickButton(codriverButtons, 9);
+        backCollect.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.COLLECT),
+                cmds.arm().setBackPosition(ArmPosition.COLLECT)));
+
+        JoystickButton zeroArm = new JoystickButton(codriverButtons, 7);
+        zeroArm.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
+                cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
+
+        JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
+        hoodOffset.whenPressed(cmds.hood().offsetEnc());
+
+        //climb
+        JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
+        scissorClimb.whenPressed(cmds.climb().scissor());
+
+        JoystickButton scissorStart = new JoystickButton(driverButtons, 12);
+        scissorStart.whenPressed(cmds.winch().atPower(0.5));
+        scissorStart.whenReleased(cmds.winch().atPower(0.0));
+
+        JoystickButton scissorEnd = new JoystickButton(driverButtons, 8);
+        scissorEnd.whenPressed(cmds.winch().atPower(-0.5));
+        scissorEnd.whenReleased(cmds.winch().atPower(0.0));
+
+        JoystickButton retractHelper = new JoystickButton(driverButtons, 11);
+        retractHelper.whenPressed(cmds.piston().retract(Piston.HELPER_CLIMB));
+
+        JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
+        lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
     }
 
     public void initTest() {

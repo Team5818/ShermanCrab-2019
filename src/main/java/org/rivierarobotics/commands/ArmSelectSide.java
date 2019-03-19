@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -23,28 +23,21 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HoodController;
-import org.rivierarobotics.subsystems.HoodPosition;
+import org.rivierarobotics.subsystems.ArmController;
 
 @GenerateCreator
-public class HoodSet extends InstantCommand {
-    private final HoodController hood;
-    private final int pos;
+public class ArmSelectSide extends InstantCommand {
+    private ArmController arm;
+    private boolean front;
 
-    public HoodSet(@Provided HoodController hood, HoodPosition pos) {
-        this.hood = hood;
-        this.pos = pos.degrees;
-        requires(hood);
-    }
-
-    public HoodSet(@Provided HoodController hood, int pos) {
-        this.hood = hood;
-        this.pos = pos;
-        requires(hood);
+    public ArmSelectSide(@Provided ArmController arm, boolean front) {
+        this.arm = arm;
+        this.front = front;
+        requires(arm);
     }
 
     @Override
     protected void execute() {
-        hood.setAngle(pos);
+        arm.front = this.front;
     }
 }

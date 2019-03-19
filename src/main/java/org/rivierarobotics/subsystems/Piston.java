@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -21,7 +21,7 @@
 package org.rivierarobotics.subsystems;
 
 public enum Piston {
-    SHIFTER(true), CLAMP(false), PUSH(true), DEPLOY_LEFT(true), DEPLOY_RIGHT(true), CLIMB(true);
+    CLAMP(false), PUSH(true), DEPLOY(true), HELPER_CLIMB(true), LOCK_CLIMB(true);
 
     public final boolean extend;
 

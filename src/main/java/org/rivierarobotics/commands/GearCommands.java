@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -23,23 +23,31 @@ package org.rivierarobotics.commands;
 import org.rivierarobotics.subsystems.Gear;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class GearCommands {
     private final ShiftGearCreator shiftGearCreator;
     private final SwapGearCreator swapGearCreator;
+    private final FullShiftCreator fullShiftCreator;
 
     @Inject
     public GearCommands(ShiftGearCreator shiftGearCreator,
-                        SwapGearCreator swapGearCreator) {
+                        SwapGearCreator swapGearCreator,
+                        FullShiftCreator fullShiftCreator) {
         this.shiftGearCreator = shiftGearCreator;
         this.swapGearCreator = swapGearCreator;
+        this.fullShiftCreator = fullShiftCreator;
     }
 
-    public ShiftGear shift(Gear gear) {
+    public ShiftGear airShift(Gear gear) {
         return shiftGearCreator.create(gear);
     }
 
     public SwapGear swap() {
         return swapGearCreator.create();
+    }
+
+    public FullShift shift(Gear gear) {
+        return fullShiftCreator.create(gear);
     }
 }

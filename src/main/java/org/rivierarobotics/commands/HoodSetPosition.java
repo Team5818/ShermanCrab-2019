@@ -18,16 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.HoodController;
 
-    public final boolean state;
-    public final int maxCurrent;
+@GenerateCreator
+public class HoodSetPosition extends InstantCommand {
+    private final HoodController hood;
+    private final double pos;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    public HoodSetPosition(@Provided HoodController hood, double pos) {
+        this.hood = hood;
+        this.pos = pos;
+        requires(hood);
+    }
+
+    @Override
+    protected void execute() {
+        hood.setAngle(pos);
     }
 }

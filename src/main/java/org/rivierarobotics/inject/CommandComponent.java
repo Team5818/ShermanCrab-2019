@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -41,6 +41,10 @@ public abstract class CommandComponent {
     public abstract TentacleCommands tentacle();
 
     public abstract TestCommands test();
+
+    public abstract ClimbCommands climb();
+
+    public abstract WinchCommands winch();
 
     @Module(subcomponents = CommandComponent.class)
     public interface CCModule {

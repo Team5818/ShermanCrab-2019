@@ -18,16 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.Piston;
 
-    public final boolean state;
-    public final int maxCurrent;
+import javax.inject.Inject;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+public class ScissorClimb extends CommandGroup {
+
+    @Inject
+    public ScissorClimb(PistonCommands piston) {
+        addSequential(piston.extend(Piston.LOCK_CLIMB));
+        addSequential(new TimedCommand(0.5));
+        addSequential(piston.extend(Piston.HELPER_CLIMB));
     }
 }

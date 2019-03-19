@@ -18,16 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.subsystems;
+package org.rivierarobotics.commands;
 
-public enum Gear {
-    HIGH(true, 50), LOW(false, 70);
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-    public final boolean state;
-    public final int maxCurrent;
+public class ClimbCommands {
+    private final Provider<ScissorClimb> scissorClimbProvider;
 
-    Gear(boolean state, int maxCurrent) {
-        this.state = state;
-        this.maxCurrent = maxCurrent;
+    @Inject
+    public ClimbCommands(Provider<ScissorClimb> scissorClimbProvider) {
+        this.scissorClimbProvider = scissorClimbProvider;
+    }
+
+    public final ScissorClimb scissor() {
+        return scissorClimbProvider.get();
     }
 }

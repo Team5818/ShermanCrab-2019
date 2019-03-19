@@ -1,5 +1,5 @@
 /*
- * This file is part of Placeholder-2019, licensed under the GNU General Public License (GPLv3).
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
  *
  * Copyright (c) Riviera Robotics <https://github.com/Team5818>
  * Copyright (c) contributors
@@ -63,6 +63,11 @@ public class DriveTrain extends Subsystem {
 
     public double getDistance() {
         return (left.getDistance() + right.getDistance()) / 2;
+    }
+
+    public void setBrake() {
+        left.setBrake();
+        right.setBrake();
     }
 
     @Override
