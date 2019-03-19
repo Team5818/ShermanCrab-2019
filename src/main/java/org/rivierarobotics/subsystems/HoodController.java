@@ -20,6 +20,8 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -65,10 +67,11 @@ public class HoodController extends Subsystem {
         hood = new WPI_TalonSRX(h);
         this.command = command;
 
+        hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+        hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        //pidLoop.setContinuous(false);
         //OFFSET = getRestingZero();
         pidLoop.setOutputRange(-0.4, 0.4);
     }
@@ -76,7 +79,7 @@ public class HoodController extends Subsystem {
     public void setAngle(double angle) {
         //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
         pidLoop.setSetpoint(angle + offset);
-        //SETPOINT_ANGLE.setDouble(angle + offset);
+        SETPOINT_ANGLE.setDouble(angle + offset);
         pidLoop.enable();
     }
 
