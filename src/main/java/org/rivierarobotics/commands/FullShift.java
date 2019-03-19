@@ -22,17 +22,16 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.Gear;
 
-import javax.inject.Inject;
-
-public class FullShiftHigh extends CommandGroup {
-
-    @Inject
-    public FullShiftHigh(DriveCommands driveCommands, GearCommands gearCommands) {
+@GenerateCreator
+public class FullShift extends CommandGroup {
+    public FullShift(@Provided DriveCommands driveCommands, @Provided GearCommands gearCommands, Gear gear) {
         addSequential(new TimedCommand(0.2));
-        addSequential(gearCommands.airShift(Gear.HIGH));
-        addSequential(driveCommands.setMaxCurrent(Gear.HIGH));
+        addSequential(gearCommands.airShift(gear));
+        addSequential(driveCommands.setMaxCurrent(gear));
         addSequential(new TimedCommand(0.2));
     }
 }

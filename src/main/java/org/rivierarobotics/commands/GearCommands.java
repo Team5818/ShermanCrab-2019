@@ -28,18 +28,15 @@ import javax.inject.Provider;
 public class GearCommands {
     private final ShiftGearCreator shiftGearCreator;
     private final SwapGearCreator swapGearCreator;
-    private final Provider<FullShiftHigh> fullShiftHighProvider;
-    private final Provider<FullShiftLow> fullShiftLowProvider;
+    private final FullShiftCreator fullShiftCreator;
 
     @Inject
     public GearCommands(ShiftGearCreator shiftGearCreator,
                         SwapGearCreator swapGearCreator,
-                        Provider<FullShiftHigh> fullShiftHighProvider,
-                        Provider<FullShiftLow> fullShiftLowProvider) {
+                        FullShiftCreator fullShiftCreator) {
         this.shiftGearCreator = shiftGearCreator;
         this.swapGearCreator = swapGearCreator;
-        this.fullShiftHighProvider = fullShiftHighProvider;
-        this.fullShiftLowProvider = fullShiftLowProvider;
+        this.fullShiftCreator = fullShiftCreator;
     }
 
     public ShiftGear airShift(Gear gear) {
@@ -50,11 +47,7 @@ public class GearCommands {
         return swapGearCreator.create();
     }
 
-    public FullShiftHigh shiftHigh() {
-        return fullShiftHighProvider.get();
-    }
-
-    public FullShiftLow shiftLow() {
-        return fullShiftLowProvider.get();
+    public FullShift shift(Gear gear) {
+        return fullShiftCreator.create(gear);
     }
 }

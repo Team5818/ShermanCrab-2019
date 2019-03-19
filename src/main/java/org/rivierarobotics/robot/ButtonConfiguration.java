@@ -27,10 +27,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.ArmPosition;
-import org.rivierarobotics.subsystems.HoodPosition;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.TestControllers;
+import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -70,10 +67,10 @@ public class ButtonConfiguration {
 
         //airShift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
-        shiftHigh.whenPressed(cmds.gear().shiftHigh());
+        shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 
         JoystickButton shiftLow = new JoystickButton(driverLeft, 2);
-        shiftLow.whenPressed(cmds.gear().shiftLow());
+        shiftLow.whenPressed(cmds.gear().shift(Gear.LOW));
 
         //tentacles
         double tentacleSpeed = 0.75;
