@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.MathUtil;
@@ -114,8 +113,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        safety(pwr);
-        if (safe) {
+        if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 pidLoop.disable();
             }
@@ -132,7 +130,6 @@ public class ArmController extends Subsystem {
     }
 
     private void stop() {
-        safe = false;
         if (pidLoop.isEnabled()) {
             pidLoop.disable();
         }
@@ -141,14 +138,18 @@ public class ArmController extends Subsystem {
         setBrake();
     }
 
-    private void safety(double pwr) {
-        if (pistonController.getPistonState(Piston.DEPLOY)) {
+    private boolean safety(double pwr) {
+        if (pistonController.getPistonState(Piston.DEPLOY)
+                && getAngle() >= ArmPosition.ZERO_DEGREES.ticksFront) {
             if (pwr < 0) {
                 setCoast();
-                safe = true;
+                return true;
             } else {
                 stop();
+                return false;
             }
+        } else {
+            return true;
         }
     }
 

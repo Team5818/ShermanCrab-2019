@@ -27,9 +27,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
-import org.rivierarobotics.subsystems.ArmController;
 import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
+        Shuffleboard.startRecording();
     }
 
     @Override
@@ -81,6 +82,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        Shuffleboard.stopRecording();
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
@@ -98,6 +100,12 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
+        SmartDashboard.putData(globalComponent.getHoodController());
+        SmartDashboard.putData(globalComponent.getDriveTrain());
+
+        SmartDashboard.putBoolean("HoodPID isEnabled()", globalComponent.getHoodController().getPIDLoop().isEnabled());
+        SmartDashboard.putNumber("DriveTrain Output", globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
+
         driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());

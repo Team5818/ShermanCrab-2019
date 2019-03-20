@@ -43,7 +43,7 @@ public class WinchController extends Subsystem {
     }
 
     public void setPosition(double position) {
-
+        /* No PID loop needed - manual control by itself is sufficient */
     }
 
     public void setPower(double pwr) {

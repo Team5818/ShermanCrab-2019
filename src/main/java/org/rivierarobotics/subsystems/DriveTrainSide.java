@@ -103,6 +103,7 @@ public class DriveTrainSide {
         if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
         }
+
         if (!pidLoop.isEnabled()) {
             setMotorPower(pwr);
         }
@@ -125,4 +126,7 @@ public class DriveTrainSide {
         talonMaster.enableCurrentLimit(true);
     }
 
+    public WPI_TalonSRX getTalon() {
+        return talonMaster;
+    }
 }

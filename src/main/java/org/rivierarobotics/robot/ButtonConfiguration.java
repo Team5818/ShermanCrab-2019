@@ -65,7 +65,7 @@ public class ButtonConfiguration {
     public void initTeleop() {
         clearButtons();
 
-        //airShift
+        //shift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
         shiftHigh.whenPressed(cmds.gear().shift(Gear.HIGH));
 

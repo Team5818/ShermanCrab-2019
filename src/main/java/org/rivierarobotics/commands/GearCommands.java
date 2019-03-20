@@ -23,7 +23,6 @@ package org.rivierarobotics.commands;
 import org.rivierarobotics.subsystems.Gear;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class GearCommands {
     private final ShiftGearCreator shiftGearCreator;
