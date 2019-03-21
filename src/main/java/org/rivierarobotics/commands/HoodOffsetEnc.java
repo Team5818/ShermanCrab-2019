@@ -36,10 +36,10 @@ public class HoodOffsetEnc extends InstantCommand {
 
     @Override
     protected void execute() {
-        if (hoodController.offset == 0) {
-            hoodController.offset = HoodController.MAX_ROT;
+        if (hoodController.restingZero == 0) {
+            hoodController.restingZero += HoodController.MAX_ROT;
         } else {
-            hoodController.offset = 0;
+            hoodController.restingZero -= HoodController.MAX_ROT;
         }
     }
 }

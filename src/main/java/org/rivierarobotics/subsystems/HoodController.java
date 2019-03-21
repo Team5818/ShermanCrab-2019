@@ -47,7 +47,7 @@ public class HoodController extends Subsystem {
     private static final double D = 0;
     private static final double F = 0;
     private static boolean offsetDone = false;
-    public int offset = 0;
+    public int restingZero = 0;
     /* Accounts for 6:11 chain ratio */
     public static int MAX_ROT = ((4096 * 11) / 12);
     private static final NetworkTableEntry SETPOINT_ANGLE;
@@ -73,19 +73,18 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        //OFFSET = getRestingZero();
+        restingZero = getRestingZero();
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
-        pidLoop.setSetpoint(angle + offset);
-        SETPOINT_ANGLE.setDouble(angle + offset);
+        pidLoop.setSetpoint(angle + restingZero);
+        SETPOINT_ANGLE.setDouble(angle + restingZero);
         pidLoop.enable();
     }
 
     public int getAngle() {
-        return hood.getSensorCollection().getPulseWidthPosition();
+        return hood.getSensorCollection().getQuadraturePosition();
     }
 
     public void setPower(double pwr) {
@@ -106,16 +105,16 @@ public class HoodController extends Subsystem {
     }
 
     public int getRestingZero() {
-        if (offset == 0 && !offsetDone) {
+        if ((restingZero == 0 || Math.abs(restingZero) == HoodController.MAX_ROT) && !offsetDone) {
             offsetDone = true;
-            return getAngle();
+            return hood.getSensorCollection().getPulseWidthPosition();
         } else {
-            return offset;
+            return restingZero;
         }
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2, 0);
+        hood.getSensorCollection().setQuadraturePosition(restingZero, 0);
     }
 
     public PIDController getPIDLoop() {

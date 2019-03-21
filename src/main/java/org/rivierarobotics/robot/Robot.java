@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
+import org.rivierarobotics.subsystems.HoodController;
 import org.rivierarobotics.subsystems.Piston;
 
 public class Robot extends TimedRobot {
@@ -55,6 +56,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
         Shuffleboard.startRecording();
@@ -62,8 +64,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        //TODO [Regional] [Software] resets quadrature encoder for hood testing. remove for reverting or uncomment for quadrature
-        //globalComponent.getHoodController().resetQuadratureEncoder();
+        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }

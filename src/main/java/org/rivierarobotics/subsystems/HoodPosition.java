@@ -31,8 +31,7 @@ public enum HoodPosition {
 
     public final int ticksFront;
     public final int ticksBack;
-    //TODO [Regional] [Software] set resting to zero when testing quadrature/relative, HoodController.OFFSET
-    private final int restingArmZero = 1890;
+    private final int restingArmZero = HoodController.STARTING_ABSOLUTE;
 
     HoodPosition(int ticksFront, int ticksBack) {
         this.ticksFront = restingArmZero + ticksFront;
