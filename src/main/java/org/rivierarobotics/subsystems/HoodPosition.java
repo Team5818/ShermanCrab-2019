@@ -31,10 +31,9 @@ public enum HoodPosition {
 
     public final int ticksFront;
     public final int ticksBack;
-    private final int restingArmZero = HoodController.STARTING_ABSOLUTE;
 
     HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+        this.ticksFront = HoodController.RESTING_ZERO + ticksFront;
+        this.ticksBack = HoodController.RESTING_ZERO + ticksBack;
     }
 }

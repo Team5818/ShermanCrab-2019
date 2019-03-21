@@ -47,7 +47,7 @@ public class HoodController extends Subsystem {
     private static final double D = 0;
     private static final double F = 0;
     private static boolean offsetDone = false;
-    public int restingZero = 0;
+    public static int RESTING_ZERO = 0;
     /* Accounts for 6:11 chain ratio */
     public static int MAX_ROT = ((4096 * 11) / 12);
     private static final NetworkTableEntry SETPOINT_ANGLE;
@@ -73,13 +73,13 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        restingZero = getRestingZero();
+        RESTING_ZERO = getRestingZero();
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        pidLoop.setSetpoint(angle + restingZero);
-        SETPOINT_ANGLE.setDouble(angle + restingZero);
+        pidLoop.setSetpoint(angle + RESTING_ZERO);
+        SETPOINT_ANGLE.setDouble(angle + RESTING_ZERO);
         pidLoop.enable();
     }
 
@@ -105,16 +105,16 @@ public class HoodController extends Subsystem {
     }
 
     public int getRestingZero() {
-        if ((restingZero == 0 || Math.abs(restingZero) == HoodController.MAX_ROT) && !offsetDone) {
+        if ((RESTING_ZERO == 0 || Math.abs(RESTING_ZERO) == HoodController.MAX_ROT) && !offsetDone) {
             offsetDone = true;
             return hood.getSensorCollection().getPulseWidthPosition();
         } else {
-            return restingZero;
+            return RESTING_ZERO;
         }
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(restingZero, 0);
+        hood.getSensorCollection().setQuadraturePosition(RESTING_ZERO, 0);
     }
 
     public PIDController getPIDLoop() {
