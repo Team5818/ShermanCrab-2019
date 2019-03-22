@@ -43,17 +43,19 @@ public class HoodController extends Subsystem {
     private final ArmController armController;
     private PIDController pidLoop;
 
-    private static final double P = 0.0003;
+    private static final double P = 0.0008;
     private static final double I = 0;
     private static final double D = 0;
     private static final double F = 0;
-    private static final double GRAVITY_CONSTANT = -0.042;
-    private static double ANGLE_SCALE;
+    private static final double GRAVITY_CONSTANT = 0.13;
+
     private static boolean offsetDone = false;
-    public static int RESTING_ZERO = 0;
-    /* Accounts for 6:11 chain ratio */
-    public static int MAX_ROT = ((4096 * 11) / 12);
+    public static double ANGLE_SCALE = 4096 / 360;
+    public static int RESTING_ZERO = -470;
+    public static boolean isQuadrature = false;
     private static final NetworkTableEntry SETPOINT_ANGLE;
+    private static final NetworkTableEntry RESTING;
+    private static final NetworkTableEntry PWR;
 
 
     private static SimpleWidget ezWidget(String name, Object def) {
@@ -62,6 +64,8 @@ public class HoodController extends Subsystem {
 
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
+        RESTING = ezWidget("Resting Angle", 0).getEntry();
+        PWR = ezWidget("Power", 0).getEntry();
     }
 
     @Inject
@@ -77,26 +81,32 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        RESTING_ZERO = getRestingZero();
-        ANGLE_SCALE = (180) / (HoodPosition.RESTING_ARM_ONE_HUNDRED_EIGHTY.ticksFront - RESTING_ZERO);
+        //ANGLE_SCALE = (180) / (HoodPosition.RESTING_ARM_ONE_HUNDRED_EIGHTY.degreesFront - RESTING_ZERO);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
-        pidLoop.setSetpoint(angle + RESTING_ZERO);
-        SETPOINT_ANGLE.setDouble(angle + RESTING_ZERO);
+        pidLoop.setSetpoint(angle);
+        SETPOINT_ANGLE.setDouble(angle);
+        RESTING.setDouble(RESTING_ZERO);
         pidLoop.enable();
     }
 
     public int getAngle() {
-        return hood.getSensorCollection().getQuadraturePosition();
+        if(isQuadrature) {
+            return hood.getSensorCollection().getQuadraturePosition();
+        } else {
+            return hood.getSensorCollection().getPulseWidthPosition();
+        }
+
     }
 
     public double getDegrees() {
-        return (getAngle() - RESTING_ZERO) * ANGLE_SCALE;
+        return ((getAngle() - RESTING_ZERO) / ANGLE_SCALE) % 360;
     }
 
     public void setPower(double pwr) {
+        PWR.setDouble(hood.getMotorOutputPercent());
         if (pwr != 0) {
             pidLoop.disable();
             hood.setNeutralMode(NeutralMode.Coast);
@@ -105,17 +115,17 @@ public class HoodController extends Subsystem {
         }
 
         if (!pidLoop.isEnabled()) {
+            pwr += Math.sin(Math.toRadians(this.getDegrees() - Math.abs(armController.getDegrees()))) * GRAVITY_CONSTANT;
             rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
-        pwr += Math.sin(Math.toRadians(180 - this.getDegrees() - (90 - armController.getDegrees()))) * GRAVITY_CONSTANT;
         hood.set(pwr);
     }
 
     public int getRestingZero() {
-        if ((RESTING_ZERO == 0 || Math.abs(RESTING_ZERO) == HoodController.MAX_ROT) && !offsetDone) {
+        if (RESTING_ZERO == 0 && !offsetDone) {
             offsetDone = true;
             return hood.getSensorCollection().getPulseWidthPosition();
         } else {

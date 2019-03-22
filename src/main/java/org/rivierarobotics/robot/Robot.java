@@ -45,6 +45,8 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
             .add("Degrees", 0).getEntry();
+    private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
+            .add("Degrees", 0).getEntry();
 
     @Override
     public void robotInit() {
@@ -56,7 +58,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
         Shuffleboard.startRecording();
@@ -64,7 +65,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
@@ -91,6 +91,11 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void disabledPeriodic() {
+
+    }
+
+    @Override
     public void testInit() {
         //globalComponent.getButtonConfiguration().initTest();
     }
@@ -101,15 +106,13 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
-        SmartDashboard.putData(globalComponent.getHoodController());
-        SmartDashboard.putData(globalComponent.getDriveTrain());
-
-        SmartDashboard.putBoolean("HoodPID isEnabled()", globalComponent.getHoodController().getPIDLoop().isEnabled());
+        SmartDashboard.putBoolean("HoodPID Enabled", globalComponent.getHoodController().getPIDLoop().isEnabled());
         SmartDashboard.putNumber("DriveTrain Output", globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
 
         driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
+        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
     }

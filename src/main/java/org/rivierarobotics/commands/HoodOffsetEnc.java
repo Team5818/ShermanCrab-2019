@@ -36,10 +36,8 @@ public class HoodOffsetEnc extends InstantCommand {
 
     @Override
     protected void execute() {
-        if (HoodController.RESTING_ZERO == 0) {
-            HoodController.RESTING_ZERO += HoodController.MAX_ROT;
-        } else {
-            HoodController.RESTING_ZERO -= HoodController.MAX_ROT;
-        }
+        hoodController.RESTING_ZERO = hoodController.getRestingZero();
+        hoodController.resetQuadratureEncoder();
+        hoodController.isQuadrature = true;
     }
 }

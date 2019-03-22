@@ -22,19 +22,23 @@ package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
     RESTING_ARM_ZERO(0, 0),
-    RESTING_ARM_ONE_HUNDRED_EIGHTY(0,0),
+    RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180),
 
     ROCKET_LEVEL_ONE(-3, 100),
     ROCKET_LEVEL_TWO(1786, -2047),
     CARGO_SHIP(2895, -2727),
     HUMAN_PLAYER_STATION(467, -520),
-    COLLECT(330, -330);
+    COLLECT(7, -7);
 
-    public final int ticksFront;
-    public final int ticksBack;
+    public final double degreesFront;
+    public final double degreesBack;
+    public final double ticksFront;
+    public final double ticksBack;
 
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = HoodController.RESTING_ZERO + ticksFront;
-        this.ticksBack = HoodController.RESTING_ZERO + ticksBack;
+    HoodPosition(double degreesFront, double degreesBack) {
+        this.degreesFront = (HoodController.RESTING_ZERO + degreesFront) * HoodController.ANGLE_SCALE;
+        this.degreesBack = (HoodController.RESTING_ZERO + degreesBack) * HoodController.ANGLE_SCALE;
+        this.ticksFront = HoodController.RESTING_ZERO + (degreesFront * HoodController.ANGLE_SCALE);
+        this.ticksBack = HoodController.RESTING_ZERO + (degreesBack * HoodController.ANGLE_SCALE);
     }
 }
