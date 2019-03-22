@@ -78,8 +78,8 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static HoodController provideHoodController(Provider<HoodControl> command) {
-        return new HoodController(command, HOOD_TALON);
+    public static HoodController provideHoodController(@Provided ArmController armController, Provider<HoodControl> command) {
+        return new HoodController(armController, command, HOOD_TALON);
     }
 
     @Provides

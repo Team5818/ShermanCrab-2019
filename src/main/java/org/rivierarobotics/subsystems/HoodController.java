@@ -40,12 +40,15 @@ import javax.inject.Singleton;
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
     private final WPI_TalonSRX hood;
+    private final ArmController armController;
     private PIDController pidLoop;
 
     private static final double P = 0.0003;
     private static final double I = 0;
     private static final double D = 0;
     private static final double F = 0;
+    private static final double GRAVITY_CONSTANT = -0.042;
+    private static double ANGLE_SCALE;
     private static boolean offsetDone = false;
     public static int RESTING_ZERO = 0;
     /* Accounts for 6:11 chain ratio */
@@ -62,8 +65,9 @@ public class HoodController extends Subsystem {
     }
 
     @Inject
-    public HoodController(Provider<HoodControl> command, int h) {
+    public HoodController(ArmController armController, Provider<HoodControl> command, int h) {
         hood = new WPI_TalonSRX(h);
+        this.armController = armController;
         this.command = command;
 
         /* Disables limit switches on malfunctioning encoder */
@@ -74,6 +78,7 @@ public class HoodController extends Subsystem {
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         RESTING_ZERO = getRestingZero();
+        ANGLE_SCALE = (180) / (HoodPosition.RESTING_ARM_ONE_HUNDRED_EIGHTY.ticksFront - RESTING_ZERO);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
@@ -85,6 +90,10 @@ public class HoodController extends Subsystem {
 
     public int getAngle() {
         return hood.getSensorCollection().getQuadraturePosition();
+    }
+
+    public double getDegrees() {
+        return (getAngle() - RESTING_ZERO) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {
@@ -101,6 +110,7 @@ public class HoodController extends Subsystem {
     }
 
     private void rawSetPower(double pwr) {
+        pwr += Math.sin(Math.toRadians(180 - this.getDegrees() - (90 - armController.getDegrees()))) * GRAVITY_CONSTANT;
         hood.set(pwr);
     }
 
