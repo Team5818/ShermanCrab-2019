@@ -26,7 +26,7 @@ public enum ArmPosition {
     FORTY_FIVE_DEGREES(45),
 
     ROCKET_LEVEL_ONE(48),
-    ROCKET_LEVEL_TWO(25),
+    ROCKET_LEVEL_TWO(22),
     CARGO_SHIP(40),
     HUMAN_PLAYER_STATION(24),
     COLLECT(90),
@@ -40,7 +40,7 @@ public enum ArmPosition {
     public final double degreesBack;
     public final double ticksFront;
     public final double ticksBack;
-    public final static double TICKS_AT_ZERO = 1060;
+    public final static double TICKS_AT_ZERO = 1080;
     private final static double TICKS_AT_NINETY = 2060;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;
 

@@ -43,16 +43,16 @@ public class HoodController extends Subsystem {
     private final ArmController armController;
     private PIDController pidLoop;
 
-    private static final double P = 0.0008;
+    private static final double P = 0.0006;
     private static final double I = 0;
     private static final double D = 0;
     private static final double F = 0;
     private static final double GRAVITY_CONSTANT = 0.13;
-
     private static boolean offsetDone = false;
     public static double ANGLE_SCALE = 4096 / 360;
-    public static int RESTING_ZERO = -470;
-    public static boolean isQuadrature = false;
+    public static int RESTING_ZERO;
+    public static HoodPosition CURRENT_HOOD_POSITION;
+    public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
     private static final NetworkTableEntry RESTING;
     private static final NetworkTableEntry PWR;
@@ -88,21 +88,16 @@ public class HoodController extends Subsystem {
     public void setAngle(double angle) {
         pidLoop.setSetpoint(angle);
         SETPOINT_ANGLE.setDouble(angle);
-        RESTING.setDouble(RESTING_ZERO);
+        //RESTING.setDouble(RESTING_ZERO);
         pidLoop.enable();
     }
 
     public int getAngle() {
-        if(isQuadrature) {
-            return hood.getSensorCollection().getQuadraturePosition();
-        } else {
-            return hood.getSensorCollection().getPulseWidthPosition();
-        }
-
+        return hood.getSensorCollection().getQuadraturePosition();
     }
 
     public double getDegrees() {
-        return ((getAngle() - RESTING_ZERO) / ANGLE_SCALE) % 360;
+        return (getAngle() / ANGLE_SCALE) % 360;
     }
 
     public void setPower(double pwr) {
@@ -134,7 +129,7 @@ public class HoodController extends Subsystem {
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(RESTING_ZERO, 0);
+        hood.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     public PIDController getPIDLoop() {

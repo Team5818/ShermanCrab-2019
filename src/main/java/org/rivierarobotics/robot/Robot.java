@@ -58,9 +58,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
-        Shuffleboard.startRecording();
     }
 
     @Override
@@ -83,7 +83,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        Shuffleboard.stopRecording();
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();

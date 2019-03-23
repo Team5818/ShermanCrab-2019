@@ -36,8 +36,7 @@ public class HoodOffsetEnc extends InstantCommand {
 
     @Override
     protected void execute() {
-        hoodController.RESTING_ZERO = hoodController.getRestingZero();
+        hoodController.getPIDLoop().disable();
         hoodController.resetQuadratureEncoder();
-        hoodController.isQuadrature = true;
     }
 }

@@ -21,8 +21,10 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.HoodController;
 import org.rivierarobotics.subsystems.TentacleController;
 
 @GenerateCreator
@@ -38,6 +40,16 @@ public class TentacleSpin extends Command {
 
     @Override
     protected void execute() {
+        if(HoodController.HOOD_FRONT) {
+            if(HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront) {
+                power *= -1;
+            }
+        } else {
+            if(HoodController.CURRENT_HOOD_POSITION.tentacleInvertBack) {
+                power *= -1;
+            }
+        }
+
         tentacle.setPower(power);
     }
 

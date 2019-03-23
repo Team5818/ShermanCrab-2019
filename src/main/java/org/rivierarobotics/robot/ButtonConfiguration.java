@@ -74,11 +74,11 @@ public class ButtonConfiguration {
 
         //tentacles
         double tentacleSpeed = 0.75;
-        JoystickButton tentaclesFwd = new JoystickButton(driverRight, 1);
-        tentaclesFwd.whileHeld(cmds.tentacle().spin(tentacleSpeed));
+        JoystickButton tentaclesBack = new JoystickButton(driverRight, 1);
+        tentaclesBack.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
-        JoystickButton tentaclesBack = new JoystickButton(driverRight, 2);
-        tentaclesBack.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
+        JoystickButton tentaclesFwd = new JoystickButton(driverRight, 2);
+        tentaclesFwd.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
 
         //hatch
         JoystickButton deployOpen = new JoystickButton(codriverLeft, 2);
@@ -127,13 +127,23 @@ public class ButtonConfiguration {
         backCargo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.CARGO_SHIP),
                 cmds.arm().setBackPosition(ArmPosition.CARGO_SHIP)));
 
-        JoystickButton frontPlayerStation = new JoystickButton(codriverButtons, 12);
+        /*JoystickButton frontPlayerStation = new JoystickButton(codriverButtons, 12);
         frontPlayerStation.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.HUMAN_PLAYER_STATION),
                 cmds.arm().setFrontPosition(ArmPosition.HUMAN_PLAYER_STATION)));
 
         JoystickButton backPlayerStation = new JoystickButton(codriverButtons, 10);
         backPlayerStation.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.HUMAN_PLAYER_STATION),
-                cmds.arm().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+                cmds.arm().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));*/
+
+        JoystickButton coDriverRetractAll = new JoystickButton(codriverButtons, 12);
+        coDriverRetractAll.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY),
+                cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES),
+                cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO)));
+
+        JoystickButton driverRetractAll = new JoystickButton(driverButtons, 6);
+        driverRetractAll.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY),
+                cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES),
+                cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO)));
 
         JoystickButton frontCollect = new JoystickButton(codriverButtons, 11);
         frontCollect.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.COLLECT),

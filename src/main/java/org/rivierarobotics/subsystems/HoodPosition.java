@@ -21,24 +21,28 @@
 package org.rivierarobotics.subsystems;
 
 public enum HoodPosition {
-    RESTING_ARM_ZERO(0, 0),
-    RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180),
+    RESTING_ARM_ZERO(0, 0, false, false),
+    RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180, false, false),
 
-    ROCKET_LEVEL_ONE(-3, 100),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2727),
-    HUMAN_PLAYER_STATION(467, -520),
-    COLLECT(7, -7);
+    ROCKET_LEVEL_ONE(37, -37, true, false),
+    ROCKET_LEVEL_TWO(92, -92, false, true),
+    CARGO_SHIP(133, -155, false, true),
+    HUMAN_PLAYER_STATION(467, -520, false, false),
+    COLLECT(37, -37, false, true);
 
     public final double degreesFront;
     public final double degreesBack;
     public final double ticksFront;
     public final double ticksBack;
+    public final boolean tentacleInvertFront;
+    public final boolean tentacleInvertBack;
 
-    HoodPosition(double degreesFront, double degreesBack) {
-        this.degreesFront = (HoodController.RESTING_ZERO + degreesFront) * HoodController.ANGLE_SCALE;
-        this.degreesBack = (HoodController.RESTING_ZERO + degreesBack) * HoodController.ANGLE_SCALE;
-        this.ticksFront = HoodController.RESTING_ZERO + (degreesFront * HoodController.ANGLE_SCALE);
-        this.ticksBack = HoodController.RESTING_ZERO + (degreesBack * HoodController.ANGLE_SCALE);
+    HoodPosition(double degreesFront, double degreesBack, boolean tentacleInvertFront, boolean tentacleInvertBack) {
+        this.tentacleInvertFront = tentacleInvertFront;
+        this.tentacleInvertBack = tentacleInvertBack;
+        this.degreesFront = degreesFront;
+        this.degreesBack = degreesBack;
+        this.ticksFront = ((degreesFront + 5)* HoodController.ANGLE_SCALE);
+        this.ticksBack = ((degreesBack + 5) * HoodController.ANGLE_SCALE);
     }
 }
