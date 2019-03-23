@@ -20,7 +20,6 @@
 
 package org.rivierarobotics.commands;
 
-import org.rivierarobotics.subsystems.HoodController;
 import org.rivierarobotics.subsystems.HoodPosition;
 
 import javax.inject.Inject;
@@ -36,15 +35,11 @@ public class HoodCommands {
     }
 
     public final HoodSetPosition setFrontPosition(HoodPosition pos) {
-        HoodController.CURRENT_HOOD_POSITION = pos;
-        HoodController.HOOD_FRONT = true;
-        return hoodSetPositionCreator.create(pos.ticksFront);
+        return hoodSetPositionCreator.create(pos, true);
     }
 
     public final HoodSetPosition setBackPosition(HoodPosition pos) {
-        HoodController.CURRENT_HOOD_POSITION = pos;
-        HoodController.HOOD_FRONT = false;
-        return hoodSetPositionCreator.create(pos.ticksBack);
+        return hoodSetPositionCreator.create(pos, false);
     }
 
     public final HoodSetPosition setRawPosition(double pos) {

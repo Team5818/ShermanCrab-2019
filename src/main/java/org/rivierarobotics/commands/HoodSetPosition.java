@@ -24,20 +24,27 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.subsystems.HoodPosition;
 
 @GenerateCreator
 public class HoodSetPosition extends InstantCommand {
     private final HoodController hood;
-    private final double pos;
+    private final double ticks;
 
-    public HoodSetPosition(@Provided HoodController hood, double pos) {
+    public HoodSetPosition(@Provided HoodController hood, HoodPosition pos, boolean isFront) {
+        this(hood, isFront ? pos.ticksFront : pos.ticksBack);
+        HoodController.CURRENT_HOOD_POSITION = pos;
+        HoodController.HOOD_FRONT = isFront;
+    }
+
+    public HoodSetPosition(@Provided HoodController hood, double ticks) {
+        this.ticks = ticks;
         this.hood = hood;
-        this.pos = pos;
         requires(hood);
     }
 
     @Override
     protected void execute() {
-        hood.setAngle(pos);
+        hood.setAngle(ticks);
     }
 }

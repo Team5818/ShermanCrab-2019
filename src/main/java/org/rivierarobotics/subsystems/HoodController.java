@@ -48,13 +48,10 @@ public class HoodController extends Subsystem {
     private static final double D = 0;
     private static final double F = 0;
     private static final double GRAVITY_CONSTANT = 0.13;
-    private static boolean offsetDone = false;
     public static double ANGLE_SCALE = 4096 / 360;
-    public static int RESTING_ZERO;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
-    private static final NetworkTableEntry RESTING;
     private static final NetworkTableEntry PWR;
 
 
@@ -64,7 +61,6 @@ public class HoodController extends Subsystem {
 
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
-        RESTING = ezWidget("Resting Angle", 0).getEntry();
         PWR = ezWidget("Power", 0).getEntry();
     }
 
@@ -81,14 +77,12 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        //ANGLE_SCALE = (180) / (HoodPosition.RESTING_ARM_ONE_HUNDRED_EIGHTY.degreesFront - RESTING_ZERO);
         pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
         pidLoop.setSetpoint(angle);
         SETPOINT_ANGLE.setDouble(angle);
-        //RESTING.setDouble(RESTING_ZERO);
         pidLoop.enable();
     }
 
@@ -117,15 +111,6 @@ public class HoodController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         hood.set(pwr);
-    }
-
-    public int getRestingZero() {
-        if (RESTING_ZERO == 0 && !offsetDone) {
-            offsetDone = true;
-            return hood.getSensorCollection().getPulseWidthPosition();
-        } else {
-            return RESTING_ZERO;
-        }
     }
 
     public void resetQuadratureEncoder() {

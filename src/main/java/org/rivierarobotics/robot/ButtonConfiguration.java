@@ -74,11 +74,11 @@ public class ButtonConfiguration {
 
         //tentacles
         double tentacleSpeed = 0.75;
-        JoystickButton tentaclesBack = new JoystickButton(driverRight, 1);
-        tentaclesBack.whileHeld(cmds.tentacle().spin(tentacleSpeed));
+        JoystickButton tentaclesAction = new JoystickButton(driverRight, 1);
+        tentaclesAction.whileHeld(cmds.tentacle().spin(tentacleSpeed));
 
-        JoystickButton tentaclesFwd = new JoystickButton(driverRight, 2);
-        tentaclesFwd.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
+        JoystickButton tentaclesReverse = new JoystickButton(driverRight, 2);
+        tentaclesReverse.whileHeld(cmds.tentacle().spin(-tentacleSpeed));
 
         //hatch
         JoystickButton deployOpen = new JoystickButton(codriverLeft, 2);
@@ -164,16 +164,16 @@ public class ButtonConfiguration {
         JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
         scissorClimb.whenPressed(cmds.climb().scissor());
 
-        JoystickButton scissorStart = new JoystickButton(driverButtons, 12);
-        scissorStart.whenPressed(cmds.winch().atPower(0.5));
-        scissorStart.whenReleased(cmds.winch().atPower(0.0));
+        JoystickButton winchFwd = new JoystickButton(driverButtons, 12);
+        winchFwd.whenPressed(cmds.winch().atPower(0.5));
+        winchFwd.whenReleased(cmds.winch().atPower(0.0));
 
-        JoystickButton scissorEnd = new JoystickButton(driverButtons, 8);
-        scissorEnd.whenPressed(cmds.winch().atPower(-0.5));
-        scissorEnd.whenReleased(cmds.winch().atPower(0.0));
+        JoystickButton winchBack = new JoystickButton(driverButtons, 8);
+        winchBack.whenPressed(cmds.winch().atPower(-0.5));
+        winchBack.whenReleased(cmds.winch().atPower(0.0));
 
-        JoystickButton retractHelper = new JoystickButton(driverButtons, 11);
-        retractHelper.whenPressed(cmds.piston().retract(Piston.HELPER_CLIMB));
+        JoystickButton helperPistonRetract = new JoystickButton(driverButtons, 11);
+        helperPistonRetract.whenPressed(cmds.piston().retract(Piston.HELPER_CLIMB));
 
         JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
         lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
