@@ -24,10 +24,10 @@ public enum HoodPosition {
     RESTING_ARM_ZERO(0, 0, false, false),
     RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180, false, false),
 
-    ROCKET_LEVEL_ONE(37, -37, true, false),
-    ROCKET_LEVEL_TWO(92, -92, false, true),
-    CARGO_SHIP(133, -155, false, true),
-    COLLECT(37, -37, false, true);
+    ROCKET_LEVEL_ONE(42, -32, true, false),
+    ROCKET_LEVEL_TWO(97, -87, false, true),
+    CARGO_SHIP(138, -150, false, true),
+    COLLECT(42, -32, false, true);
 
     public final double degreesFront;
     public final double degreesBack;
@@ -41,7 +41,7 @@ public enum HoodPosition {
         this.tentacleInvertBack = tentacleInvertBack;
         this.degreesFront = degreesFront;
         this.degreesBack = degreesBack;
-        this.ticksFront = ((degreesFront + 5) * HoodController.ANGLE_SCALE);
-        this.ticksBack = ((degreesBack + 5) * HoodController.ANGLE_SCALE);
+        this.ticksFront = degreesFront * HoodController.ANGLE_SCALE;
+        this.ticksBack = degreesBack * HoodController.ANGLE_SCALE;
     }
 }

@@ -39,14 +39,9 @@ public class TentacleSpin extends InstantCommand {
 
     @Override
     protected void initialize() {
-        if (HoodController.HOOD_FRONT) {
-            if (HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront) {
-                power *= -1;
-            }
-        } else {
-            if (HoodController.CURRENT_HOOD_POSITION.tentacleInvertBack) {
-                power *= -1;
-            }
+        if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront)
+                || (!HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertBack)) {
+            power *= -1;
         }
         tentacle.setPower(power);
     }
