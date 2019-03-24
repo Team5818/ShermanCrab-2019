@@ -1,7 +1,25 @@
+/*
+ * This file is part of ShermanCrab-2019, licensed under the GNU General Public License (GPLv3).
+ *
+ * Copyright (c) Riviera Robotics <https://github.com/Team5818>
+ * Copyright (c) contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.rivierarobotics.util;
 
-import com.google.common.base.Joiner;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -10,7 +28,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * Mechanism logger. Provides utilities for tracking mechanism changes.
@@ -45,15 +62,15 @@ public class MechLogger {
     }
 
     private void logPower(double power) {
-        delegate.info("op=power_change, power=" + power);
+        delegate.info(tagsProcessed + "op=power_change, power=" + power);
     }
 
     private void logSetpoint(double setpoint) {
-        delegate.info("op=setpoint_change, setpoint=" + setpoint);
+        delegate.info(tagsProcessed + "op=setpoint_change, setpoint=" + setpoint);
     }
 
     private void logConditionChange(String name, Object value) {
-        delegate.info("op=condition_change, name=" + name + ", value=" + value);
+        delegate.info(tagsProcessed + "op=condition_change, name=" + name + ", value=" + value);
     }
 
     public void powerChange(double power) {
