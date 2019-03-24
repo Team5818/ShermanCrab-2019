@@ -43,7 +43,7 @@ public class HoodCommands {
     }
 
     public final HoodSetPosition setRawPosition(double pos) {
-        return hoodSetPositionCreator.create(pos);
+        return hoodSetPositionCreator.create(pos, false, null);
     }
 
     public final HoodOffsetEnc offsetEnc() {

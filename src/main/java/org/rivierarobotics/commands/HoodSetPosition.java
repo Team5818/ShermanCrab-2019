@@ -30,21 +30,25 @@ import org.rivierarobotics.subsystems.HoodPosition;
 public class HoodSetPosition extends InstantCommand {
     private final HoodController hood;
     private final double ticks;
+    private final boolean front;
+    private final HoodPosition position;
 
-    public HoodSetPosition(@Provided HoodController hood, HoodPosition pos, boolean isFront) {
-        this(hood, isFront ? pos.ticksFront : pos.ticksBack);
-        HoodController.CURRENT_HOOD_POSITION = pos;
-        HoodController.HOOD_FRONT = isFront;
+    public HoodSetPosition(@Provided HoodController hood, HoodPosition pos, boolean front) {
+        this(hood, front ? pos.ticksFront : pos.ticksBack, front, pos);
     }
 
-    public HoodSetPosition(@Provided HoodController hood, double ticks) {
+    public HoodSetPosition(@Provided HoodController hood, double ticks, boolean front, HoodPosition position) {
         this.ticks = ticks;
         this.hood = hood;
+        this.front = front;
+        this.position = position;
         requires(hood);
     }
 
     @Override
     protected void execute() {
         hood.setAngle(ticks);
+        HoodController.CURRENT_HOOD_POSITION = position;
+        HoodController.HOOD_FRONT = front;
     }
 }

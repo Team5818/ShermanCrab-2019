@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.commands;
 
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
@@ -27,7 +28,7 @@ import org.rivierarobotics.subsystems.HoodController;
 import org.rivierarobotics.subsystems.TentacleController;
 
 @GenerateCreator
-public class TentacleSpin extends InstantCommand {
+public class TentacleSpin extends Command {
     private double power;
     private TentacleController tentacle;
 
@@ -39,10 +40,23 @@ public class TentacleSpin extends InstantCommand {
 
     @Override
     protected void initialize() {
-        if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront)
+        double power = this.power;
+        if (HoodController.CURRENT_HOOD_POSITION != null) {
+            if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront)
                 || (!HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertBack)) {
-            power *= -1;
+                power *= -1;
+            }
         }
         tentacle.setPower(power);
+    }
+
+    @Override
+    protected void end() {
+        tentacle.setPower(0.0);
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return false;
     }
 }

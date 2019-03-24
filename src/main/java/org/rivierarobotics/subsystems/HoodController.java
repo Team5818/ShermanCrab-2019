@@ -48,7 +48,7 @@ public class HoodController extends Subsystem {
     private static final double D = 0;
     private static final double F = 0;
     private static final double GRAVITY_CONSTANT = 0.13;
-    public static double ANGLE_SCALE = 4096 / 360;
+    public static double ANGLE_SCALE = 4096 / 360.0;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
