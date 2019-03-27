@@ -23,3 +23,7 @@ dependencies {
 	}
 	implementation("com.flowpowered", "flow-math", "1.0.3")
 }
+
+repositories {
+	jcenter()
+}
