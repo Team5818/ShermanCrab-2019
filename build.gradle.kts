@@ -21,4 +21,5 @@ dependencies {
 		implementation(lib())
 		annotationProcessor(lib("compiler"))
 	}
+	implementation("com.flowpowered", "flow-math", "1.0.3")
 }

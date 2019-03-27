@@ -1,11 +1,10 @@
 package org.rivierarobotics.robot;
 
+import com.flowpowered.math.vector.Vector2i;
 import edu.wpi.first.wpilibj.SerialPort;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class JevoisMessageIterator implements Iterator<JevoisMessage> {
 
@@ -36,19 +35,19 @@ public class JevoisMessageIterator implements Iterator<JevoisMessage> {
             return Optional.empty();
         }
         String id = cameraOne.next();
-        int[] x = new int[4];
-        int[] y = new int[4];
-        for (int i =0; i< x.length; i++) {
+        var points = new ArrayList<Vector2i>();
+        for (int i =0; i< 4; i++) {
             if (!cameraOne.hasNextInt()) {
                 return Optional.empty();
             }
-            x[i] = cameraOne.nextInt();
+            int x = cameraOne.nextInt();
             if (!cameraOne.hasNextInt()) {
                 return Optional.empty();
             }
-            y[i] = cameraOne.nextInt();
+            int y = cameraOne.nextInt();
+            points.add(Vector2i.from(x, y));
         }
         String extra = cameraOne.next();
-        return Optional.of(new JevoisMessage(id, x, y, extra));
+        return Optional.of(new JevoisMessage(id, points, extra));
     }
 }

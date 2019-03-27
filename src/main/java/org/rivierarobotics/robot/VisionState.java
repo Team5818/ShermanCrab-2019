@@ -5,14 +5,19 @@ import edu.wpi.first.wpilibj.Notifier;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Iterator;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @Singleton
 public class VisionState {
 
     private final Iterator<JevoisMessage> iterator;
-    private final AtomicReference<JevoisMessage> currentMessage = new AtomicReference<>();
+    private final Lock lock = new ReentrantLock();
+    private final ArrayDeque<JevoisMessage> currentMessage = new ArrayDeque<>();
     private final Thread thread;
 
     @Inject
@@ -26,13 +31,26 @@ public class VisionState {
 
     private void setCurrentMessage() {
         while (iterator.hasNext()) {
-            currentMessage.set(iterator.next());
+            var next = iterator.next();
+            lock.lock();
+            try {
+                if (currentMessage.size() >= 5) {
+                    currentMessage.removeFirst();
+                }
+                currentMessage.addLast(next);
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
-    @Nullable
-    public JevoisMessage getCurrentMessage() {
-        return currentMessage.get();
+    public List<JevoisMessage> getCurrentMessage() {
+        lock.lock();
+        try {
+            return new ArrayList<>(currentMessage);
+        } finally {
+            lock.unlock();
+        }
     }
 
 }

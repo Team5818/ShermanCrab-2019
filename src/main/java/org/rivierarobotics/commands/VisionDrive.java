@@ -1,93 +1,100 @@
 package org.rivierarobotics.commands;
 
+import com.flowpowered.math.vector.Vector2i;
 import edu.wpi.first.wpilibj.command.Command;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.robot.JevoisMessage;
 import org.rivierarobotics.subsystems.DriveTrain;
 import org.rivierarobotics.robot.VisionState;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @GenerateCreator
 public class VisionDrive extends Command {
     private final DriveTrain dt;
     private VisionState jevois;
-    private final int CAMERA_PIXEL_WIDTH = 100;
-    private final int CENTERED_IMAGE_PIXEL = 40;
-    private final double TARGET_LENGTH = 15;
-    private final String TARGET_ID = "";
+    private final int CAMERA_PIXEL_WIDTH = 320;
+    private final int CENTERED_IMAGE_PIXEL = 160;
+    private final int IMAGE_CENTER_BUFFER = 60;
+    private double basePower;
+    private double turnPower;
 
-    public VisionDrive(@Provided DriveTrain dt, VisionState vision) {
+    public VisionDrive(@Provided DriveTrain dt, VisionState vision, double basePower, double turnPower) {
         this.dt = dt;
         jevois = vision;
+        this.basePower = basePower;
+        this.turnPower = turnPower;
         requires(dt);
     }
 
     @Override
     protected void execute() {
-        double percentScreen = getCenter()[0] / CAMERA_PIXEL_WIDTH;
-        double power = .4;
-        if (percentScreen < CENTERED_IMAGE_PIXEL) {
-            dt.setPower(power, (percentScreen + 1) * power);
-        } else {
-            dt.setPower((percentScreen + 1) * power, power);
-        }
+        var blobs = jevois.getCurrentMessage();
+        var filterBlobs = blobs.stream()
+                .filter(this::isGoodBlob)
+                .collect(toList());
+        var bestBlob = findBestBlob(filterBlobs);
 
+        int centerX = getCenterX(bestBlob);
+        int imageOffset = centerX - CENTERED_IMAGE_PIXEL;
+        double turnEffort = Math.signum(imageOffset) * turnPower * Math.abs(imageOffset / IMAGE_CENTER_BUFFER);
+
+        dt.setPower(basePower - turnEffort, turnEffort + basePower);
+    }
+
+    private int getCenterX(JevoisMessage x) {
+        Vector2i corner1 = x.getPoints().get(0);
+        Vector2i corner2 = x.getPoints().get(2);
+        return (corner1.getX() + corner2.getX()) / 2;
+    }
+
+    private JevoisMessage findBestBlob(List<JevoisMessage> blobs) {
+        JevoisMessage best = null;
+        int distToCenter = Integer.MAX_VALUE;
+        for (JevoisMessage blob : blobs) {
+            int center = getCenterX(blob);
+
+            if (Math.abs(center - CENTERED_IMAGE_PIXEL) < distToCenter) {
+                best = blob;
+                distToCenter = center;
+            }
+        }
+        return best;
+    }
+
+
+    private boolean isGoodBlob(JevoisMessage x) {
+        int dist = Integer.MAX_VALUE;
+        Vector2i a = null;
+        Vector2i b = null;
+        var points = x.getPoints();
+        for (int i = 0; i < points.size(); i++) {
+            for (int j = i + 1; j < points.size(); j++) {
+                Vector2i tempA = points.get(i);
+                Vector2i tempB = points.get(j);
+                int tempDist = tempA.distanceSquared(tempB);
+                if (tempDist < dist) {
+                    a = tempA;
+                    b = tempB;
+                    dist = tempDist;
+                }
+            }
+        }
+        assert a != null;
+        if (a.getX() > b.getX()) {
+            var temp = b;
+            b = a;
+            a = temp;
+        }
+        return (b.getY() - a.getY()) > 0;
     }
 
     @Override
     protected boolean isFinished() {
-        if (getTargetLength(TARGET_ID) > TARGET_LENGTH) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public double[] getCenter() {
-        double[] centerCoords = new double[2];
-        for (int i = 0; i < 2; i++) {
-            centerCoords[i] = calculateDistance(getXCoord(i), getYCoord(i), getXCoord(i + 1), getYCoord(i + 1));
-        }
-        return centerCoords;
-    }
-
-    public double getTargetLength(String object) {
-        while (!getObjectId().equals(object)) {
-            continue;
-        }
-        double[] lengths = new double[4];
-        for (int i = 0; i < 3; i++) {
-            lengths[i] = calculateDistance(getXCoord(i), getYCoord(i), getXCoord(i + 1), getYCoord(i + 1));
-        }
-        lengths[3] = calculateDistance(getXCoord(3), getYCoord(3), getXCoord(0), getYCoord(0));
-        double sideOne = average(lengths[0], lengths[2]);
-        double sideTwo = average(lengths[1], lengths[3]);
-        if (sideOne > sideTwo) {
-            return sideOne;
-        } else {
-            return sideTwo;
-        }
-    }
-
-    public double average(double x, double y) {
-        return (x + y) / 2;
-    }
-
-    public double calculateDistance(int x1, int y1, int x2, int y2) {
-        int xDistance = x2 - x1;
-        int yDistance = y2 - y1;
-        return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-    }
-
-    public String getObjectId() {
-        return jevois.getCurrentMessage().getId();
-    }
-
-    public int getXCoord(int i) {
-        return jevois.getCurrentMessage().getX(i);
-    }
-
-    public int getYCoord(int i) {
-        return jevois.getCurrentMessage().getY(i);
+        return false;
     }
 
 }

@@ -1,17 +1,18 @@
 package org.rivierarobotics.robot;
 
-import java.util.Arrays;
+import com.flowpowered.math.vector.Vector2i;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JevoisMessage {
     private final String id;
-    private final int[] x;
-    private final int[] y;
+    private final List<Vector2i> points;
     private final String extra;
 
-    public JevoisMessage(String id, int[] x, int[] y, String extra) {
+    public JevoisMessage(String id, List<Vector2i> points, String extra) {
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.points = new ArrayList<>(points);
         this.extra = extra;
     }
 
@@ -19,12 +20,8 @@ public class JevoisMessage {
         return id;
     }
 
-    public int getX(int i) {
-        return x[i];
-    }
-
-    public int getY(int i) {
-        return y[i];
+    public List<Vector2i> getPoints() {
+        return points;
     }
 
     public String getExtra() {
@@ -35,8 +32,7 @@ public class JevoisMessage {
     public String toString() {
         return "JevoisMessage{" +
                 "id='" + id + '\'' +
-                ", x=" + Arrays.toString(x) +
-                ", y=" + Arrays.toString(y) +
+                ", points=" + points +
                 ", extra='" + extra + '\'' +
                 '}';
     }

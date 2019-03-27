@@ -20,6 +20,8 @@
 
 package org.rivierarobotics.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -45,7 +47,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
-        CameraServer.getInstance().startAutomaticCapture();
+        UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
+        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
     }
 
     @Override
