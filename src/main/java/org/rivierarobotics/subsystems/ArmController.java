@@ -136,9 +136,7 @@ public class ArmController extends Subsystem {
         if (pidLoop.isEnabled()) {
             pidLoop.disable();
         }
-        pidLoop.setSetpoint(getAngle());
-        pidLoop.enable();
-        setBrake();
+        setAngle(getAngle());
     }
 
     private boolean safety(double pwr) {
