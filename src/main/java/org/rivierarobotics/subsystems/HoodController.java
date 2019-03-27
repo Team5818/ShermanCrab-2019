@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -77,7 +78,7 @@ public class HoodController extends Subsystem {
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        pidLoop.setOutputRange(-0.4, 0.4);
+        pidLoop.setOutputRange(-0.3, 0.3);
     }
 
     public void setAngle(double angle) {
@@ -110,6 +111,7 @@ public class HoodController extends Subsystem {
     }
 
     private void rawSetPower(double pwr) {
+        pwr = MathUtil.limit(pwr, 0.8);
         hood.set(pwr);
     }
 

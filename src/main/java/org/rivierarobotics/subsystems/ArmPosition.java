@@ -30,11 +30,8 @@ public enum ArmPosition {
     CARGO_SHIP(40),
     HUMAN_PLAYER_STATION(24),
     COLLECT(90),
-    HATCH_LIMIT(0),
 
-    SCISSOR_CLIMB(100),
-    SUCTION_CLIMB(0),
-    PISTON_CLIMB(0);
+    L2_CLIMB(118);
 
     public final double degreesFront;
     public final double degreesBack;

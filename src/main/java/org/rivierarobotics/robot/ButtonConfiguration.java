@@ -102,7 +102,7 @@ public class ButtonConfiguration {
         JoystickButton clampClosed = new JoystickButton(codriverRight, 2);
         clampClosed.whenPressed(cmds.piston().extend(Piston.CLAMP));
 
-        //hood & arm
+        //hood & armL2
         JoystickButton frontRocketTwo = new JoystickButton(codriverButtons, 4);
         frontRocketTwo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_TWO),
                 cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_TWO)));
@@ -129,11 +129,11 @@ public class ButtonConfiguration {
 
         /*JoystickButton frontPlayerStation = new JoystickButton(codriverButtons, 12);
         frontPlayerStation.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.HUMAN_PLAYER_STATION),
-                cmds.arm().setFrontPosition(ArmPosition.HUMAN_PLAYER_STATION)));
+                cmds.armL2().setFrontPosition(ArmPosition.HUMAN_PLAYER_STATION)));
 
         JoystickButton backPlayerStation = new JoystickButton(codriverButtons, 10);
         backPlayerStation.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.HUMAN_PLAYER_STATION),
-                cmds.arm().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));*/
+                cmds.armL2().setBackPosition(ArmPosition.HUMAN_PLAYER_STATION)));*/
 
         JoystickButton coDriverRetractAll = new JoystickButton(codriverButtons, 12);
         coDriverRetractAll.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY),
@@ -160,7 +160,7 @@ public class ButtonConfiguration {
         JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
         hoodOffset.whenPressed(cmds.hood().offsetEnc());
 
-        //climb
+        //l3 climb
         JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
         scissorClimb.whenPressed(cmds.climb().scissor());
 
@@ -177,6 +177,10 @@ public class ButtonConfiguration {
 
         JoystickButton lockPistonExtend = new JoystickButton(driverButtons, 9);
         lockPistonExtend.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
+
+        //l2 climb
+        JoystickButton armClimb = new JoystickButton(codriverButtons, 10);
+        armClimb.whenPressed(cmds.climb().armL2());
     }
 
     public void initTest() {
