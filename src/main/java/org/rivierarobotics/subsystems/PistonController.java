@@ -92,8 +92,11 @@ public class PistonController extends Subsystem {
         logger.conditionChange(piston.getName() + "_state", state ? "extended" : "retracted");
     }
 
-    public void swap(Piston piston) {
-        pistonFor(piston).set(!pistonFor(piston).get());
+    public void swap(Piston p) {
+        Solenoid piston = pistonFor(p);
+        boolean state = !piston.get();
+        piston.set(state);
+        logState(piston, state);
     }
 
     @Override
