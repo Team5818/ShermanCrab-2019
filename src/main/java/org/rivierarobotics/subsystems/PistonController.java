@@ -51,11 +51,11 @@ public class PistonController extends Subsystem {
     }
 
     private void initPistonLogger() {
-        logState(clampPiston, !Piston.CLAMP.extend);
-        logState(pushPiston, !Piston.PUSH.extend);
-        logState(deployPiston, !Piston.DEPLOY.extend);
-        logState(helperClimbPiston, !Piston.HELPER_CLIMB.extend);
-        logState(lockClimbPiston, !Piston.LOCK_CLIMB.extend);
+        logState(Piston.CLAMP, Piston.CLAMP.extend);
+        logState(Piston.PUSH, Piston.PUSH.extend);
+        logState(Piston.DEPLOY, Piston.DEPLOY.extend);
+        logState(Piston.HELPER_CLIMB, Piston.HELPER_CLIMB.extend);
+        logState(Piston.LOCK_CLIMB, Piston.LOCK_CLIMB.extend);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -76,26 +76,26 @@ public class PistonController extends Subsystem {
 
     public void extendPiston(Piston piston) {
         pistonFor(piston).set(piston.extend);
-        logState(pistonFor(piston), true);
+        logState(piston, piston.extend);
     }
 
     public void retractPiston(Piston piston) {
         pistonFor(piston).set(!piston.extend);
-        logState(pistonFor(piston), false);
+        logState(piston, !piston.extend);
     }
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
     }
 
-    private void logState(Solenoid piston, boolean state) {
-        logger.conditionChange(piston.getName() + "_state", state ? "extended" : "retracted");
+    private void logState(Piston piston, boolean state) {
+        logger.conditionChange(pistonFor(piston).getName() + "_swState", state == piston.extend ? "extended" : "retracted");
+        logger.conditionChange(pistonFor(piston).getName() + "_hwState", state ? "extended" : "retracted");
     }
 
-    public void swap(Piston p) {
-        Solenoid piston = pistonFor(p);
-        boolean state = !piston.get();
-        piston.set(state);
+    public void swap(Piston piston) {
+        boolean state = !pistonFor(piston).get();
+        pistonFor(piston).set(state);
         logState(piston, state);
     }
 
