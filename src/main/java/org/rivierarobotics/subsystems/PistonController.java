@@ -47,15 +47,6 @@ public class PistonController extends Subsystem {
         helperClimbPiston = new Solenoid(4);
         lockClimbPiston = new Solenoid(5);
         this.logger = Logging.getLogger(getClass());
-        initPistonLogger();
-    }
-
-    private void initPistonLogger() {
-        logState(Piston.CLAMP, Piston.CLAMP.extend);
-        logState(Piston.PUSH, Piston.PUSH.extend);
-        logState(Piston.DEPLOY, Piston.DEPLOY.extend);
-        logState(Piston.HELPER_CLIMB, Piston.HELPER_CLIMB.extend);
-        logState(Piston.LOCK_CLIMB, Piston.LOCK_CLIMB.extend);
     }
 
     private Solenoid pistonFor(Piston piston) {

@@ -46,6 +46,7 @@ public class Shifter extends Subsystem {
     }
 
     public void swapGear() {
+        logger.conditionChange("gear", !shift.get() ? "high" : "low");
         shift.set(!shift.get());
     }
 
