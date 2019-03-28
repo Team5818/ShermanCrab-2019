@@ -31,7 +31,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MechLogger;
 import org.rivierarobotics.util.MathUtil;
+
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -43,6 +47,7 @@ public class HoodController extends Subsystem {
     private final WPI_TalonSRX hood;
     private final ArmController armController;
     private PIDController pidLoop;
+    private final MechLogger logger;
 
     private static final double P = 0.0006;
     private static final double I = 0;
@@ -67,14 +72,16 @@ public class HoodController extends Subsystem {
 
     @Inject
     public HoodController(ArmController armController, Provider<HoodControl> command, int h) {
-        hood = new WPI_TalonSRX(h);
+        this.hood = new WPI_TalonSRX(h);
         this.armController = armController;
         this.command = command;
+        this.logger = Logging.getLogger(getClass());
 
         /* Disables limit switches on malfunctioning encoder */
         hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
         hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
+        logger.conditionChange("neutral_mode", "brake");
         hood.setNeutralMode(NeutralMode.Brake);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -83,8 +90,10 @@ public class HoodController extends Subsystem {
 
     public void setAngle(double angle) {
         pidLoop.setSetpoint(angle);
+        logger.setpointChange(angle);
         SETPOINT_ANGLE.setDouble(angle);
         pidLoop.enable();
+        logger.conditionChange("pid_loop", "enabled");
     }
 
     public int getAngle() {
@@ -92,15 +101,18 @@ public class HoodController extends Subsystem {
     }
 
     public double getDegrees() {
-        return (getAngle() / ANGLE_SCALE) % 360;
+       return (getAngle() / ANGLE_SCALE) % 360;
     }
 
     public void setPower(double pwr) {
         PWR.setDouble(hood.getMotorOutputPercent());
         if (pwr != 0) {
             pidLoop.disable();
+            logger.conditionChange("pid_loop", "disabled");
+            logger.conditionChange("neutral_mode", "coast");
             hood.setNeutralMode(NeutralMode.Coast);
         } else {
+            logger.conditionChange("neutral_mode", "brake");
             hood.setNeutralMode(NeutralMode.Brake);
         }
 
@@ -112,6 +124,7 @@ public class HoodController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         pwr = MathUtil.limit(pwr, 0.8);
+        logger.powerChange(pwr);
         hood.set(pwr);
     }
 

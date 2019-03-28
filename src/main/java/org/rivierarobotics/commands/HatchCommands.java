@@ -25,20 +25,13 @@ import javax.inject.Provider;
 
 public class HatchCommands {
     private final Provider<HatchPush> hatchPushProvider;
-    private final Provider<HatchPushCleanup> hatchPushCleanupProvider;
 
     @Inject
-    public HatchCommands(Provider<HatchPush> hatchPushProvider,
-                         Provider<HatchPushCleanup> hatchPushCleanupProvider) {
+    public HatchCommands(Provider<HatchPush> hatchPushProvider) {
         this.hatchPushProvider = hatchPushProvider;
-        this.hatchPushCleanupProvider = hatchPushCleanupProvider;
     }
 
     public final HatchPush push() {
         return hatchPushProvider.get();
-    }
-
-    public final HatchPushCleanup pushCleanup() {
-        return hatchPushCleanupProvider.get();
     }
 }

@@ -89,7 +89,7 @@ public class ButtonConfiguration {
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 8);
         hatchPush.whenPressed(cmds.hatch().push());
-        hatchPush.whenReleased(cmds.hatch().pushCleanup());
+        hatchPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         JoystickButton sneakPush = new JoystickButton(driverButtons, 4);
         sneakPush.whenPressed(cmds.piston().extend(Piston.PUSH));

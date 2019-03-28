@@ -22,24 +22,31 @@ package org.rivierarobotics.subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.logging.Logger;
 
 @Singleton
 public class Shifter extends Subsystem {
-    private Solenoid shift;
+    private final Solenoid shift;
+    private final MechLogger logger;
 
     @Inject
     public Shifter(int ch) {
         shift = new Solenoid(ch);
+        this.logger = Logging.getLogger(getClass());
     }
 
     public void setGear(Gear gear) {
         shift.set(gear.state);
+        logger.conditionChange("gear", gear.state ? "high" : "low");
     }
 
     public void swapGear() {
+        logger.conditionChange("gear", !shift.get() ? "high" : "low");
         shift.set(!shift.get());
     }
 
