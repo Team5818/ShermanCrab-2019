@@ -45,7 +45,7 @@ public class ArmController extends Subsystem {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
 
-    private final MechLogger logger;
+    private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
 
     public boolean front = true;
@@ -93,7 +93,6 @@ public class ArmController extends Subsystem {
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         this.pistonController = pistonController;
-        this.logger = Logging.getLogger(ArmController.class);
         this.command = command;
     }
 

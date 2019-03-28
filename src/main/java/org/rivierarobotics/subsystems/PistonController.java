@@ -46,16 +46,16 @@ public class PistonController extends Subsystem {
         deployPiston = new Solenoid(3);
         helperClimbPiston = new Solenoid(4);
         lockClimbPiston = new Solenoid(5);
-        this.logger = Logging.getLogger(PistonController.class);
+        this.logger = Logging.getLogger(getClass());
         initPistonLogger();
     }
 
     private void initPistonLogger() {
-        logger.conditionChange(clampPiston.getName() + " state", Piston.CLAMP.extend ? "extended" : "retracted");
-        logger.conditionChange(pushPiston.getName() + " state", Piston.PUSH.extend ? "extended" : "retracted");
-        logger.conditionChange(deployPiston.getName() + " state", Piston.DEPLOY.extend ? "extended" : "retracted");
-        logger.conditionChange(helperClimbPiston.getName() + " state", Piston.HELPER_CLIMB.extend ? "extended" : "retracted");
-        logger.conditionChange(lockClimbPiston.getName() + " state", Piston.LOCK_CLIMB.extend ? "extended" : "retracted");
+        logger.conditionChange(clampPiston.getName() + "_state", Piston.CLAMP.extend ? "extended" : "retracted");
+        logger.conditionChange(pushPiston.getName() + "_state", Piston.PUSH.extend ? "extended" : "retracted");
+        logger.conditionChange(deployPiston.getName() + "_state", Piston.DEPLOY.extend ? "extended" : "retracted");
+        logger.conditionChange(helperClimbPiston.getName() + "_state", Piston.HELPER_CLIMB.extend ? "extended" : "retracted");
+        logger.conditionChange(lockClimbPiston.getName() + "_state", Piston.LOCK_CLIMB.extend ? "extended" : "retracted");
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -76,12 +76,12 @@ public class PistonController extends Subsystem {
 
     public void extendPiston(Piston piston) {
         pistonFor(piston).set(piston.extend);
-        logger.conditionChange(pistonFor(piston).getName() + " state", piston.extend ? "extended" : "retracted");
+        logger.conditionChange(pistonFor(piston).getName() + "_state", piston.extend ? "extended" : "retracted");
     }
 
     public void retractPiston(Piston piston) {
         pistonFor(piston).set(!piston.extend);
-        logger.conditionChange(pistonFor(piston).getName() + " state", !piston.extend ? "extended" : "retracted");
+        logger.conditionChange(pistonFor(piston).getName() + "_state", !piston.extend ? "extended" : "retracted");
     }
 
     public boolean getPistonState(Piston piston) {

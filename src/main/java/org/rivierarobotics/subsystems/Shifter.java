@@ -37,7 +37,7 @@ public class Shifter extends Subsystem {
     @Inject
     public Shifter(int ch) {
         shift = new Solenoid(ch);
-        this.logger = Logging.getLogger(Shifter.class);
+        this.logger = Logging.getLogger(getClass());
     }
 
     public void setGear(Gear gear) {

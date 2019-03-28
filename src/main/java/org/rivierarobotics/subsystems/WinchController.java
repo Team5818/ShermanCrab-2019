@@ -36,7 +36,7 @@ public class WinchController extends Subsystem {
 
     @Inject
     public WinchController(int ch) {
-        logger = Logging.getLogger(WinchController.class);
+        logger = Logging.getLogger(getClass());
         winch = new WPI_TalonSRX(ch);
         winch.setInverted(true);
         winch.setNeutralMode(NeutralMode.Brake);

@@ -72,7 +72,7 @@ public class HoodController extends Subsystem {
         this.hood = new WPI_TalonSRX(h);
         this.armController = armController;
         this.command = command;
-        this.logger = Logging.getLogger(HoodController.class);
+        this.logger = Logging.getLogger(getClass());
 
         /* Disables limitSetpoint switches on malfunctioning encoder */
         hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);

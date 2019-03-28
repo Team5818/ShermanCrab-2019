@@ -67,7 +67,7 @@ public class DriveTrainSide {
     private PIDController pidLoop;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
-        this.logger = Logging.getLogger(DriveTrainSide.class, invert ? "left" : "right");
+        this.logger = Logging.getLogger(getClass(), invert ? "left" : "right");
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);

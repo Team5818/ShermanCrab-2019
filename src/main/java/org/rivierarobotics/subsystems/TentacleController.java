@@ -36,7 +36,7 @@ public class TentacleController extends Subsystem {
     @Inject
     public TentacleController(int tent) {
         tentacles = new WPI_TalonSRX(tent);
-        logger = Logging.getLogger(TentacleController.class);
+        logger = Logging.getLogger(getClass());
     }
 
     public void setPower(double pwr) {
