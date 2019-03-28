@@ -77,7 +77,7 @@ public class HoodController extends Subsystem {
         this.command = command;
         this.logger = Logging.getLogger(getClass());
 
-        /* Disables limitSetpoint switches on malfunctioning encoder */
+        /* Disables limit switches on malfunctioning encoder */
         hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
         hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
@@ -97,15 +97,11 @@ public class HoodController extends Subsystem {
     }
 
     public int getAngle() {
-        int angle = hood.getSensorCollection().getQuadraturePosition();
-        logger.conditionChange("angle", angle);
-        return angle;
+        return hood.getSensorCollection().getQuadraturePosition();
     }
 
     public double getDegrees() {
-       double degrees = (getAngle() / ANGLE_SCALE) % 360;
-       logger.conditionChange("degrees", degrees);
-       return degrees;
+       return (getAngle() / ANGLE_SCALE) % 360;
     }
 
     public void setPower(double pwr) {

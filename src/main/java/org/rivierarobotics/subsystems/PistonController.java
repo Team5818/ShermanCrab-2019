@@ -51,11 +51,11 @@ public class PistonController extends Subsystem {
     }
 
     private void initPistonLogger() {
-        logger.conditionChange(clampPiston.getName() + "_state", Piston.CLAMP.extend ? "extended" : "retracted");
-        logger.conditionChange(pushPiston.getName() + "_state", Piston.PUSH.extend ? "extended" : "retracted");
-        logger.conditionChange(deployPiston.getName() + "_state", Piston.DEPLOY.extend ? "extended" : "retracted");
-        logger.conditionChange(helperClimbPiston.getName() + "_state", Piston.HELPER_CLIMB.extend ? "extended" : "retracted");
-        logger.conditionChange(lockClimbPiston.getName() + "_state", Piston.LOCK_CLIMB.extend ? "extended" : "retracted");
+        logState(clampPiston, !Piston.CLAMP.extend);
+        logState(pushPiston, !Piston.PUSH.extend);
+        logState(deployPiston, !Piston.DEPLOY.extend);
+        logState(helperClimbPiston, !Piston.HELPER_CLIMB.extend);
+        logState(lockClimbPiston, !Piston.LOCK_CLIMB.extend);
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -76,16 +76,20 @@ public class PistonController extends Subsystem {
 
     public void extendPiston(Piston piston) {
         pistonFor(piston).set(piston.extend);
-        logger.conditionChange(pistonFor(piston).getName() + "_state", piston.extend ? "extended" : "retracted");
+        logState(pistonFor(piston), true);
     }
 
     public void retractPiston(Piston piston) {
         pistonFor(piston).set(!piston.extend);
-        logger.conditionChange(pistonFor(piston).getName() + "_state", !piston.extend ? "extended" : "retracted");
+        logState(pistonFor(piston), false);
     }
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
+    }
+
+    private void logState(Solenoid piston, boolean state) {
+        logger.conditionChange(piston.getName() + "_state", state ? "extended" : "retracted");
     }
 
     public void swap(Piston piston) {

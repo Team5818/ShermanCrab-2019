@@ -37,8 +37,6 @@ import org.rivierarobotics.util.MechLogger;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 
 @Singleton
 public class ArmController extends Subsystem {
@@ -100,7 +98,7 @@ public class ArmController extends Subsystem {
 
     public void setAngle(double angle) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
-            angle = MathUtil.limitSetpoint(angle, ArmPosition.ZERO_DEGREES.ticksFront);
+            angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
             logger.conditionChange("deploy_pistons", "out");
         } else {
             logger.conditionChange("deploy_pistons", "in");
@@ -116,21 +114,17 @@ public class ArmController extends Subsystem {
     public int getAngle() {
         //TODO [CompBot] [Software] check if wraparound getAngle() works, remove if not to return getPulseWidthPosition()
         int angle = arm.getSensorCollection().getPulseWidthPosition();
-        logger.conditionChange("angle", angle);
         return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
     }
 
     public double getDegrees() {
-        double degrees = (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
-        logger.conditionChange("degrees", degrees);
-        return degrees;
+        return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
     }
 
     public void setPower(double pwr) {
         if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {
-                pidLoop.disable();
-                logger.conditionChange("pid_loop", "disabled");
+                disablePID();
             }
         }
         if (!pidLoop.isEnabled()) {
@@ -140,15 +134,14 @@ public class ArmController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        pwr = MathUtil.limitSetpoint(pwr, 0.65);
+        pwr = MathUtil.limit(pwr, 0.65);
         logger.powerChange(pwr);
         arm.set(pwr);
     }
 
     private void stop() {
         if (pidLoop.isEnabled()) {
-            logger.conditionChange("pid_loop", "disabled");
-            pidLoop.disable();
+            disablePID();
         }
         setAngle(getAngle());
     }
@@ -168,10 +161,9 @@ public class ArmController extends Subsystem {
         }
     }
 
-    public void setAllPower(double pwr) {
-        arm.set(pwr);
-        sparkSlaveOne.set(pwr);
-        sparkSlaveTwo.set(pwr);
+    private void disablePID() {
+        pidLoop.disable();
+        logger.conditionChange("pid_loop", "disabled");
     }
 
     public void setBrake() {
