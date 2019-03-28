@@ -37,6 +37,8 @@ import org.rivierarobotics.util.MechLogger;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class ArmController extends Subsystem {
@@ -112,9 +114,10 @@ public class ArmController extends Subsystem {
     }
 
     public int getAngle() {
+        //TODO [CompBot] [Software] check if wraparound getAngle() works, remove if not to return getPulseWidthPosition()
         int angle = arm.getSensorCollection().getPulseWidthPosition();
         logger.conditionChange("angle", angle);
-        return angle;
+        return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
     }
 
     public double getDegrees() {
@@ -129,9 +132,9 @@ public class ArmController extends Subsystem {
                 pidLoop.disable();
                 logger.conditionChange("pid_loop", "disabled");
             }
-            if (!pidLoop.isEnabled()) {
-                rawSetPower(pwr);
-            }
+        }
+        if (!pidLoop.isEnabled()) {
+            rawSetPower(pwr);
         }
     }
 
@@ -147,9 +150,7 @@ public class ArmController extends Subsystem {
             logger.conditionChange("pid_loop", "disabled");
             pidLoop.disable();
         }
-        pidLoop.setSetpoint(getAngle());
-        pidLoop.enable();
-        setBrake();
+        setAngle(getAngle());
     }
 
     private boolean safety(double pwr) {
@@ -165,6 +166,12 @@ public class ArmController extends Subsystem {
         } else {
             return true;
         }
+    }
+
+    public void setAllPower(double pwr) {
+        arm.set(pwr);
+        sparkSlaveOne.set(pwr);
+        sparkSlaveTwo.set(pwr);
     }
 
     public void setBrake() {

@@ -24,14 +24,22 @@ public class MathUtil {
     private static final double DEADBAND = 0.08;
 
     public static double fitDeadband(double val) {
-        double abs = Math.abs(val);
-        if (abs < DEADBAND) {
-            return 0;
+        if (!(Math.abs(val) < DEADBAND)) {
+            if (val > 0) {
+                if(val >= 1) {
+                    return 1;
+                } else {
+                    return val - DEADBAND;
+                }
+            } else if (val < 0) {
+                if(val <= -1) {
+                    return -1;
+                } else {
+                    return val + DEADBAND;
+                }
+            }
         }
-        if (abs > 1) {
-            return 1;
-        }
-        return (val - DEADBAND) / (1 - DEADBAND);
+        return 0;
     }
 
     public static double limitSetpoint(double value, double max) {
