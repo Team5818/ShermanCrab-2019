@@ -34,15 +34,16 @@ import static java.util.stream.Collectors.toList;
 
 @GenerateCreator
 public class VisionDrive extends Command {
+
+    private static final int CENTERED_IMAGE_PIXEL = -330;
+    private static final int IMAGE_CENTER_BUFFER = 500;
     private final DriveTrain dt;
     private VisionState jevois;
-    private final int CAMERA_PIXEL_WIDTH = 320;
-    private final int CENTERED_IMAGE_PIXEL = 160;
-    private final int IMAGE_CENTER_BUFFER = 60;
     private double basePower;
     private double turnPower;
+    private double lastTurnEffort = 0;
 
-    public VisionDrive(@Provided DriveTrain dt, VisionState vision, double basePower, double turnPower) {
+    public VisionDrive(@Provided DriveTrain dt, @Provided VisionState vision, double basePower, double turnPower) {
         this.dt = dt;
         jevois = vision;
         this.basePower = basePower;
@@ -60,7 +61,13 @@ public class VisionDrive extends Command {
 
         int centerX = getCenterX(bestBlob);
         int imageOffset = centerX - CENTERED_IMAGE_PIXEL;
-        double turnEffort = Math.signum(imageOffset) * turnPower * Math.abs(imageOffset / IMAGE_CENTER_BUFFER);
+        double turnEffort;
+        if (Math.abs(imageOffset) > IMAGE_CENTER_BUFFER) {
+            turnEffort = lastTurnEffort;
+        } else {
+            turnEffort = Math.signum(imageOffset) * turnPower * Math.abs(imageOffset / IMAGE_CENTER_BUFFER);
+            lastTurnEffort = turnEffort;
+        }
 
         dt.setPower(basePower - turnEffort, turnEffort + basePower);
     }

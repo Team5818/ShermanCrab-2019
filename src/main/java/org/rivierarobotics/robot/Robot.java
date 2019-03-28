@@ -48,7 +48,9 @@ public class Robot extends TimedRobot {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
         UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
-        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
+       // jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
+        jevois.setVideoMode(VideoMode.PixelFormat.kYUYV, 320, 254, 60);
+
     }
 
     @Override

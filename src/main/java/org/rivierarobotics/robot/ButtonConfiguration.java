@@ -126,8 +126,11 @@ public class ButtonConfiguration {
         JoystickButton disablePID = new JoystickButton(codriverLeft, 1);
         disablePID.whenPressed(cmds.hood().disablePID());
 
-        JoystickButton testVision = new JoystickButton(driverButtons, 12);
-        testVision.whenPressed((cmds.drive().vision()));
+        double drivePower = .2;
+        double turnPower = .05;
+
+        JoystickButton testVision = new JoystickButton(driverButtons, 1);
+        testVision.whileHeld((cmds.drive().vision(drivePower, turnPower)));
 
     }
 
