@@ -22,6 +22,7 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.HoodPosition;
 import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
@@ -29,9 +30,10 @@ import javax.inject.Inject;
 public class ScissorClimb extends CommandGroup {
 
     @Inject
-    public ScissorClimb(PistonCommands piston) {
+    public ScissorClimb(PistonCommands piston, HoodCommands hood) {
         addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(new TimedCommand(0.5));
         addSequential(piston.extend(Piston.HELPER_CLIMB));
+        addSequential(hood.setFrontPosition(HoodPosition.CLIMB_NINETY));
     }
 }

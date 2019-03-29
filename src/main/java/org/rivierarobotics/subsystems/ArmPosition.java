@@ -37,8 +37,8 @@ public enum ArmPosition {
     public final double degreesBack;
     public final double ticksFront;
     public final double ticksBack;
-    public final static double TICKS_AT_ZERO = 1080;
-    private final static double TICKS_AT_NINETY = 2060;
+    public final static double TICKS_AT_ZERO = 2835;
+    private final static double TICKS_AT_NINETY = 3835;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;
 
     ArmPosition(double degrees) {

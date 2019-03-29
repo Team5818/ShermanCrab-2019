@@ -110,6 +110,7 @@ public class DriveTrainSide {
         if (pwr != 0 && pidLoop.isEnabled()) {
             logger.conditionChange("pid_loop", "disabled");
             pidLoop.disable();
+            logger.clearSetpoint();
         }
 
         if (!pidLoop.isEnabled()) {

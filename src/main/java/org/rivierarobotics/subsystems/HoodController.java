@@ -52,14 +52,14 @@ public class HoodController extends Subsystem {
     private static final double P = 0.0006;
     private static final double I = 0;
     private static final double D = 0;
-    private static final double F = 0;
+    private static final double F = 0.0;
     private static final double GRAVITY_CONSTANT = 0.13;
+    private static final double GRAVITY_CONSTANT_TOP = 0.1;
     public static double ANGLE_SCALE = 4096 / 360.0;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
     private static final NetworkTableEntry PWR;
-
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").add(name, def);
@@ -83,9 +83,10 @@ public class HoodController extends Subsystem {
 
         logger.conditionChange("neutral_mode", "brake");
         hood.setNeutralMode(NeutralMode.Brake);
+        hood.setSensorPhase(true);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
-        pidLoop.setOutputRange(-0.3, 0.3);
+        pidLoop.setOutputRange(-0.4, 0.4);
     }
 
     public void setAngle(double angle) {
@@ -97,33 +98,41 @@ public class HoodController extends Subsystem {
     }
 
     public int getAngle() {
-        return hood.getSensorCollection().getQuadraturePosition();
+        return -hood.getSensorCollection().getQuadraturePosition();
     }
 
     public double getDegrees() {
-       return (getAngle() / ANGLE_SCALE) % 360;
+       return -getAngle() / ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {
         PWR.setDouble(hood.getMotorOutputPercent());
-        if (pwr != 0) {
+        if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
+            logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
             logger.conditionChange("neutral_mode", "coast");
             hood.setNeutralMode(NeutralMode.Coast);
-        } else {
+        } else if (pwr == 0) {
             logger.conditionChange("neutral_mode", "brake");
             hood.setNeutralMode(NeutralMode.Brake);
         }
 
         if (!pidLoop.isEnabled()) {
-            pwr += Math.sin(Math.toRadians(this.getDegrees() - Math.abs(armController.getDegrees()))) * GRAVITY_CONSTANT;
             rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
-        pwr = MathUtil.limit(pwr, 0.8);
+        double realAngle = this.getDegrees() - armController.getDegrees();
+        realAngle = (realAngle % 360) + (realAngle < 0 ? 360 : 0);
+        double gravityConstant;
+        if(90 < realAngle && realAngle < 270) {
+            gravityConstant = GRAVITY_CONSTANT_TOP;
+        } else {
+            gravityConstant = GRAVITY_CONSTANT;
+        }
+        pwr += Math.sin(Math.toRadians(realAngle)) * gravityConstant;
         logger.powerChange(pwr);
         hood.set(pwr);
     }

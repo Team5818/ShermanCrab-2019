@@ -163,6 +163,7 @@ public class ArmController extends Subsystem {
 
     private void disablePID() {
         pidLoop.disable();
+        logger.clearSetpoint();
         logger.conditionChange("pid_loop", "disabled");
     }
 

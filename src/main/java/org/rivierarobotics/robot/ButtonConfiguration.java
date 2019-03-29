@@ -165,7 +165,7 @@ public class ButtonConfiguration {
         scissorClimb.whenPressed(cmds.climb().scissor());
 
         JoystickButton winchFwd = new JoystickButton(driverButtons, 12);
-        winchFwd.whenPressed(cmds.winch().atPower(0.5));
+        winchFwd.whenPressed(cmds.winch().atPower(1.0));
         winchFwd.whenReleased(cmds.winch().atPower(0.0));
 
         JoystickButton winchBack = new JoystickButton(driverButtons, 8);

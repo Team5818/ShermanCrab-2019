@@ -24,6 +24,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -31,8 +32,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 import org.rivierarobotics.subsystems.Piston;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class Robot extends TimedRobot {
+    static {
+        try {
+            new CompressOldFiles().run();
+        } catch (IOException e) {
+            // Ignore here, we would rather run than crash!
+            e.printStackTrace();
+        }
+    }
+
     private GlobalComponent globalComponent;
     private final NetworkTableEntry driveEncoderLeft = Shuffleboard.getTab("Drive Train")
             .add("Distance Left", 0).getEntry();
@@ -46,6 +60,8 @@ public class Robot extends TimedRobot {
             .add("Degrees", 0).getEntry();
     private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
             .add("Degrees", 0).getEntry();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private boolean loggedMatchNumber = false;
 
     @Override
     public void robotInit() {
@@ -70,12 +86,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        logMatchIfNeeded();
         displayShuffleboard();
         Scheduler.getInstance().run();
     }
 
     @Override
     public void teleopPeriodic() {
+        logMatchIfNeeded();
         displayShuffleboard();
         Scheduler.getInstance().run();
     }
@@ -90,7 +108,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-
+        logMatchIfNeeded();
     }
 
     @Override
@@ -101,6 +119,19 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         //Scheduler.getInstance().run();
+    }
+
+    private void logMatchIfNeeded() {
+        if (loggedMatchNumber) {
+            return;
+        }
+        int num = DriverStation.getInstance().getMatchNumber();
+        if (num == 0) {
+            return;
+        }
+
+        logger.info("Starting robot, match_number=" + num);
+        loggedMatchNumber = true;
     }
 
     private void displayShuffleboard() {

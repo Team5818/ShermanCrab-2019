@@ -48,7 +48,7 @@ public class MechLogger {
     private final Logger delegate;
     private final String tagsProcessed;
     private double lastPower;
-    private double lastSetpoint;
+    private Double lastSetpoint;
     private final Map<String, Object> conditions = new HashMap<>();
 
     MechLogger(Logger delegate, List<String> tags) {
@@ -79,19 +79,23 @@ public class MechLogger {
         if (basicallyEqual(lastLastPower, power)) {
             return;
         }
-        if (basicallyEqual(lastLastPower, 0.0)) {
-            // switching from 0 -> any power
+        if (basicallyEqual(lastLastPower, 0.0) || basicallyEqual(power, 0.0)) {
+            // switching from 0 -> any power, or vice versa
             logPower(power);
-        } else if (Math.abs(lastLastPower - power) > 0.1) {
-            // change in power of >0.1
+        } else if (Math.abs(lastLastPower - power) >= 0.05) {
+            // change in power of >=0.05
             logPower(power);
         }
     }
 
+    public void clearSetpoint() {
+        lastSetpoint = null;
+    }
+
     public void setpointChange(double setpoint) {
-        double lastLastSetpoint = lastSetpoint;
+        Double lastLastSetpoint = lastSetpoint;
         lastSetpoint = setpoint;
-        if (basicallyEqual(lastLastSetpoint, setpoint)) {
+        if (lastLastSetpoint != null && basicallyEqual(lastLastSetpoint, setpoint)) {
             return;
         }
         logSetpoint(setpoint);
