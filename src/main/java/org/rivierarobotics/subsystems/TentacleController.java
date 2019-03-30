@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.util.Logging;
@@ -37,6 +38,8 @@ public class TentacleController extends Subsystem {
     public TentacleController(int tent) {
         tentacles = new WPI_TalonSRX(tent);
         logger = Logging.getLogger(getClass());
+        tentacles.setNeutralMode(NeutralMode.Coast);
+        logger.conditionChange("neutral_mode", "coast");
     }
 
     public void setPower(double pwr) {

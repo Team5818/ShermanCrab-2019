@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
@@ -60,15 +61,21 @@ public class Robot extends TimedRobot {
             .add("Degrees", 0).getEntry();
     private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
             .add("Degrees", 0).getEntry();
+    private final NetworkTableEntry hoodPID = Shuffleboard.getTab("Dev")
+            .add("Hood PID Enabled", 0).getEntry();
+    private final NetworkTableEntry driveTrainOutput = Shuffleboard.getTab("Dev")
+            .add("Drive Train Output", 0).getEntry();
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private boolean loggedMatchNumber = false;
+
 
     @Override
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
         UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
-        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
+        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 144, 108, 60);
     }
 
     @Override
@@ -135,8 +142,8 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
-        SmartDashboard.putBoolean("HoodPID Enabled", globalComponent.getHoodController().getPIDLoop().isEnabled());
-        SmartDashboard.putNumber("DriveTrain Output", globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
+        hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
+        driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
 
         driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());

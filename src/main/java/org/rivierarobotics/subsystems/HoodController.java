@@ -49,17 +49,20 @@ public class HoodController extends Subsystem {
     private PIDController pidLoop;
     private final MechLogger logger;
 
-    private static final double P = 0.0006;
+    private static final double P = 0.00075;
     private static final double I = 0;
-    private static final double D = 0;
+    private static final double D = 0.0006;
     private static final double F = 0.0;
-    private static final double GRAVITY_CONSTANT = 0.13;
-    private static final double GRAVITY_CONSTANT_TOP = 0.1;
+    private static final double GRAVITY_CONSTANT = 0.2;
+    private static final double GRAVITY_CONSTANT_TOP = GRAVITY_CONSTANT;
+    private static final double MAX_PID = 0.5;
     public static double ANGLE_SCALE = 4096 / 360.0;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
     private static final NetworkTableEntry PWR;
+    private static final NetworkTableEntry GRAV_OFFSET;
+    private static final NetworkTableEntry REAL_ANGLE;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").add(name, def);
@@ -68,6 +71,8 @@ public class HoodController extends Subsystem {
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
         PWR = ezWidget("Power", 0).getEntry();
+        GRAV_OFFSET = ezWidget("Gravity Offset", 0).getEntry();
+        REAL_ANGLE = ezWidget("Real Angle", 0).getEntry();
     }
 
     @Inject
@@ -84,9 +89,13 @@ public class HoodController extends Subsystem {
         logger.conditionChange("neutral_mode", "brake");
         hood.setNeutralMode(NeutralMode.Brake);
         hood.setSensorPhase(true);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
+                () -> MathUtil.moduloPositive(getAngle(), 4096)
+        ), this::setPowerPID, 0.01);
 
-        pidLoop.setOutputRange(-0.4, 0.4);
+        pidLoop.setInputRange(0, 4096);
+        pidLoop.setOutputRange(-MAX_PID, MAX_PID);
+        pidLoop.setContinuous();
     }
 
     public void setAngle(double angle) {
@@ -95,6 +104,10 @@ public class HoodController extends Subsystem {
         SETPOINT_ANGLE.setDouble(angle);
         pidLoop.enable();
         logger.conditionChange("pid_loop", "enabled");
+    }
+
+    public int getVelocity() {
+       return hood.getSensorCollection().getQuadratureVelocity();
     }
 
     public int getAngle() {
@@ -119,12 +132,18 @@ public class HoodController extends Subsystem {
         }
 
         if (!pidLoop.isEnabled()) {
+            pwr += getGravOffset();
             rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
-        double realAngle = this.getDegrees() - armController.getDegrees();
+        logger.powerChange(pwr);
+        hood.set(pwr);
+    }
+
+    private double getGravOffset() {
+        double realAngle = this.getDegrees() + armController.getDegrees();
         realAngle = (realAngle % 360) + (realAngle < 0 ? 360 : 0);
         double gravityConstant;
         if(90 < realAngle && realAngle < 270) {
@@ -132,9 +151,17 @@ public class HoodController extends Subsystem {
         } else {
             gravityConstant = GRAVITY_CONSTANT;
         }
-        pwr += Math.sin(Math.toRadians(realAngle)) * gravityConstant;
-        logger.powerChange(pwr);
-        hood.set(pwr);
+        double gravOffset = Math.sin(Math.toRadians(realAngle)) * gravityConstant;
+        GRAV_OFFSET.setDouble(gravOffset);
+        REAL_ANGLE.setDouble(realAngle);
+        return -gravOffset;
+    }
+
+    private void setPowerPID(double pwr) {
+        double gravOffset = getGravOffset();
+        pwr += gravOffset;
+        pwr = MathUtil.limit(pwr, MAX_PID);
+        rawSetPower(pwr);
     }
 
     public void resetQuadratureEncoder() {
