@@ -22,11 +22,7 @@ package org.rivierarobotics.util;
 
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collector;
 
 /**
@@ -42,7 +38,7 @@ public class MechLogger {
 
     private static StringJoiner newTagJoiner() {
         return new StringJoiner(",", "tags=", ", ")
-            .setEmptyValue("");
+                .setEmptyValue("");
     }
 
     private final Logger delegate;
@@ -54,10 +50,10 @@ public class MechLogger {
     MechLogger(Logger delegate, List<String> tags) {
         this.delegate = delegate;
         this.tagsProcessed = tags.stream().collect(Collector.of(
-            MechLogger::newTagJoiner,
-            StringJoiner::add,
-            StringJoiner::merge,
-            StringJoiner::toString
+                MechLogger::newTagJoiner,
+                StringJoiner::add,
+                StringJoiner::merge,
+                StringJoiner::toString
         ));
     }
 

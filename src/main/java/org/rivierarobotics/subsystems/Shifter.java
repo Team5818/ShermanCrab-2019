@@ -27,7 +27,6 @@ import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.logging.Logger;
 
 @Singleton
 public class Shifter extends Subsystem {

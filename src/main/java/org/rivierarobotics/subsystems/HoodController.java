@@ -31,11 +31,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
-
 import org.rivierarobotics.util.Logging;
-import org.rivierarobotics.util.MechLogger;
 import org.rivierarobotics.util.MathUtil;
-
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -107,7 +105,7 @@ public class HoodController extends Subsystem {
     }
 
     public int getVelocity() {
-       return hood.getSensorCollection().getQuadratureVelocity();
+        return hood.getSensorCollection().getQuadratureVelocity();
     }
 
     public int getAngle() {
@@ -115,7 +113,7 @@ public class HoodController extends Subsystem {
     }
 
     public double getDegrees() {
-       return -getAngle() / ANGLE_SCALE % 360;
+        return -getAngle() / ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {
@@ -146,7 +144,7 @@ public class HoodController extends Subsystem {
         double realAngle = this.getDegrees() + armController.getDegrees();
         realAngle = (realAngle % 360) + (realAngle < 0 ? 360 : 0);
         double gravityConstant;
-        if(90 < realAngle && realAngle < 270) {
+        if (90 < realAngle && realAngle < 270) {
             gravityConstant = GRAVITY_CONSTANT_TOP;
         } else {
             gravityConstant = GRAVITY_CONSTANT;

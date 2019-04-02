@@ -26,13 +26,13 @@ public class MathUtil {
     public static double fitDeadband(double val) {
         if (!(Math.abs(val) < DEADBAND)) {
             if (val > 0) {
-                if(val >= 1) {
+                if (val >= 1) {
                     return 1;
                 } else {
                     return val - DEADBAND;
                 }
             } else if (val < 0) {
-                if(val <= -1) {
+                if (val <= -1) {
                     return -1;
                 } else {
                     return val + DEADBAND;
