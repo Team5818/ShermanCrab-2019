@@ -34,5 +34,4 @@ public class HatchPush extends CommandGroup {
         addSequential(new TimedCommand(0.05));
         addSequential(piston.extend(Piston.CLAMP));
     }
-
 }

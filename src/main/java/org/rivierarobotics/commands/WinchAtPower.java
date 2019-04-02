@@ -38,6 +38,6 @@ public class WinchAtPower extends InstantCommand {
 
     @Override
     protected void initialize() {
-        winchController.getWinch().set(pwr);
+        winchController.setPower(pwr);
     }
 }

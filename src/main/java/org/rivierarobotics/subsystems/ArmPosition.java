@@ -26,15 +26,12 @@ public enum ArmPosition {
     FORTY_FIVE_DEGREES(45),
 
     ROCKET_LEVEL_ONE(48),
-    ROCKET_LEVEL_TWO(25),
+    ROCKET_LEVEL_TWO(22),
     CARGO_SHIP(40),
     HUMAN_PLAYER_STATION(24),
     COLLECT(90),
-    HATCH_LIMIT(0),
 
-    SCISSOR_CLIMB(100),
-    SUCTION_CLIMB(0),
-    PISTON_CLIMB(0);
+    L2_CLIMB(118);
 
     public final double degreesFront;
     public final double degreesBack;

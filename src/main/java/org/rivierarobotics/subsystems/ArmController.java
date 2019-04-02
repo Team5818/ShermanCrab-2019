@@ -28,10 +28,11 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MathUtil;
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -44,16 +45,16 @@ public class ArmController extends Subsystem {
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
 
+    private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
 
-    private boolean safe = true;
     public boolean front = true;
 
     private static final double P;
     private static final double I;
     private static final double D;
     private static final double F;
-    private static final double GRAVITY_CONSTANT = -0.042;
+    private static final double GRAVITY_CONSTANT = -0.045;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private PIDController pidLoop;
 
@@ -98,15 +99,22 @@ public class ArmController extends Subsystem {
     public void setAngle(double angle) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
+            logger.conditionChange("deploy_pistons", "out");
+        } else {
+            logger.conditionChange("deploy_pistons", "in");
         }
 
         setBrake();
         pidLoop.setSetpoint(angle);
+        logger.setpointChange(angle);
         pidLoop.enable();
+        logger.conditionChange("pid_loop", "enabled");
     }
 
     public int getAngle() {
-        return arm.getSensorCollection().getPulseWidthPosition();
+        //TODO [CompBot] [Software] check if wraparound getAngle() works, remove if not to return getPulseWidthPosition()
+        int angle = arm.getSensorCollection().getPulseWidthPosition();
+        return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
     }
 
     public double getDegrees() {
@@ -114,51 +122,60 @@ public class ArmController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        safety(pwr);
-        if (safe) {
+        if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {
-                pidLoop.disable();
+                disablePID();
             }
-            if (!pidLoop.isEnabled()) {
-                rawSetPower(pwr);
-            }
+        }
+        if (!pidLoop.isEnabled()) {
+            rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
         pwr = MathUtil.limit(pwr, 0.65);
+        logger.powerChange(pwr);
         arm.set(pwr);
     }
 
     private void stop() {
-        safe = false;
         if (pidLoop.isEnabled()) {
-            pidLoop.disable();
+            disablePID();
         }
-        pidLoop.setSetpoint(getAngle());
-        pidLoop.enable();
-        setBrake();
+        setAngle(getAngle());
     }
 
-    private void safety(double pwr) {
-        if (pistonController.getPistonState(Piston.DEPLOY)) {
+    private boolean safety(double pwr) {
+        if (pistonController.getPistonState(Piston.DEPLOY)
+                && getAngle() >= ArmPosition.ZERO_DEGREES.ticksFront) {
             if (pwr < 0) {
                 setCoast();
-                safe = true;
+                return true;
             } else {
                 stop();
+                return false;
             }
+        } else {
+            return true;
         }
+    }
+
+    private void disablePID() {
+        pidLoop.disable();
+        logger.clearSetpoint();
+        logger.conditionChange("pid_loop", "disabled");
     }
 
     public void setBrake() {
+        logger.conditionChange("neutral_mode", "brake");
         arm.setNeutralMode(NeutralMode.Brake);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setCoast() {
+        logger.conditionChange("neutral_mode", "coast");
         arm.setNeutralMode(NeutralMode.Coast);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);

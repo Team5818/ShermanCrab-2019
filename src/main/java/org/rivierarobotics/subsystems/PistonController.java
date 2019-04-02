@@ -22,6 +22,8 @@ package org.rivierarobotics.subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,6 +37,8 @@ public class PistonController extends Subsystem {
     private final Solenoid helperClimbPiston;
     private final Solenoid lockClimbPiston;
 
+    private final MechLogger logger;
+
     @Inject
     public PistonController() {
         clampPiston = new Solenoid(1);
@@ -42,6 +46,7 @@ public class PistonController extends Subsystem {
         deployPiston = new Solenoid(3);
         helperClimbPiston = new Solenoid(4);
         lockClimbPiston = new Solenoid(5);
+        this.logger = Logging.getLogger(getClass());
     }
 
     private Solenoid pistonFor(Piston piston) {
@@ -62,18 +67,27 @@ public class PistonController extends Subsystem {
 
     public void extendPiston(Piston piston) {
         pistonFor(piston).set(piston.extend);
+        logState(piston, piston.extend);
     }
 
     public void retractPiston(Piston piston) {
         pistonFor(piston).set(!piston.extend);
+        logState(piston, !piston.extend);
     }
 
     public boolean getPistonState(Piston piston) {
         return pistonFor(piston).get();
     }
 
+    private void logState(Piston piston, boolean state) {
+        logger.conditionChange(pistonFor(piston).getName() + "_swState", state == piston.extend ? "extended" : "retracted");
+        logger.conditionChange(pistonFor(piston).getName() + "_hwState", state ? "extended" : "retracted");
+    }
+
     public void swap(Piston piston) {
-        pistonFor(piston).set(!pistonFor(piston).get());
+        boolean state = !pistonFor(piston).get();
+        pistonFor(piston).set(state);
+        logState(piston, state);
     }
 
     @Override

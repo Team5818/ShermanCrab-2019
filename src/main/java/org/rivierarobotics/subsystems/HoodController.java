@@ -31,6 +31,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MathUtil;
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -40,18 +43,24 @@ import javax.inject.Singleton;
 public class HoodController extends Subsystem {
     private Provider<HoodControl> command;
     private final WPI_TalonSRX hood;
+    private final ArmController armController;
     private PIDController pidLoop;
+    private final MechLogger logger;
 
-    private static final double P = 0.0003;
+    private static final double P = 0.00075;
     private static final double I = 0;
-    private static final double D = 0;
-    private static final double F = 0;
-    private static boolean offsetDone = false;
-    public int offset = 0;
-    /* Accounts for 6:11 chain ratio */
-    public static int MAX_ROT = ((4096 * 11) / 12);
+    private static final double D = 0.0006;
+    private static final double F = 0.0;
+    private static final double GRAVITY_CONSTANT = 0.2;
+    private static final double GRAVITY_CONSTANT_TOP = GRAVITY_CONSTANT;
+    private static final double MAX_PID = 0.5;
+    public static double ANGLE_SCALE = 4096 / 360.0;
+    public static HoodPosition CURRENT_HOOD_POSITION;
+    public static boolean HOOD_FRONT = true;
     private static final NetworkTableEntry SETPOINT_ANGLE;
-
+    private static final NetworkTableEntry PWR;
+    private static final NetworkTableEntry GRAV_OFFSET;
+    private static final NetworkTableEntry REAL_ANGLE;
 
     private static SimpleWidget ezWidget(String name, Object def) {
         return Shuffleboard.getTab("Hood Controller").add(name, def);
@@ -59,63 +68,102 @@ public class HoodController extends Subsystem {
 
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
+        PWR = ezWidget("Power", 0).getEntry();
+        GRAV_OFFSET = ezWidget("Gravity Offset", 0).getEntry();
+        REAL_ANGLE = ezWidget("Real Angle", 0).getEntry();
     }
 
     @Inject
-    public HoodController(Provider<HoodControl> command, int h) {
-        hood = new WPI_TalonSRX(h);
+    public HoodController(ArmController armController, Provider<HoodControl> command, int h) {
+        this.hood = new WPI_TalonSRX(h);
+        this.armController = armController;
         this.command = command;
+        this.logger = Logging.getLogger(getClass());
 
         /* Disables limit switches on malfunctioning encoder */
         hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
         hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
+        logger.conditionChange("neutral_mode", "brake");
         hood.setNeutralMode(NeutralMode.Brake);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
+        hood.setSensorPhase(true);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
+                () -> MathUtil.moduloPositive(getAngle(), 4096)
+        ), this::setPowerPID, 0.01);
 
-        //OFFSET = getRestingZero();
-        pidLoop.setOutputRange(-0.4, 0.4);
+        pidLoop.setInputRange(0, 4096);
+        pidLoop.setOutputRange(-MAX_PID, MAX_PID);
+        pidLoop.setContinuous();
     }
 
     public void setAngle(double angle) {
-        //pidLoop.setSetpoint(MathUtil.fitHoodRotation(angle, 0, MAX_ROT));
-        pidLoop.setSetpoint(angle + offset);
-        SETPOINT_ANGLE.setDouble(angle + offset);
+        pidLoop.setSetpoint(angle);
+        logger.setpointChange(angle);
+        SETPOINT_ANGLE.setDouble(angle);
         pidLoop.enable();
+        logger.conditionChange("pid_loop", "enabled");
+    }
+
+    public int getVelocity() {
+        return hood.getSensorCollection().getQuadratureVelocity();
     }
 
     public int getAngle() {
-        return hood.getSensorCollection().getPulseWidthPosition();
+        return -hood.getSensorCollection().getQuadraturePosition();
+    }
+
+    public double getDegrees() {
+        return -getAngle() / ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {
-        if (pwr != 0) {
+        PWR.setDouble(hood.getMotorOutputPercent());
+        if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
+            logger.clearSetpoint();
+            logger.conditionChange("pid_loop", "disabled");
+            logger.conditionChange("neutral_mode", "coast");
             hood.setNeutralMode(NeutralMode.Coast);
-        } else {
+        } else if (pwr == 0) {
+            logger.conditionChange("neutral_mode", "brake");
             hood.setNeutralMode(NeutralMode.Brake);
         }
 
         if (!pidLoop.isEnabled()) {
+            pwr += getGravOffset();
             rawSetPower(pwr);
         }
     }
 
     private void rawSetPower(double pwr) {
+        logger.powerChange(pwr);
         hood.set(pwr);
     }
 
-    public int getRestingZero() {
-        if (offset == 0 && !offsetDone) {
-            offsetDone = true;
-            return getAngle();
+    private double getGravOffset() {
+        double realAngle = this.getDegrees() + armController.getDegrees();
+        realAngle = (realAngle % 360) + (realAngle < 0 ? 360 : 0);
+        double gravityConstant;
+        if (90 < realAngle && realAngle < 270) {
+            gravityConstant = GRAVITY_CONSTANT_TOP;
         } else {
-            return offset;
+            gravityConstant = GRAVITY_CONSTANT;
         }
+        double gravOffset = Math.sin(Math.toRadians(realAngle)) * gravityConstant;
+        GRAV_OFFSET.setDouble(gravOffset);
+        REAL_ANGLE.setDouble(realAngle);
+        return -gravOffset;
+    }
+
+    private void setPowerPID(double pwr) {
+        double gravOffset = getGravOffset();
+        pwr += gravOffset;
+        pwr = MathUtil.limit(pwr, MAX_PID);
+        rawSetPower(pwr);
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(MAX_ROT / 2, 0);
+        hood.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     public PIDController getPIDLoop() {

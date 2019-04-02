@@ -20,22 +20,35 @@
 
 package org.rivierarobotics.subsystems;
 
+import org.rivierarobotics.util.MathUtil;
+
 public enum HoodPosition {
-    RESTING_ARM_ZERO(0, 0),
+    RESTING_ARM_ZERO(0, 0, false, false),
+    RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180, false, false),
 
-    ROCKET_LEVEL_ONE(-3, 100),
-    ROCKET_LEVEL_TWO(1786, -2047),
-    CARGO_SHIP(2895, -2727),
-    HUMAN_PLAYER_STATION(467, -520),
-    COLLECT(330, -330);
+    ROCKET_LEVEL_ONE(22, -22, true, false),
+    ROCKET_LEVEL_TWO(77, -77, false, true),
+    CARGO_SHIP(120, -120, false, true),
+    COLLECT(6, -6, false, true),
+    CLIMB_NINETY(130, -130, false, false);
 
-    public final int ticksFront;
-    public final int ticksBack;
-    //TODO [Regional] [Software] set resting to zero when testing quadrature/relative, HoodController.OFFSET
-    private final int restingArmZero = 1890;
+    public final double degreesFront;
+    public final double degreesBack;
+    public final double ticksFront;
+    public final double ticksBack;
+    public final boolean tentacleInvertFront;
+    public final boolean tentacleInvertBack;
 
-    HoodPosition(int ticksFront, int ticksBack) {
-        this.ticksFront = restingArmZero + ticksFront;
-        this.ticksBack = restingArmZero + ticksBack;
+    HoodPosition(double degreesFront, double degreesBack, boolean tentacleInvertFront, boolean tentacleInvertBack) {
+        this.tentacleInvertFront = tentacleInvertFront;
+        this.tentacleInvertBack = tentacleInvertBack;
+        this.degreesFront = degreesFront;
+        this.degreesBack = degreesBack;
+        this.ticksFront = toTicks(degreesFront);
+        this.ticksBack = toTicks(degreesBack);
+    }
+
+    private static int toTicks(double deg) {
+        return MathUtil.moduloPositive((int) (deg * -HoodController.ANGLE_SCALE), 4096);
     }
 }

@@ -18,22 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.util;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
-import org.rivierarobotics.subsystems.HoodPosition;
-import org.rivierarobotics.subsystems.Piston;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class ScissorClimb extends CommandGroup {
+public class Logging {
 
-    @Inject
-    public ScissorClimb(PistonCommands piston, HoodCommands hood) {
-        addSequential(piston.extend(Piston.LOCK_CLIMB));
-        addSequential(new TimedCommand(0.5));
-        addSequential(piston.extend(Piston.HELPER_CLIMB));
-        addSequential(hood.setFrontPosition(HoodPosition.CLIMB_NINETY));
+    public static MechLogger getLogger(Class<?> clazz, String... tags) {
+        return getLogger(clazz.getName(), tags);
     }
+
+    public static MechLogger getLogger(String name, String... tags) {
+        return getMechLogger(LoggerFactory.getLogger(name), tags);
+    }
+
+    private static MechLogger getMechLogger(Logger logger, String[] tags) {
+        return new MechLogger(logger, Stream.of(tags).collect(Collectors.toList()));
+    }
+
 }

@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MechLogger;
 
 public class DriveTrainSide {
     private static final double INCHES_TO_TICKS;
@@ -57,6 +59,7 @@ public class DriveTrainSide {
         System.err.println("F: " + F);
     }
 
+    private final MechLogger logger;
     private WPI_TalonSRX talonMaster;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
@@ -64,6 +67,7 @@ public class DriveTrainSide {
     private PIDController pidLoop;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
+        this.logger = Logging.getLogger(getClass(), invert ? "left" : "right");
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -95,34 +99,47 @@ public class DriveTrainSide {
 
     public void addDistance(double inches) {
         double ticks = inches * INCHES_TO_TICKS;
-        pidLoop.setSetpoint(getTicks() + ticks);
+        double newSetpoint = getTicks() + ticks;
+        logger.setpointChange(newSetpoint);
+        pidLoop.setSetpoint(newSetpoint);
+        logger.conditionChange("pid_loop", "enabled");
         pidLoop.enable();
     }
 
     public void setPower(double pwr) {
         if (pwr != 0 && pidLoop.isEnabled()) {
+            logger.conditionChange("pid_loop", "disabled");
             pidLoop.disable();
+            logger.clearSetpoint();
         }
+
         if (!pidLoop.isEnabled()) {
             setMotorPower(pwr);
         }
     }
 
     private void setMotorPower(double pwr) {
+        logger.powerChange(pwr);
         talonMaster.set(pwr);
     }
 
     public void setBrake() {
+        logger.conditionChange("neutral_mode", "brake");
         talonMaster.setNeutralMode(NeutralMode.Brake);
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setMaxCurrent(int maxCurrent) {
+        logger.conditionChange("max_current", maxCurrent);
         talonMaster.configContinuousCurrentLimit(maxCurrent);
         sparkSlaveOne.setSmartCurrentLimit(maxCurrent);
         sparkSlaveTwo.setSmartCurrentLimit(maxCurrent);
+        logger.conditionChange("current_limit", "enabled");
         talonMaster.enableCurrentLimit(true);
     }
 
+    public WPI_TalonSRX getTalon() {
+        return talonMaster;
+    }
 }

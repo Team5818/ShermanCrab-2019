@@ -24,15 +24,28 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
-import org.rivierarobotics.subsystems.ArmController;
 import org.rivierarobotics.subsystems.Piston;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class Robot extends TimedRobot {
+    static {
+        try {
+            new CompressOldFiles().run();
+        } catch (IOException e) {
+            // Ignore here, we would rather run than crash!
+            e.printStackTrace();
+        }
+    }
+
     private GlobalComponent globalComponent;
     private final NetworkTableEntry driveEncoderLeft = Shuffleboard.getTab("Drive Train")
             .add("Distance Left", 0).getEntry();
@@ -44,37 +57,48 @@ public class Robot extends TimedRobot {
             .add("Angle", 0).getEntry();
     private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
             .add("Degrees", 0).getEntry();
+    private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
+            .add("Degrees", 0).getEntry();
+    private final NetworkTableEntry hoodPID = Shuffleboard.getTab("Dev")
+            .add("Hood PID Enabled", 0).getEntry();
+    private final NetworkTableEntry driveTrainOutput = Shuffleboard.getTab("Dev")
+            .add("Drive Train Output", 0).getEntry();
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private boolean loggedMatchNumber = false;
+
 
     @Override
     public void robotInit() {
         globalComponent = DaggerGlobalComponent.create();
         globalComponent.robotInit();
         UsbCamera jevois = CameraServer.getInstance().startAutomaticCapture();
-        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 60);
+        jevois.setVideoMode(VideoMode.PixelFormat.kMJPEG, 144, 108, 60);
     }
 
     @Override
     public void teleopInit() {
+        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
     public void autonomousInit() {
-        //TODO [Regional] [Software] resets quadrature encoder for hood testing. remove for reverting or uncomment for quadrature
-        //globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
 
     @Override
     public void autonomousPeriodic() {
+        logMatchIfNeeded();
         displayShuffleboard();
         Scheduler.getInstance().run();
     }
 
     @Override
     public void teleopPeriodic() {
+        logMatchIfNeeded();
         displayShuffleboard();
         Scheduler.getInstance().run();
     }
@@ -88,6 +112,11 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void disabledPeriodic() {
+        logMatchIfNeeded();
+    }
+
+    @Override
     public void testInit() {
         //globalComponent.getButtonConfiguration().initTest();
     }
@@ -97,10 +126,27 @@ public class Robot extends TimedRobot {
         //Scheduler.getInstance().run();
     }
 
+    private void logMatchIfNeeded() {
+        if (loggedMatchNumber) {
+            return;
+        }
+        int num = DriverStation.getInstance().getMatchNumber();
+        if (num == 0) {
+            return;
+        }
+
+        logger.info("Starting robot, match_number=" + num);
+        loggedMatchNumber = true;
+    }
+
     private void displayShuffleboard() {
+        hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
+        driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
+
         driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
+        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
     }

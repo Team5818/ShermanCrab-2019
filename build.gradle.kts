@@ -21,6 +21,11 @@ dependencies {
 		implementation(lib())
 		annotationProcessor(lib("compiler"))
 	}
+	implementation("org.slf4j:slf4j-api:1.7.25")
+	commonLib("ch.qos.logback", "logback", "1.2.3") {
+		implementation(lib("classic"))
+		implementation(lib("core"))
+	}
 }
 
 repositories {
