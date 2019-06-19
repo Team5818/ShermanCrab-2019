@@ -27,7 +27,7 @@ public enum HoodPosition {
     RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180, false, false),
 
     ROCKET_LEVEL_ONE(22, -22, true, false),
-    ROCKET_LEVEL_TWO(77, -77, false, true),
+    ROCKET_LEVEL_TWO(86, -86, false, true),
     CARGO_SHIP(120, -120, false, true),
     COLLECT(6, -6, false, true),
     CLIMB_NINETY(130, -130, false, false);

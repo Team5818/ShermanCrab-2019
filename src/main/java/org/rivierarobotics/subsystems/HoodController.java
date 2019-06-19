@@ -47,13 +47,13 @@ public class HoodController extends Subsystem {
     private PIDController pidLoop;
     private final MechLogger logger;
 
-    private static final double P = 0.00075;
+    private static final double P = 0.001;
     private static final double I = 0;
-    private static final double D = 0.0006;
-    private static final double F = 0.0;
+    private static final double D = 0.025;
+    private static final double F = 0.005;
     private static final double GRAVITY_CONSTANT = 0.2;
     private static final double GRAVITY_CONSTANT_TOP = GRAVITY_CONSTANT;
-    private static final double MAX_PID = 0.5;
+    private static final double MAX_PID = 0.75;
     public static double ANGLE_SCALE = 4096 / 360.0;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
