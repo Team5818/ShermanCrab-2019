@@ -78,7 +78,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getButtonConfiguration().initTeleop();
         globalComponent.getPistonController().retractPiston(Piston.CLAMP);
     }
@@ -106,7 +105,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         globalComponent.getArmController().getPIDLoop().disable();
-        globalComponent.getHoodController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
         globalComponent.getDriveTrain().setBrake();
     }
@@ -140,9 +138,7 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
-        hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
         driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
-
         driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
         driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
