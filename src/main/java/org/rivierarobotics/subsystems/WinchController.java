@@ -20,8 +20,8 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
@@ -31,20 +31,20 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WinchController extends Subsystem {
-    private final WPI_TalonSRX winch;
+    private final CANSparkMax winch;
     private final MechLogger logger;
 
     @Inject
     public WinchController(int ch) {
         logger = Logging.getLogger(getClass());
-        winch = new WPI_TalonSRX(ch);
+        winch = new CANSparkMax(ch, CANSparkMaxLowLevel.MotorType.kBrushless);
         winch.setInverted(true);
-        winch.setNeutralMode(NeutralMode.Brake);
+        winch.setIdleMode(CANSparkMax.IdleMode.kBrake);
         logger.conditionChange("neutral_mode", "brake");
     }
 
-    public int getDistance() {
-        return winch.getSensorCollection().getPulseWidthPosition();
+    public double getDistance() {
+        return winch.getEncoder().getPosition();
     }
 
     public void setPosition(double position) {
@@ -56,7 +56,7 @@ public class WinchController extends Subsystem {
         winch.set(pwr);
     }
 
-    public WPI_TalonSRX getWinch() {
+    public CANSparkMax getWinch() {
         return winch;
     }
 
