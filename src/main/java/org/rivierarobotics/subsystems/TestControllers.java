@@ -36,14 +36,14 @@ public class TestControllers {
 
     static {
         ShuffleboardTab tab = Shuffleboard.getTab("Test Controllers");
-        for (int i = 1; i <= 11; i++) {
+        for (int i = 1; i <= 13; i++) {
             SpeedController c;
             switch (i) {
                 case 1:
                 case 4:
                 case 7:
-                case 10:
                 case 11:
+                case 12:
                     c = new WPI_TalonSRX(i);
                     tab.add((Sendable) c);
                     break;

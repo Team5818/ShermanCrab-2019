@@ -116,12 +116,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        //globalComponent.getButtonConfiguration().initTest();
+        globalComponent.getButtonConfiguration().initTest();
     }
 
     @Override
     public void testPeriodic() {
-        //Scheduler.getInstance().run();
+        Scheduler.getInstance().run();
     }
 
     private void logMatchIfNeeded() {

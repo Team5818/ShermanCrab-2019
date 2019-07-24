@@ -20,19 +20,16 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.DriveTrain;
 
 @GenerateCreator
-public class DriveDistance extends Command {
+public class DriveDistance extends InstantCommand {
 
     private DriveTrain dt;
     private final double distance;
-    private double startDistance;
-    private double currentDistance;
-    private double calcDistance;
 
     public DriveDistance(@Provided DriveTrain dt, double distance) {
         this.distance = distance;
@@ -41,20 +38,8 @@ public class DriveDistance extends Command {
     }
 
     @Override
-    protected void initialize() {
-        startDistance = currentDistance = dt.getDistance();
-        calcDistance = startDistance + distance;
-        dt.addDistance(distance, distance);
-    }
-
-    @Override
     protected void execute() {
-        currentDistance = dt.getDistance();
-    }
-
-
-    @Override
-    protected boolean isFinished() {
-        return currentDistance >= calcDistance;
+        dt.getLeft().setDistance(distance);
+        dt.getRight().setDistance(distance);
     }
 }
