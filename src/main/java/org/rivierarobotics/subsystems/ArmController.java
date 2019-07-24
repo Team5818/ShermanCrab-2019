@@ -112,7 +112,6 @@ public class ArmController extends Subsystem {
     }
 
     public int getAngle() {
-        //TODO [CompBot] [Software] check if wraparound getAngle() works, remove if not to return getPulseWidthPosition()
         int angle = arm.getSensorCollection().getPulseWidthPosition();
         return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
     }
@@ -134,7 +133,7 @@ public class ArmController extends Subsystem {
 
     private void rawSetPower(double pwr) {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
-        pwr = MathUtil.limit(pwr, 0.65);
+        pwr = MathUtil.limit(pwr, 0.85);
         logger.powerChange(pwr);
         arm.set(pwr);
     }

@@ -24,8 +24,6 @@ import org.rivierarobotics.util.MathUtil;
 
 public enum HoodPosition {
     RESTING_ARM_ZERO(0, 0, false, false),
-    RESTING_ARM_ONE_HUNDRED_EIGHTY(180, 180, false, false),
-
     ROCKET_LEVEL_ONE(22, -22, true, false),
     ROCKET_LEVEL_TWO(86, -86, false, true),
     CARGO_SHIP(120, -120, false, true),
@@ -49,6 +47,6 @@ public enum HoodPosition {
     }
 
     private static int toTicks(double deg) {
-        return MathUtil.moduloPositive((int) (deg * -HoodController.ANGLE_SCALE), 4096);
+        return MathUtil.moduloPositive((int) (deg * HoodController.ANGLE_SCALE), 4096);
     }
 }

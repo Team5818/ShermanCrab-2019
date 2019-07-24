@@ -52,16 +52,6 @@ public class MathUtil {
         }
     }
 
-    public static double fitHoodRotation(double angle, double min, double max) {
-        if (angle > max) {
-            return max;
-        } else if (angle < min) {
-            return min;
-        } else {
-            return angle;
-        }
-    }
-
     public static int moduloPositive(int value, int modulo) {
         return (value % modulo) + (value < 0 ? modulo : 0);
     }

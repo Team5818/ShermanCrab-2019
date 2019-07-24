@@ -23,12 +23,10 @@ package org.rivierarobotics.subsystems;
 public enum ArmPosition {
     ZERO_DEGREES(0),
     NINETY_DEGREES(90),
-    FORTY_FIVE_DEGREES(45),
 
     ROCKET_LEVEL_ONE(47),
     ROCKET_LEVEL_TWO(22),
     CARGO_SHIP(40),
-    HUMAN_PLAYER_STATION(24),
     COLLECT(90),
 
     L2_CLIMB(118);
