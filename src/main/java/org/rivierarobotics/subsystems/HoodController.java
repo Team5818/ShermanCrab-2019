@@ -44,15 +44,15 @@ public class HoodController extends Subsystem {
     private final CANSparkMax driveSpark;
     private final WPI_TalonSRX encoderTalon;
     private final ArmController armController;
-    private PIDController pidLoop;
+    private final PIDController pidLoop;
     private final MechLogger logger;
 
-    private static final double P = 0.00025;
-    private static final double I = 0;
-    private static final double D = 0;
-    private static final double F = 0;
-    private static final double GRAVITY_CONSTANT = 0.0275;
-    private static final double MAX_PID = 0.3;
+    private final double P = 0.00025;
+    private final double I = 0;
+    private final double D = 0;
+    private final double F = 0;
+    private final double GRAVITY_CONSTANT = 0.0275;
+    private final double MAX_PID = 0.3;
     public static double ANGLE_SCALE = 4096 / 360.0;
 
     public static HoodPosition CURRENT_HOOD_POSITION;
@@ -86,7 +86,7 @@ public class HoodController extends Subsystem {
         encoderTalon.setSensorPhase(true);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
                 () -> MathUtil.moduloPositive(getAngle(), 4096)
-        ), this::setPowerPID, 0.01);
+        ), this::rawSetPower, 0.01);
 
         pidLoop.setInputRange(0, 4096);
         pidLoop.setOutputRange(-MAX_PID, MAX_PID);
@@ -140,11 +140,6 @@ public class HoodController extends Subsystem {
         GRAV_OFFSET.setDouble(gravOffset);
         REAL_ANGLE.setDouble(realAngle);
         return gravOffset;
-    }
-
-    private void setPowerPID(double pwr) {
-        pwr = MathUtil.limit(pwr, MAX_PID);
-        rawSetPower(pwr);
     }
 
     public void resetQuadratureEncoder() {

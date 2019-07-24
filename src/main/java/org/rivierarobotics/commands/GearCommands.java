@@ -38,7 +38,7 @@ public class GearCommands {
         this.fullShiftCreator = fullShiftCreator;
     }
 
-    public ShiftGear airShift(Gear gear) {
+    public ShiftGear shift(Gear gear) {
         return shiftGearCreator.create(gear);
     }
 
@@ -46,7 +46,7 @@ public class GearCommands {
         return swapGearCreator.create();
     }
 
-    public FullShift shift(Gear gear) {
+    public FullShift fullShift(Gear gear) {
         return fullShiftCreator.create(gear);
     }
 }
