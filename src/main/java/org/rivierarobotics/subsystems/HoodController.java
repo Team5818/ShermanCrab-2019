@@ -51,7 +51,7 @@ public class HoodController extends Subsystem {
     private final double I = 0;
     private final double D = 0;
     private final double F = 0;
-    private final double GRAVITY_CONSTANT = 0.0275;
+    private final double GRAVITY_CONSTANT = 0.02;
     private final double MAX_PID = 0.3;
     public static double ANGLE_SCALE = 4096 / 360.0;
 
@@ -110,7 +110,7 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        PWR.setDouble(driveSpark.get());
+        PWR.setDouble(driveSpark.getEncoder().getPosition());
         if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
             logger.clearSetpoint();

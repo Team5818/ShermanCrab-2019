@@ -124,6 +124,8 @@ public class ArmController extends Subsystem {
         if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 disablePID();
+            } else if(pwr == 0 && !pidLoop.isEnabled()) {
+                setBrake();
             }
         }
         if (!pidLoop.isEnabled()) {
@@ -140,6 +142,7 @@ public class ArmController extends Subsystem {
 
     private void stop() {
         if (pidLoop.isEnabled()) {
+            rawSetPower(0.0);
             disablePID();
         }
         setAngle(getAngle());

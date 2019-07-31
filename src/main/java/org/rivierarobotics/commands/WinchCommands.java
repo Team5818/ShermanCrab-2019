@@ -27,11 +27,15 @@ import javax.inject.Inject;
 public class WinchCommands {
     private final WinchSetPositionCreator winchSetPositionCreator;
     private final WinchAtPowerCreator winchAtPowerCreator;
+    private final WinchSafetyOverrideCreator winchSafetyOverrideCreator;
 
     @Inject
-    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator, WinchAtPowerCreator winchAtPowerCreator) {
+    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator,
+                         WinchAtPowerCreator winchAtPowerCreator,
+                         WinchSafetyOverrideCreator winchSafetyOverrideCreator) {
         this.winchSetPositionCreator = winchSetPositionCreator;
         this.winchAtPowerCreator = winchAtPowerCreator;
+        this.winchSafetyOverrideCreator = winchSafetyOverrideCreator;
     }
 
     public final WinchSetPosition set(WinchPosition pos) {
@@ -44,5 +48,9 @@ public class WinchCommands {
 
     public final WinchAtPower atPower(double pwr) {
         return winchAtPowerCreator.create(pwr);
+    }
+
+    public final WinchSafetyOverride overrideSafety() {
+        return winchSafetyOverrideCreator.create();
     }
 }

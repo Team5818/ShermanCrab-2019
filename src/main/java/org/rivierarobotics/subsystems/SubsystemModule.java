@@ -91,7 +91,7 @@ public class SubsystemModule {
 
     @Provides
     @Singleton
-    public static WinchController provideWinchController() {
-        return new WinchController(WINCH_SPARK);
+    public static WinchController provideWinchController(@Provided PistonController pistonController) {
+        return new WinchController(pistonController, WINCH_SPARK);
     }
 }

@@ -37,15 +37,18 @@ public class WinchController extends Subsystem {
     private final CANSparkMax winch;
     private final MechLogger logger;
     private final PIDController pidLoop;
+    private final PistonController pistonController;
 
-    private static final double P = 0.00025;
-    private static final double I = 0;
-    private static final double D = 0;
-    private static final double F = 0;
-    private static final double MAX_PID = 0.3;
+    private final double P = 0.00025;
+    private final double I = 0;
+    private final double D = 0;
+    private final double F = 0;
+    private final double MAX_PID = 0.3;
+    public boolean LOCK_OVERRIDE = false;
 
     @Inject
-    public WinchController(int ch) {
+    public WinchController(PistonController pistonController, int ch) {
+        this.pistonController = pistonController;
         logger = Logging.getLogger(getClass());
         winch = new CANSparkMax(ch, CANSparkMaxLowLevel.MotorType.kBrushless);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getDistance), this::rawSetPower, 0.01);
@@ -70,10 +73,13 @@ public class WinchController extends Subsystem {
         winch.set(pwr);
     }
 
-    public void setPower(double pwr) {
-        if(pwr != 0) {
+    public void atPower(double pwr) {
+        //TODO test this (makes sure winch can't activate while lock climb is active
+        if(!pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
             pidLoop.disable();
             rawSetPower(pwr);
+        } else {
+            rawSetPower(0.0);
         }
     }
 

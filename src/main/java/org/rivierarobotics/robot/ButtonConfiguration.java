@@ -153,6 +153,9 @@ public class ButtonConfiguration {
         JoystickButton hoodOffset = new JoystickButton(driverButtons, 7);
         hoodOffset.whenPressed(cmds.hood().offsetEnc());
 
+        JoystickButton overrideWinchSafety = new JoystickButton(driverButtons, 5);
+        overrideWinchSafety.whenPressed(cmds.winch().overrideSafety());
+
         //l3 climb
         JoystickButton scissorClimb = new JoystickButton(driverButtons, 10);
         scissorClimb.whenPressed(cmds.climb().scissor());
