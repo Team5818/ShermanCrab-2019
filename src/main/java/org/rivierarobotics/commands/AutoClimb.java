@@ -22,17 +22,13 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
-import org.rivierarobotics.subsystems.ArmPosition;
-import org.rivierarobotics.subsystems.HoodPosition;
-import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.WinchPosition;
+import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Inject;
 
 public class AutoClimb extends CommandGroup {
     @Inject
-    public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm,
-                     DriveCommands drive, WinchCommands winch) {
+    public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch) {
         addSequential(piston.retract(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
         addSequential(new TimedCommand(0.1));
@@ -46,5 +42,10 @@ public class AutoClimb extends CommandGroup {
         addSequential(winch.set(WinchPosition.FINAL));
         addSequential(new TimedCommand(2.0));
         addSequential(arm.setFrontPosition(ArmPosition.CLIMB_FINAL));
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return WinchController.getClimbLimitSwitch();
     }
 }

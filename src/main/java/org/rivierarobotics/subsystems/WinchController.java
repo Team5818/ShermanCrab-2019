@@ -22,6 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,19 +40,21 @@ public class WinchController extends Subsystem {
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
+    private static DigitalInput climbLimitSwitch;
 
     private final double P = 0.00025;
     private final double I = 0;
     private final double D = 0;
     private final double F = 0;
-    private final double MAX_PID = 0.3;
+    private final double MAX_PID = 1.0;
     public boolean LOCK_OVERRIDE = false;
 
     @Inject
-    public WinchController(PistonController pistonController, int ch) {
+    public WinchController(PistonController pistonController, int spark, int limit) {
         this.pistonController = pistonController;
         logger = Logging.getLogger(getClass());
-        winch = new CANSparkMax(ch, CANSparkMaxLowLevel.MotorType.kBrushless);
+        winch = new CANSparkMax(spark, CANSparkMaxLowLevel.MotorType.kBrushless);
+        climbLimitSwitch = new DigitalInput(limit);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getDistance), this::rawSetPower, 0.01);
 
         pidLoop.setOutputRange(-MAX_PID, MAX_PID);
@@ -94,6 +97,10 @@ public class WinchController extends Subsystem {
 
     public CANSparkMax getWinch() {
         return winch;
+    }
+
+    public static boolean getClimbLimitSwitch() {
+        return climbLimitSwitch.get();
     }
 
     @Override
