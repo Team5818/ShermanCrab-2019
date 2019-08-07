@@ -29,7 +29,9 @@ public enum ArmPosition {
     CARGO_SHIP(40),
     COLLECT(90),
 
-    L2_CLIMB(118);
+    CLIMB_INITIAL(82),
+    CLIMB_PUSH(106),
+    CLIMB_FINAL(55);
 
     public final double degreesFront;
     public final double degreesBack;

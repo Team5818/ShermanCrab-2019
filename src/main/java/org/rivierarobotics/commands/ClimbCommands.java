@@ -24,14 +24,14 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class ClimbCommands {
-    private final Provider<ScissorClimb> scissorClimbProvider;
+    private final Provider<AutoClimb> autoClimbProvider;
 
     @Inject
-    public ClimbCommands(Provider<ScissorClimb> scissorClimbProvider) {
-        this.scissorClimbProvider = scissorClimbProvider;
+    public ClimbCommands(Provider<AutoClimb> autoClimbProvider) {
+        this.autoClimbProvider = autoClimbProvider;
     }
 
-    public final ScissorClimb scissor() {
-        return scissorClimbProvider.get();
+    public final AutoClimb auto() {
+        return autoClimbProvider.get();
     }
 }

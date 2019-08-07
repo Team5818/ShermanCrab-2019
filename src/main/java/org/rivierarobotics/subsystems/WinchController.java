@@ -24,6 +24,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MathUtil;
@@ -57,6 +58,7 @@ public class WinchController extends Subsystem {
         winch.setInverted(true);
         winch.setIdleMode(CANSparkMax.IdleMode.kBrake);
         logger.conditionChange("neutral_mode", "brake");
+        resetEncoder();
     }
 
     public int getDistance() {
@@ -69,18 +71,29 @@ public class WinchController extends Subsystem {
     }
 
     public void rawSetPower(double pwr) {
+        //TODO test rotation PID functionality and then replace with widget tab
+        SmartDashboard.putNumber("winch_rots", getDistance());
         logger.powerChange(pwr);
         winch.set(pwr);
     }
 
     public void atPower(double pwr) {
-        //TODO test this (makes sure winch can't activate while lock climb is active
-        if(!pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
+        if(pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
             pidLoop.disable();
             rawSetPower(pwr);
-        } else {
-            rawSetPower(0.0);
         }
+    }
+
+    public void resetEncoder() {
+        winch.getEncoder().setPosition(0.0);
+    }
+
+    public PIDController getPIDLoop() {
+        return pidLoop;
+    }
+
+    public CANSparkMax getWinch() {
+        return winch;
     }
 
     @Override

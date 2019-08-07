@@ -23,20 +23,19 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.subsystems.WinchController;
 
 @GenerateCreator
-public class HoodOffsetEnc extends InstantCommand {
-    private final HoodController hoodController;
+public class WinchEncoderReset extends InstantCommand {
+    private final WinchController winchController;
 
-    public HoodOffsetEnc(@Provided HoodController hoodController) {
-        this.hoodController = hoodController;
-        requires(hoodController);
+    public WinchEncoderReset(@Provided WinchController winchController) {
+        this.winchController = winchController;
+        requires(winchController);
     }
 
     @Override
     protected void execute() {
-        hoodController.getPIDLoop().disable();
-        hoodController.resetQuadratureEncoder();
+        winchController.resetEncoder();
     }
 }

@@ -28,7 +28,7 @@ public enum HoodPosition {
     ROCKET_LEVEL_TWO(86, -86, false, true),
     CARGO_SHIP(120, -120, false, true),
     COLLECT(6, -6, false, true),
-    CLIMB_NINETY(130, -130, false, false);
+    CLIMB(67, -67, false, false);
 
     public final double degreesFront;
     public final double degreesBack;

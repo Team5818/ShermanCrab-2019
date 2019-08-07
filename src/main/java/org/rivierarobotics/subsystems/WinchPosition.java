@@ -21,11 +21,11 @@
 package org.rivierarobotics.subsystems;
 
 public enum WinchPosition {
-    OUT(5449), IN(0);
+    HELPER_RETRACT(70), FINAL(432);
 
-    public final int ticks;
+    public final int rotations;
 
-    WinchPosition(int ticks) {
-        this.ticks = ticks;
+    WinchPosition(int rotations) {
+        this.rotations = rotations;
     }
 }

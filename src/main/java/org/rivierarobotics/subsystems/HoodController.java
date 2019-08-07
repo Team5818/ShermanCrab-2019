@@ -110,7 +110,6 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        PWR.setDouble(driveSpark.getEncoder().getPosition());
         if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
             logger.clearSetpoint();
@@ -129,6 +128,7 @@ public class HoodController extends Subsystem {
     }
 
     private void rawSetPower(double pwr) {
+        PWR.setDouble(getDegrees());
         logger.powerChange(pwr);
         driveSpark.set(pwr);
     }
@@ -148,6 +148,10 @@ public class HoodController extends Subsystem {
 
     public PIDController getPIDLoop() {
         return pidLoop;
+    }
+
+    public CANSparkMax getDriveSpark() {
+        return driveSpark;
     }
 
     @Override
