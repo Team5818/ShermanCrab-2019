@@ -26,10 +26,10 @@ import javax.inject.Inject;
 
 public class HoodCommands {
     private final HoodSetPositionCreator hoodSetPositionCreator;
-    private final HoodOffsetEncCreator hoodEncoderResetCreator;
+    private final HoodEncoderResetCreator hoodEncoderResetCreator;
 
     @Inject
-    public HoodCommands(HoodSetPositionCreator hoodSetPositionCreator, HoodOffsetEncCreator hoodEncoderResetCreator) {
+    public HoodCommands(HoodSetPositionCreator hoodSetPositionCreator, HoodEncoderResetCreator hoodEncoderResetCreator) {
         this.hoodSetPositionCreator = hoodSetPositionCreator;
         this.hoodEncoderResetCreator = hoodEncoderResetCreator;
     }
