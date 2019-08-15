@@ -21,7 +21,8 @@
 package org.rivierarobotics.subsystems;
 
 public enum WinchPosition {
-    HELPER_RETRACT(70), FINAL(432);
+    //TODO find a better way to goto a position - this is not accurate as it measures motor rotations
+    HELPER_RETRACT(70), FINAL(375);
 
     public final int rotations;
 

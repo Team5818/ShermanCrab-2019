@@ -27,9 +27,12 @@ import org.rivierarobotics.subsystems.*;
 import javax.inject.Inject;
 
 public class AutoClimb extends CommandGroup {
+    private static WinchCommands winch;
+
     @Inject
     public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch) {
-        addSequential(piston.retract(Piston.LOCK_CLIMB));
+        this.winch = winch;
+        addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
         addSequential(new TimedCommand(0.1));
         addSequential(arm.setFrontPosition(ArmPosition.CLIMB_INITIAL));
@@ -39,13 +42,21 @@ public class AutoClimb extends CommandGroup {
         addSequential(arm.setFrontPosition(ArmPosition.CLIMB_PUSH));
         addSequential(new TimedCommand(0.5));
         addSequential(piston.retract(Piston.HELPER_CLIMB));
-        addSequential(winch.set(WinchPosition.FINAL));
+        addSequential(winch.atPower(1.0));
         addSequential(new TimedCommand(2.0));
-        addSequential(arm.setFrontPosition(ArmPosition.CLIMB_FINAL));
+        addSequential(hood.setFrontPosition(HoodPosition.RESTING_ARM_ZERO));
+        addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
+    }
+
+    @Override
+    protected void end() {
+        //TODO test if this stops the winch after switch is activated
+        winch.atPower(0.0);
     }
 
     @Override
     protected boolean isFinished() {
+        //TODO test if this climb limit switch works to stop the command
         return WinchController.getClimbLimitSwitch();
     }
 }

@@ -28,9 +28,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.WinchController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +106,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        globalComponent.getWinchController().getPIDLoop().disable();
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getArmController().setBrake();
         globalComponent.getDriveTrain().setBrake();
@@ -145,5 +148,6 @@ public class Robot extends TimedRobot {
         hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
         armEncoder.setDouble(globalComponent.getArmController().getAngle());
         armOut.setDouble(globalComponent.getArmController().getDegrees());
+        SmartDashboard.putBoolean("limit", WinchController.getClimbLimitSwitch());
     }
 }

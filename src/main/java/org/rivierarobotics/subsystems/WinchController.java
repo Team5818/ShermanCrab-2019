@@ -42,7 +42,7 @@ public class WinchController extends Subsystem {
     private final PistonController pistonController;
     private static DigitalInput climbLimitSwitch;
 
-    private final double P = 0.00025;
+    private final double P = 0.0025;
     private final double I = 0;
     private final double D = 0;
     private final double F = 0;

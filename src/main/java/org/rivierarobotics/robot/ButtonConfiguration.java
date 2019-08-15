@@ -179,6 +179,9 @@ public class ButtonConfiguration {
 
         JoystickButton lockPistonSwap = new JoystickButton(driverButtons, 7);
         lockPistonSwap.whenPressed(cmds.piston().swap(Piston.LOCK_CLIMB));
+
+        JoystickButton temp = new JoystickButton(driverButtons, 1);
+        temp.whenPressed(cmds.winch().set(WinchPosition.HELPER_RETRACT));
     }
 
     public void initTest() {
