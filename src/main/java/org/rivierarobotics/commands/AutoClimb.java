@@ -27,11 +27,21 @@ import org.rivierarobotics.subsystems.*;
 import javax.inject.Inject;
 
 public class AutoClimb extends CommandGroup {
-    private static WinchCommands winch;
+    private final PistonCommands piston;
+    private final HoodCommands hood;
+    private final ArmCommands arm;
+    private final WinchCommands winch;
 
     @Inject
     public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch) {
+        this.piston = piston;
+        this.hood = hood;
+        this.arm = arm;
         this.winch = winch;
+    }
+
+    @Override
+    protected void initialize() {
         addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
         addSequential(new TimedCommand(0.1));
@@ -51,7 +61,7 @@ public class AutoClimb extends CommandGroup {
     @Override
     protected void end() {
         //TODO test if this stops the winch after switch is activated
-        winch.atPower(0.0);
+        winch.atPower(0.0).execute();
     }
 
     @Override
