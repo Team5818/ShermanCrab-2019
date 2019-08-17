@@ -22,26 +22,18 @@ package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
+import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.*;
 
 import javax.inject.Inject;
 
 public class AutoClimb extends CommandGroup {
-    private final PistonCommands piston;
-    private final HoodCommands hood;
-    private final ArmCommands arm;
-    private final WinchCommands winch;
+    private final WinchController winchController;
 
     @Inject
-    public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch) {
-        this.piston = piston;
-        this.hood = hood;
-        this.arm = arm;
-        this.winch = winch;
-    }
-
-    @Override
-    protected void initialize() {
+    public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch, @Provided WinchController winchController) {
+        requires(winchController);
+        this.winchController = winchController;
         addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
         addSequential(new TimedCommand(0.1));
@@ -60,13 +52,21 @@ public class AutoClimb extends CommandGroup {
 
     @Override
     protected void end() {
-        //TODO test if this stops the winch after switch is activated
-        winch.atPower(0.0).execute();
+        long waitTime = System.currentTimeMillis() + 500;
+        while(System.currentTimeMillis() <= waitTime) {
+            System.out.println("waiting...");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+
+            }
+        }
+        cancel();
+        winchController.atPower(0.0);
     }
 
     @Override
     protected boolean isFinished() {
-        //TODO test if this climb limit switch works to stop the command
-        return WinchController.getClimbLimitSwitch();
+        return !WinchController.getClimbLimitSwitch();
     }
 }

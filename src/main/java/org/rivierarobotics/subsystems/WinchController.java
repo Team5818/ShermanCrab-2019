@@ -36,7 +36,7 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WinchController extends Subsystem {
-    private final CANSparkMax winch;
+    private CANSparkMax winch;
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
