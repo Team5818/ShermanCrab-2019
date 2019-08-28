@@ -32,10 +32,7 @@ public enum ArmPosition {
     CLIMB_INITIAL(82),
     CLIMB_PUSH(106);
 
-    public final double degreesFront;
-    public final double degreesBack;
-    public final double ticksFront;
-    public final double ticksBack;
+    public final double degreesFront, degreesBack, ticksFront, ticksBack;
     public final static double TICKS_AT_ZERO = 2835;
     private final static double TICKS_AT_NINETY = 3835;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;

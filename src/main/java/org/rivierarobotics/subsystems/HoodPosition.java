@@ -23,39 +23,34 @@ package org.rivierarobotics.subsystems;
 import org.rivierarobotics.util.MathUtil;
 
 public enum HoodPosition {
-    RESTING_ARM_ZERO(0, Invert.NEITHER),
-    ROCKET_LEVEL_ONE(22, Invert.FRONT_ONLY),
-    ROCKET_LEVEL_TWO(86, Invert.BACK_ONLY),
-    CARGO_SHIP(120, Invert.BACK_ONLY),
-    COLLECT(6, Invert.BACK_ONLY),
-    CLIMB(67, Invert.NEITHER);
+    RESTING_ARM_ZERO(0, TentacleInvert.NEITHER),
+    ROCKET_LEVEL_ONE(22, TentacleInvert.FRONT_ONLY),
+    ROCKET_LEVEL_TWO(86, TentacleInvert.BACK_ONLY),
+    CARGO_SHIP(120, TentacleInvert.BACK_ONLY),
+    COLLECT(6, TentacleInvert.BACK_ONLY),
+    CLIMB(67, TentacleInvert.NEITHER);
 
-    public final double degreesFront;
-    public final double degreesBack;
-    public final double ticksFront;
-    public final double ticksBack;
-    public final boolean tentacleInvertFront;
-    public final boolean tentacleInvertBack;
+    public final double degreesFront, degreesBack, ticksFront, ticksBack;
+    public final boolean tentacleInvertFront, tentacleInvertBack;
 
-    HoodPosition(double degrees, Invert invert) {
-        this.tentacleInvertFront = invert.front;
-        this.tentacleInvertBack = invert.back;
+    HoodPosition(double degrees, TentacleInvert tentacleInvert) {
+        this.tentacleInvertFront = tentacleInvert.front;
+        this.tentacleInvertBack = tentacleInvert.back;
         this.degreesFront = degrees;
         this.degreesBack = -degrees;
         this.ticksFront = MathUtil.toTicks(degreesFront);
         this.ticksBack = MathUtil.toTicks(degreesBack);
     }
 
-    private enum Invert {
+    private enum TentacleInvert {
         FRONT_AND_BACK(true, true),
         FRONT_ONLY(true, false),
         BACK_ONLY(false, true),
         NEITHER(false, false);
 
-        public final boolean front;
-        public final boolean back;
+        public final boolean front, back;
 
-        Invert(boolean front, boolean back) {
+        TentacleInvert(boolean front, boolean back) {
             this.front = front;
             this.back = back;
         }
