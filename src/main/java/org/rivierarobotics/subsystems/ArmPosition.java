@@ -30,8 +30,7 @@ public enum ArmPosition {
     COLLECT(90),
 
     CLIMB_INITIAL(82),
-    CLIMB_PUSH(106),
-    CLIMB_FINAL(85);
+    CLIMB_PUSH(106);
 
     public final double degreesFront;
     public final double degreesBack;

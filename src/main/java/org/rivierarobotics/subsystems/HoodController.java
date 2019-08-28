@@ -53,7 +53,6 @@ public class HoodController extends Subsystem {
     private final double F = 0;
     private final double GRAVITY_CONSTANT = 0.02;
     private final double MAX_PID = 0.3;
-    public static double ANGLE_SCALE = 4096 / 360.0;
 
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
@@ -106,7 +105,7 @@ public class HoodController extends Subsystem {
     }
 
     public double getDegrees() {
-        return getAngle() / ANGLE_SCALE % 360;
+        return getAngle() / MathUtil.ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {

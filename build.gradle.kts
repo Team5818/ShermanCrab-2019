@@ -5,6 +5,7 @@ plugins {
     id("net.ltgt.apt-idea") version "0.21"
     id("net.ltgt.apt-eclipse") version "0.21"
 }
+
 gradleRioRedux {
     robotClass = "org.rivierarobotics.robot.Robot"
     teamNumber = 5818
