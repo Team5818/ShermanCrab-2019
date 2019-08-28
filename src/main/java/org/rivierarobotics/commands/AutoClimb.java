@@ -29,6 +29,7 @@ import javax.inject.Inject;
 
 public class AutoClimb extends CommandGroup {
     private final WinchController winchController;
+    private boolean isFinished = false;
 
     @Inject
     public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch, @Provided WinchController winchController) {
@@ -52,6 +53,7 @@ public class AutoClimb extends CommandGroup {
 
     @Override
     protected void end() {
+        //TODO find another way to wait - this is very resource consuming
         long waitTime = System.currentTimeMillis() + 500;
         while(System.currentTimeMillis() <= waitTime) {
             System.out.println("waiting...");
@@ -67,6 +69,6 @@ public class AutoClimb extends CommandGroup {
 
     @Override
     protected boolean isFinished() {
-        return !WinchController.getClimbLimitSwitch();
+        return isFinished;
     }
 }

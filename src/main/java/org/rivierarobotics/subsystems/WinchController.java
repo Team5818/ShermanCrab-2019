@@ -46,7 +46,6 @@ public class WinchController extends Subsystem {
     private final double I = 0;
     private final double D = 0;
     private final double F = 0;
-    private final double MAX_PID = 1.0;
     public boolean LOCK_OVERRIDE = false;
 
     @Inject
@@ -57,7 +56,6 @@ public class WinchController extends Subsystem {
         climbLimitSwitch = new DigitalInput(limit);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getDistance), this::rawSetPower, 0.01);
 
-        pidLoop.setOutputRange(-MAX_PID, MAX_PID);
         winch.setInverted(true);
         winch.setIdleMode(CANSparkMax.IdleMode.kBrake);
         logger.conditionChange("neutral_mode", "brake");
@@ -69,13 +67,13 @@ public class WinchController extends Subsystem {
     }
 
     public void setPosition(double position) {
+        logger.setpointChange(position);
         pidLoop.setSetpoint(position);
         pidLoop.enable();
+        logger.conditionChange("pid_loop", "enabled");
     }
 
     public void rawSetPower(double pwr) {
-        //TODO test rotation PID functionality and then replace with widget tab
-        SmartDashboard.putNumber("winch_rots", getDistance());
         logger.powerChange(pwr);
         winch.set(pwr);
     }
@@ -83,6 +81,8 @@ public class WinchController extends Subsystem {
     public void atPower(double pwr) {
         if(pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
             pidLoop.disable();
+            logger.clearSetpoint();
+            logger.conditionChange("pid_loop", "disabled");
             rawSetPower(pwr);
         }
     }
