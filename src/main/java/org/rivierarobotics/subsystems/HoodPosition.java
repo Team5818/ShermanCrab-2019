@@ -22,37 +22,24 @@ package org.rivierarobotics.subsystems;
 
 import org.rivierarobotics.util.MathUtil;
 
+import static org.rivierarobotics.subsystems.HoodTentacleInvert.*;
+
 public enum HoodPosition {
-    RESTING_ARM_ZERO(0, TentacleInvert.NEITHER),
-    ROCKET_LEVEL_ONE(22, TentacleInvert.FRONT_ONLY),
-    ROCKET_LEVEL_TWO(86, TentacleInvert.BACK_ONLY),
-    CARGO_SHIP(120, TentacleInvert.BACK_ONLY),
-    COLLECT(6, TentacleInvert.BACK_ONLY),
-    CLIMB(67, TentacleInvert.NEITHER);
+    RESTING_ARM_ZERO(0, NEITHER),
+    ROCKET_LEVEL_ONE(22, FRONT_ONLY),
+    ROCKET_LEVEL_TWO(86, BACK_ONLY),
+    CARGO_SHIP(120, BACK_ONLY),
+    COLLECT(6, BACK_ONLY),
+    CLIMB(67, NEITHER);
 
     public final double degreesFront, degreesBack, ticksFront, ticksBack;
-    public final boolean tentacleInvertFront, tentacleInvertBack;
+    public final HoodTentacleInvert tentacleInvert;
 
-    HoodPosition(double degrees, TentacleInvert tentacleInvert) {
-        this.tentacleInvertFront = tentacleInvert.front;
-        this.tentacleInvertBack = tentacleInvert.back;
+    HoodPosition(double degrees, HoodTentacleInvert tentacleInvert) {
+        this.tentacleInvert = tentacleInvert;
         this.degreesFront = degrees;
         this.degreesBack = -degrees;
         this.ticksFront = MathUtil.toTicks(degreesFront);
         this.ticksBack = MathUtil.toTicks(degreesBack);
-    }
-
-    private enum TentacleInvert {
-        FRONT_AND_BACK(true, true),
-        FRONT_ONLY(true, false),
-        BACK_ONLY(false, true),
-        NEITHER(false, false);
-
-        public final boolean front, back;
-
-        TentacleInvert(boolean front, boolean back) {
-            this.front = front;
-            this.back = back;
-        }
     }
 }
