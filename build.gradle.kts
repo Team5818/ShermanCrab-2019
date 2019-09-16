@@ -1,7 +1,7 @@
 import com.techshroom.inciseblue.commonLib
 
 plugins {
-    id("org.rivierarobotics.gradlerioredux") version "0.5.0"
+    id("org.rivierarobotics.gradlerioredux") version "0.6.0"
     id("net.ltgt.apt-idea") version "0.21"
     id("net.ltgt.apt-eclipse") version "0.21"
 }
@@ -9,8 +9,6 @@ plugins {
 gradleRioRedux {
     robotClass = "org.rivierarobotics.robot.Robot"
     teamNumber = 5818
-    addCtre = true
-    extraJsonDependenciesProperty.add("https://www.revrobotics.com/content/sw/max/sdk/REVRobotics.json")
 }
 
 dependencies {
