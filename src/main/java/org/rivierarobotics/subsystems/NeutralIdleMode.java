@@ -21,7 +21,9 @@
 package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.SpeedController;
 
 public enum NeutralIdleMode {
     BRAKE("brake", CANSparkMax.IdleMode.kBrake, NeutralMode.Brake),
@@ -35,5 +37,15 @@ public enum NeutralIdleMode {
         this.name = name;
         this.spark = spark;
         this.talon = talon;
+    }
+
+    public void setTo(SpeedController... controllers) {
+        for(SpeedController controller : controllers) {
+            if(controller.getClass().isAssignableFrom(CANSparkMax.class)) {
+                ((CANSparkMax)(controller)).setIdleMode(this.spark);
+            } else if(controller.getClass().isAssignableFrom(WPI_TalonSRX.class)) {
+                ((WPI_TalonSRX)(controller)).setNeutralMode(this.talon);
+            }
+        }
     }
 }

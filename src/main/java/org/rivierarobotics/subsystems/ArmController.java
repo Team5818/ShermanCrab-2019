@@ -76,7 +76,7 @@ public class ArmController extends Subsystem {
     public void setAngle(double angle) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
-            //TODO is this logger set (and the one below it) redundant?
+            //TODO is this logger setTo (and the one below it) redundant?
             logger.conditionChange("deploy_pistons", "out");
         } else {
             logger.conditionChange("deploy_pistons", "in");
@@ -144,10 +144,8 @@ public class ArmController extends Subsystem {
     }
 
     public void setMode(NeutralIdleMode mode) {
+        mode.setTo(arm, sparkSlaveOne, sparkSlaveTwo);
         logger.conditionChange("neutral_mode", mode.name);
-        arm.setNeutralMode(mode.talon);
-        sparkSlaveOne.setIdleMode(mode.spark);
-        sparkSlaveTwo.setIdleMode(mode.spark);
     }
 
     public PIDController getPIDLoop() {
