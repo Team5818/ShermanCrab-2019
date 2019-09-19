@@ -22,7 +22,6 @@ package org.rivierarobotics.util;
 
 public class MathUtil {
     private static final double DEADBAND = 0.1;
-    public static final double ANGLE_SCALE = 4096/360;
 
     public static double fitDeadband(double val) {
         if (!(Math.abs(val) < DEADBAND)) {
@@ -55,9 +54,5 @@ public class MathUtil {
 
     public static int moduloPositive(int value, int modulo) {
         return (value % modulo) + (value < 0 ? modulo : 0);
-    }
-
-    public static int toTicks(double deg) {
-        return MathUtil.moduloPositive((int) (deg * MathUtil.ANGLE_SCALE), 4096);
     }
 }

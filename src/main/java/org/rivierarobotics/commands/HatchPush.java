@@ -27,7 +27,6 @@ import org.rivierarobotics.subsystems.Piston;
 import javax.inject.Inject;
 
 public class HatchPush extends CommandGroup {
-
     @Inject
     public HatchPush(PistonCommands piston) {
         addSequential(piston.extend(Piston.PUSH));

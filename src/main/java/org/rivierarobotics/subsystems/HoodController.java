@@ -40,30 +40,10 @@ import javax.inject.Singleton;
 
 @Singleton
 public class HoodController extends Subsystem {
-    private Provider<HoodControl> command;
-    private final CANSparkMax driveSpark;
-    private final WPI_TalonSRX encoderTalon;
-    private final ArmController armController;
-    private final PIDController pidLoop;
-    private final MechLogger logger;
-
-    private final double P = 0.00025;
-    private final double I = 0;
-    private final double D = 0;
-    private final double F = 0;
-    private final double GRAVITY_CONSTANT = 0.02;
-    private final double MAX_PID = 0.3;
-
+    public static final double ANGLE_SCALE = 4096 / 360;
+    private static final NetworkTableEntry SETPOINT_ANGLE, PWR, GRAV_OFFSET, REAL_ANGLE;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
-    private static final NetworkTableEntry SETPOINT_ANGLE;
-    private static final NetworkTableEntry PWR;
-    private static final NetworkTableEntry GRAV_OFFSET;
-    private static final NetworkTableEntry REAL_ANGLE;
-
-    private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Hood Controller").add(name, def);
-    }
 
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
@@ -71,6 +51,17 @@ public class HoodController extends Subsystem {
         GRAV_OFFSET = ezWidget("Gravity Offset", 0).getEntry();
         REAL_ANGLE = ezWidget("Real Angle", 0).getEntry();
     }
+
+    private final CANSparkMax driveSpark;
+    private final WPI_TalonSRX encoderTalon;
+    private final ArmController armController;
+    private final PIDController pidLoop;
+    private final MechLogger logger;
+    private final double P = 0.00025, I = 0, D = 0, F = 0;
+    private final double GRAVITY_CONSTANT = 0.02;
+    private final double MAX_PID = 0.3;
+    private final double MAX_JS = 0.5;
+    private Provider<HoodControl> command;
 
     @Inject
     public HoodController(ArmController armController, Provider<HoodControl> command, int drive, int encoder) {
@@ -92,6 +83,14 @@ public class HoodController extends Subsystem {
         pidLoop.setContinuous();
     }
 
+    private static SimpleWidget ezWidget(String name, Object def) {
+        return Shuffleboard.getTab("Hood Controller").add(name, def);
+    }
+
+    public int getAngle() {
+        return encoderTalon.getSensorCollection().getQuadraturePosition();
+    }
+
     public void setAngle(double angle) {
         pidLoop.setSetpoint(angle);
         logger.setpointChange(angle);
@@ -100,12 +99,8 @@ public class HoodController extends Subsystem {
         logger.conditionChange("pid_loop", "enabled");
     }
 
-    public int getAngle() {
-        return encoderTalon.getSensorCollection().getQuadraturePosition();
-    }
-
     public double getDegrees() {
-        return getAngle() / MathUtil.ANGLE_SCALE % 360;
+        return getAngle() / ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {
@@ -122,7 +117,7 @@ public class HoodController extends Subsystem {
 
         if (!pidLoop.isEnabled()) {
             pwr += getGravOffset();
-            rawSetPower(MathUtil.limit(pwr, 0.5));
+            rawSetPower(MathUtil.limit(pwr, MAX_JS));
         }
     }
 
@@ -151,6 +146,10 @@ public class HoodController extends Subsystem {
 
     public CANSparkMax getDriveSpark() {
         return driveSpark;
+    }
+
+    public WPI_TalonSRX getEncoderTalon() {
+        return encoderTalon;
     }
 
     @Override

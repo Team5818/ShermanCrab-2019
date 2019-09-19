@@ -27,8 +27,8 @@ import org.rivierarobotics.subsystems.ArmController;
 
 @GenerateCreator
 public class ArmSelectSide extends InstantCommand {
-    private ArmController arm;
-    private boolean front;
+    private final ArmController arm;
+    private final boolean front;
 
     public ArmSelectSide(@Provided ArmController arm, boolean front) {
         this.arm = arm;
@@ -38,6 +38,6 @@ public class ArmSelectSide extends InstantCommand {
 
     @Override
     protected void execute() {
-        arm.front = this.front;
+        arm.FRONT = this.front;
     }
 }

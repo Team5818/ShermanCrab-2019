@@ -48,6 +48,7 @@ public class SubsystemModule {
     private static final int HOOD_ENCODER_TALON = 11;
     private static final int TENTACLE_TALON = 12;
     private static final int WINCH_SPARK = 13;
+
     private static final int CLIMB_LIMIT_SWITCH = 0;
 
     private static final int SHIFT_SOLENOID = 0;

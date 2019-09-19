@@ -27,9 +27,9 @@ import org.rivierarobotics.subsystems.DriveTrain;
 
 @GenerateCreator
 public class DriveForward extends Command {
+    private final DriveTrain dt;
     private final double power;
     private final double distance;
-    private final DriveTrain dt;
     private double startDistance;
     private double currentDistance;
 
@@ -42,13 +42,18 @@ public class DriveForward extends Command {
 
     @Override
     protected void initialize() {
-        startDistance = currentDistance = dt.getDistance();
+        startDistance = currentDistance = dt.getAverageDistance();
     }
 
     @Override
     protected void execute() {
         dt.setPower(power, power);
-        currentDistance = dt.getDistance();
+        currentDistance = dt.getAverageDistance();
+    }
+
+    @Override
+    protected void end() {
+        dt.setPower(0.0, 0.0);
     }
 
     @Override

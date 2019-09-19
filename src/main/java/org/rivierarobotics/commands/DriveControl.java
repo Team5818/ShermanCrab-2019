@@ -29,9 +29,9 @@ import org.rivierarobotics.util.MathUtil;
 import javax.inject.Inject;
 
 public class DriveControl extends Command {
-    private DriveTrain driveTrain;
-    private Joystick throttle;
-    private Joystick turning;
+    private final DriveTrain driveTrain;
+    private final Joystick throttle;
+    private final Joystick turning;
 
     @Inject
     public DriveControl(DriveTrain dt, @Input(Input.Position.DRIVER_LEFT) Joystick left,
@@ -44,9 +44,7 @@ public class DriveControl extends Command {
 
     @Override
     protected void execute() {
-        double y = -throttle.getY();
-        double x = turning.getX();
-        setArcade(MathUtil.fitDeadband(x), MathUtil.fitDeadband(y));
+        setArcade(MathUtil.fitDeadband(turning.getX()), MathUtil.fitDeadband(-throttle.getY()));
     }
 
     public void setArcade(double rotate, double power) {

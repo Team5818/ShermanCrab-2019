@@ -56,13 +56,8 @@ public class DriveTrain extends Subsystem {
         return right;
     }
 
-    public double getDistance() {
+    public double getAverageDistance() {
         return (left.getDistance() + right.getDistance()) / 2;
-    }
-
-    public void setBrake() {
-        left.setBrake();
-        right.setBrake();
     }
 
     @Override

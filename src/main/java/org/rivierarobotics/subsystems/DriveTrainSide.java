@@ -31,16 +31,12 @@ import org.rivierarobotics.util.MechLogger;
 
 public class DriveTrainSide {
     private final MechLogger logger;
+    private final double INCHES_TO_TICKS = 0;
+    private final double P = 0, I = 0, D = 0, F = 0;
     private WPI_TalonSRX talonMaster;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
     private PIDController pidLoop;
-
-    private final double INCHES_TO_TICKS = 0;
-    private final double P = 0;
-    private final double I = 0;
-    private final double D = 0;
-    private final double F = 0;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
         this.logger = Logging.getLogger(getClass(), invert ? "left" : "right");
@@ -58,14 +54,15 @@ public class DriveTrainSide {
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower);
+
+        logger.conditionChange("neutral_mode", "brake");
+        talonMaster.setNeutralMode(NeutralMode.Brake);
+        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public double getDistance() {
         return getTicks() / INCHES_TO_TICKS;
-    }
-
-    public int getTicks() {
-        return talonMaster.getSensorCollection().getQuadraturePosition();
     }
 
     public void setDistance(double inches) {
@@ -75,6 +72,10 @@ public class DriveTrainSide {
         pidLoop.setSetpoint(newSetpoint);
         logger.conditionChange("pid_loop", "enabled");
         pidLoop.enable();
+    }
+
+    public int getTicks() {
+        return talonMaster.getSensorCollection().getQuadraturePosition();
     }
 
     public void setPower(double pwr) {
@@ -92,13 +93,6 @@ public class DriveTrainSide {
     private void rawSetPower(double pwr) {
         logger.powerChange(pwr);
         talonMaster.set(pwr);
-    }
-
-    public void setBrake() {
-        logger.conditionChange("neutral_mode", "brake");
-        talonMaster.setNeutralMode(NeutralMode.Brake);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setMaxCurrent(int maxCurrent) {

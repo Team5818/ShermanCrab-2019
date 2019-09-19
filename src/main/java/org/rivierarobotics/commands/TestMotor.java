@@ -33,22 +33,8 @@ import java.util.function.DoubleSupplier;
 
 @GenerateCreator
 public class TestMotor extends Command {
-    @Singleton
-    public static class TMSystem extends Subsystem {
-        @Inject
-        public TMSystem() {
-
-        }
-
-        @Override
-        protected void initDefaultCommand() {
-
-        }
-    }
-
     private final DoubleSupplier stick;
     private final DoubleConsumer out;
-
     public TestMotor(@Provided TMSystem tmSystem, DoubleSupplier stick, DoubleConsumer out) {
         requires(tmSystem);
         this.stick = stick;
@@ -68,5 +54,18 @@ public class TestMotor extends Command {
     @Override
     protected boolean isFinished() {
         return false;
+    }
+
+    @Singleton
+    public static class TMSystem extends Subsystem {
+        @Inject
+        public TMSystem() {
+
+        }
+
+        @Override
+        protected void initDefaultCommand() {
+
+        }
     }
 }

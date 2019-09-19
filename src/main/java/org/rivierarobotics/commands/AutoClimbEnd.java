@@ -20,29 +20,25 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.ArmController;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.WinchController;
 
-@GenerateCreator
-public class ArmSetPower extends Command {
-    private final double pwr;
-    private final ArmController arm;
+public class AutoClimbEnd extends TimedCommand {
+    public final WinchController winchController;
 
-    public ArmSetPower(@Provided ArmController arm, double pwr) {
-        this.pwr = pwr;
-        this.arm = arm;
-        requires(arm);
+    public AutoClimbEnd(WinchController winchController) {
+        super(0.5);
+        this.winchController = winchController;
+        requires(winchController);
     }
 
     @Override
     protected void execute() {
-        arm.setPower(pwr);
+        winchController.atPower(1.0);
     }
 
     @Override
-    protected boolean isFinished() {
-        return false;
+    protected void end() {
+        winchController.atPower(0.0);
     }
 }

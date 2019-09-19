@@ -20,14 +20,11 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
@@ -40,42 +37,17 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ArmController extends Subsystem {
-    private Provider<ArmControl> command;
-    private WPI_TalonSRX arm;
-    private CANSparkMax sparkSlaveOne;
-    private CANSparkMax sparkSlaveTwo;
-
+    private final WPI_TalonSRX arm;
+    private final CANSparkMax sparkSlaveOne;
+    private final CANSparkMax sparkSlaveTwo;
     private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
-
-    public boolean front = true;
-
-    private static final double P;
-    private static final double I;
-    private static final double D;
-    private static final double F;
-    private static final double GRAVITY_CONSTANT = -0.045;
-    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
-    private PIDController pidLoop;
-
-
-    private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Arm Controller").addPersistent(name, def);
-    }
-
-    static {
-        P = ezWidget("P", 0.0005).getEntry().getDouble(0.0005);
-        System.err.println("P: " + P);
-
-        I = ezWidget("I", 0).getEntry().getDouble(0);
-        System.err.println("I: " + I);
-
-        D = ezWidget("D", 0.0).getEntry().getDouble(0);
-        System.err.println("D: " + D);
-
-        F = ezWidget("F", 0.0).getEntry().getDouble(0);
-        System.err.println("F: " + F);
-    }
+    private final double P = 0.005, I = 0.0, D = 0.0, F = 0.0;
+    private final double GRAVITY_CONSTANT = -0.045;
+    private final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
+    private final PIDController pidLoop;
+    public boolean FRONT = true;
+    private Provider<ArmControl> command;
 
     @Inject
     public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
@@ -88,7 +60,7 @@ public class ArmController extends Subsystem {
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
-        setCoast();
+        setMode(NeutralIdleMode.COAST);
 
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -96,36 +68,38 @@ public class ArmController extends Subsystem {
         this.command = command;
     }
 
+    public int getAngle() {
+        int angle = arm.getSensorCollection().getPulseWidthPosition();
+        return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
+    }
+
     public void setAngle(double angle) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
+            //TODO is this logger set (and the one below it) redundant?
             logger.conditionChange("deploy_pistons", "out");
         } else {
             logger.conditionChange("deploy_pistons", "in");
         }
 
-        setBrake();
+        setMode(NeutralIdleMode.BRAKE);
         pidLoop.setSetpoint(angle);
         logger.setpointChange(angle);
         pidLoop.enable();
         logger.conditionChange("pid_loop", "enabled");
     }
 
-    public int getAngle() {
-        int angle = arm.getSensorCollection().getPulseWidthPosition();
-        return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
-    }
-
     public double getDegrees() {
         return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
     }
 
+    //TODO honestly everything from here to the end of safety() is a mess, but I'm hesitant to change it as it might break something
     public void setPower(double pwr) {
         if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {
                 disablePID();
-            } else if(pwr == 0 && !pidLoop.isEnabled()) {
-                setBrake();
+            } else if (pwr == 0 && !pidLoop.isEnabled()) {
+                setMode(NeutralIdleMode.BRAKE);
             }
         }
         if (!pidLoop.isEnabled()) {
@@ -152,7 +126,7 @@ public class ArmController extends Subsystem {
         if (pistonController.getPistonState(Piston.DEPLOY)
                 && getAngle() >= ArmPosition.ZERO_DEGREES.ticksFront) {
             if (pwr < 0) {
-                setCoast();
+                setMode(NeutralIdleMode.COAST);
                 return true;
             } else {
                 stop();
@@ -169,18 +143,11 @@ public class ArmController extends Subsystem {
         logger.conditionChange("pid_loop", "disabled");
     }
 
-    public void setBrake() {
-        logger.conditionChange("neutral_mode", "brake");
-        arm.setNeutralMode(NeutralMode.Brake);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    }
-
-    public void setCoast() {
-        logger.conditionChange("neutral_mode", "coast");
-        arm.setNeutralMode(NeutralMode.Coast);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    public void setMode(NeutralIdleMode mode) {
+        logger.conditionChange("neutral_mode", mode.name);
+        arm.setNeutralMode(mode.talon);
+        sparkSlaveOne.setIdleMode(mode.spark);
+        sparkSlaveTwo.setIdleMode(mode.spark);
     }
 
     public PIDController getPIDLoop() {

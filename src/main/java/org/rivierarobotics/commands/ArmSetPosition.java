@@ -32,7 +32,7 @@ public class ArmSetPosition extends InstantCommand {
     private final double pos;
 
     public ArmSetPosition(@Provided ArmController arm, ArmPosition pos) {
-        this(arm, arm.front ? pos.ticksFront : pos.ticksBack);
+        this(arm, arm.FRONT ? pos.ticksFront : pos.ticksBack);
         requires(arm);
     }
 

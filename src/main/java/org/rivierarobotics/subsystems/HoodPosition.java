@@ -39,7 +39,11 @@ public enum HoodPosition {
         this.tentacleInvert = tentacleInvert;
         this.degreesFront = degrees;
         this.degreesBack = -degrees;
-        this.ticksFront = MathUtil.toTicks(degreesFront);
-        this.ticksBack = MathUtil.toTicks(degreesBack);
+        this.ticksFront = toTicks(degreesFront);
+        this.ticksBack = toTicks(degreesBack);
+    }
+
+    private int toTicks(double deg) {
+        return MathUtil.moduloPositive((int) (deg * HoodController.ANGLE_SCALE), 4096);
     }
 }

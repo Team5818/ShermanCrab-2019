@@ -28,17 +28,17 @@ import org.rivierarobotics.subsystems.PistonController;
 
 @GenerateCreator
 public class RetractPiston extends InstantCommand {
-    private final PistonController pc;
+    private final PistonController pistonController;
     private final Piston piston;
 
-    public RetractPiston(@Provided PistonController pc, Piston piston) {
-        this.pc = pc;
+    public RetractPiston(@Provided PistonController pistonController, Piston piston) {
+        this.pistonController = pistonController;
         this.piston = piston;
-        requires(pc);
+        requires(pistonController);
     }
 
     @Override
     protected void execute() {
-        pc.retractPiston(piston);
+        pistonController.retractPiston(piston);
     }
 }

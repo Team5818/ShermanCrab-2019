@@ -33,8 +33,8 @@ public class AutoClimb extends CommandGroup {
     @Inject
     public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch,
                      @Provided WinchController winchController) {
-        requires(winchController);
         this.winchController = winchController;
+        requires(winchController);
         addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
         addSequential(new TimedCommand(0.1));
@@ -53,22 +53,11 @@ public class AutoClimb extends CommandGroup {
 
     @Override
     protected void end() {
-        //TODO find another way to wait - this is very resource consuming
-        long waitTime = System.currentTimeMillis() + 500;
-        while(System.currentTimeMillis() <= waitTime) {
-            System.out.println("waiting...");
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-
-            }
-        }
-        cancel();
-        winchController.atPower(0.0);
+        new AutoClimbEnd(winchController).start();
     }
 
     @Override
     protected boolean isFinished() {
-        return !WinchController.getClimbLimitSwitch();
+        return winchController.getClimbLimitSwitch();
     }
 }

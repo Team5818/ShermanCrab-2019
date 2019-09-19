@@ -27,7 +27,7 @@ import org.rivierarobotics.subsystems.WinchController;
 
 @GenerateCreator
 public class WinchSafetyOverride extends InstantCommand {
-    private WinchController winchController;
+    private final WinchController winchController;
 
     public WinchSafetyOverride(@Provided WinchController winchController) {
         this.winchController = winchController;

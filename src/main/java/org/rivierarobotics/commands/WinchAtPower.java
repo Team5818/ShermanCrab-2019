@@ -27,8 +27,8 @@ import org.rivierarobotics.subsystems.WinchController;
 
 @GenerateCreator
 public class WinchAtPower extends InstantCommand {
-    private WinchController winchController;
-    private double pwr;
+    private final WinchController winchController;
+    private final double pwr;
 
     public WinchAtPower(@Provided WinchController winchController, double pwr) {
         this.winchController = winchController;

@@ -27,8 +27,7 @@ import org.rivierarobotics.subsystems.DriveTrain;
 
 @GenerateCreator
 public class DriveDistance extends InstantCommand {
-
-    private DriveTrain dt;
+    private final DriveTrain dt;
     private final double distance;
 
     public DriveDistance(@Provided DriveTrain dt, double distance) {

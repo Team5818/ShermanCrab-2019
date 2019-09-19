@@ -25,10 +25,8 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
-import org.rivierarobotics.util.MathUtil;
 import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Inject;
@@ -36,17 +34,16 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WinchController extends Subsystem {
-    private CANSparkMax winch;
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
-    private static DigitalInput climbLimitSwitch;
-
     private final double P = 0.0025;
     private final double I = 0;
     private final double D = 0;
     private final double F = 0;
     public boolean LOCK_OVERRIDE = false;
+    private CANSparkMax winch;
+    private DigitalInput climbLimitSwitch;
 
     @Inject
     public WinchController(PistonController pistonController, int spark, int limit) {
@@ -63,7 +60,7 @@ public class WinchController extends Subsystem {
     }
 
     public int getDistance() {
-        return (int)(winch.getEncoder().getPosition());
+        return (int) (winch.getEncoder().getPosition());
     }
 
     public void setPosition(double position) {
@@ -79,7 +76,7 @@ public class WinchController extends Subsystem {
     }
 
     public void atPower(double pwr) {
-        if(pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
+        if (pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
             pidLoop.disable();
             logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
@@ -99,8 +96,9 @@ public class WinchController extends Subsystem {
         return winch;
     }
 
-    public static boolean getClimbLimitSwitch() {
-        return climbLimitSwitch.get();
+    public boolean getClimbLimitSwitch() {
+        //negates returned value as limit switch is wired backwards
+        return !climbLimitSwitch.get();
     }
 
     @Override

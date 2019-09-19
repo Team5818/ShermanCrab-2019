@@ -28,11 +28,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
+import org.rivierarobotics.subsystems.NeutralIdleMode;
 import org.rivierarobotics.subsystems.Piston;
-import org.rivierarobotics.subsystems.WinchController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,25 +47,30 @@ public class Robot extends TimedRobot {
         }
     }
 
-    private GlobalComponent globalComponent;
-    private final NetworkTableEntry driveEncoderLeft = Shuffleboard.getTab("Drive Train")
+    private final NetworkTableEntry driveDistanceLeft = Shuffleboard.getTab("Drive Train")
             .add("Distance Left", 0).getEntry();
-    private final NetworkTableEntry driveEncoderRight = Shuffleboard.getTab("Drive Train")
+    private final NetworkTableEntry driveDistanceRight = Shuffleboard.getTab("Drive Train")
             .add("Distance Right", 0).getEntry();
-    private final NetworkTableEntry armEncoder = Shuffleboard.getTab("Arm Controller")
+    private final NetworkTableEntry driveTicksLeft = Shuffleboard.getTab("Drive Train")
+            .add("Ticks Left", 0).getEntry();
+    private final NetworkTableEntry driveTicksRight = Shuffleboard.getTab("Drive Train")
+            .add("Ticks Right", 0).getEntry();
+    private final NetworkTableEntry armAngle = Shuffleboard.getTab("Arm Controller")
             .add("Angle", 0).getEntry();
-    private final NetworkTableEntry hoodEncoder = Shuffleboard.getTab("Hood Controller")
-            .add("Angle", 0).getEntry();
-    private final NetworkTableEntry armOut = Shuffleboard.getTab("Arm Controller")
+    private final NetworkTableEntry armDegrees = Shuffleboard.getTab("Arm Controller")
             .add("Degrees", 0).getEntry();
-    private final NetworkTableEntry hoodOut = Shuffleboard.getTab("Hood Controller")
+    private final NetworkTableEntry hoodTicks = Shuffleboard.getTab("Hood Controller")
+            .add("Angle", 0).getEntry();
+    private final NetworkTableEntry hoodDegrees = Shuffleboard.getTab("Hood Controller")
             .add("Degrees", 0).getEntry();
     private final NetworkTableEntry hoodPID = Shuffleboard.getTab("Dev")
             .add("Hood PID Enabled", 0).getEntry();
     private final NetworkTableEntry driveTrainOutput = Shuffleboard.getTab("Dev")
             .add("Drive Train Output", 0).getEntry();
-
+    private final NetworkTableEntry climbLimit = Shuffleboard.getTab("Dev")
+            .add("Climb Limiter Engaged", 0).getEntry();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private GlobalComponent globalComponent;
     private boolean loggedMatchNumber = false;
 
 
@@ -108,8 +112,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         globalComponent.getWinchController().getPIDLoop().disable();
         globalComponent.getArmController().getPIDLoop().disable();
-        globalComponent.getArmController().setBrake();
-        globalComponent.getDriveTrain().setBrake();
+        globalComponent.getArmController().setMode(NeutralIdleMode.BRAKE);
     }
 
     @Override
@@ -141,13 +144,17 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
+        driveDistanceLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
+        driveDistanceRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
+        driveTicksLeft.setDouble(globalComponent.getDriveTrain().getLeft().getTicks());
+        driveTicksRight.setDouble(globalComponent.getDriveTrain().getRight().getTicks());
         driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
-        driveEncoderLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
-        driveEncoderRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
-        hoodEncoder.setDouble(globalComponent.getHoodController().getAngle());
-        hoodOut.setDouble(globalComponent.getHoodController().getDegrees());
-        armEncoder.setDouble(globalComponent.getArmController().getAngle());
-        armOut.setDouble(globalComponent.getArmController().getDegrees());
-        SmartDashboard.putBoolean("limit", WinchController.getClimbLimitSwitch());
+
+        hoodTicks.setDouble(globalComponent.getHoodController().getAngle());
+        hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
+        hoodDegrees.setDouble(globalComponent.getHoodController().getDegrees());
+        armAngle.setDouble(globalComponent.getArmController().getAngle());
+        armDegrees.setDouble(globalComponent.getArmController().getDegrees());
+        climbLimit.setBoolean(globalComponent.getWinchController().getClimbLimitSwitch());
     }
 }

@@ -32,10 +32,10 @@ public enum ArmPosition {
     CLIMB_INITIAL(82),
     CLIMB_PUSH(106);
 
-    public final double degreesFront, degreesBack, ticksFront, ticksBack;
     public final static double TICKS_AT_ZERO = 2835;
     private final static double TICKS_AT_NINETY = 3835;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;
+    public final double degreesFront, degreesBack, ticksFront, ticksBack;
 
     ArmPosition(double degrees) {
         this.degreesFront = degrees;

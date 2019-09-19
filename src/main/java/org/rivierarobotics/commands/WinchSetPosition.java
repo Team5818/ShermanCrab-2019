@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.WinchController;
-import org.rivierarobotics.subsystems.WinchPosition;
 
 @GenerateCreator
 public class WinchSetPosition extends InstantCommand {

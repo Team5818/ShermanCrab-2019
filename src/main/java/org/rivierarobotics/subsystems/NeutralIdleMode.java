@@ -18,31 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.ArmController;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
 
-@GenerateCreator
-public class ArmSetPower extends Command {
-    private final double pwr;
-    private final ArmController arm;
+public enum NeutralIdleMode {
+    BRAKE("brake", CANSparkMax.IdleMode.kBrake, NeutralMode.Brake),
+    COAST("coast", CANSparkMax.IdleMode.kCoast, NeutralMode.Coast);
 
-    public ArmSetPower(@Provided ArmController arm, double pwr) {
-        this.pwr = pwr;
-        this.arm = arm;
-        requires(arm);
-    }
+    public final String name;
+    public final CANSparkMax.IdleMode spark;
+    public final NeutralMode talon;
 
-    @Override
-    protected void execute() {
-        arm.setPower(pwr);
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
+    NeutralIdleMode(String name, CANSparkMax.IdleMode spark, NeutralMode talon) {
+        this.name = name;
+        this.spark = spark;
+        this.talon = talon;
     }
 }

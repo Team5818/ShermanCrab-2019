@@ -29,22 +29,20 @@ import org.rivierarobotics.util.MathUtil;
 import javax.inject.Inject;
 
 public class ArmControl extends Command {
-
-    private ArmController arm;
-    private Joystick armJoy;
+    private final ArmController arm;
+    private final Joystick armJoy;
 
     @Inject
     public ArmControl(ArmController arm, @Input(Input.Position.CODRIVER_LEFT) Joystick armJoy) {
         this.arm = arm;
         this.armJoy = armJoy;
-        requires(arm);
         this.arm.getPIDLoop().disable();
+        requires(arm);
     }
 
     @Override
     protected void execute() {
-        double armJoyY = -armJoy.getY();
-        arm.setPower(MathUtil.fitDeadband(armJoyY));
+        arm.setPower(MathUtil.fitDeadband(-armJoy.getY()));
     }
 
     @Override
