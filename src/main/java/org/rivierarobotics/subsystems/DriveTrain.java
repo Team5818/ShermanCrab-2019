@@ -56,10 +56,6 @@ public class DriveTrain extends Subsystem {
         return right;
     }
 
-    public double getAverageDistance() {
-        return (left.getDistance() + right.getDistance()) / 2;
-    }
-
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(command.get());

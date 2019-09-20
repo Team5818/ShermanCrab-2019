@@ -25,28 +25,14 @@ import org.rivierarobotics.subsystems.Gear;
 import javax.inject.Inject;
 
 public class DriveCommands {
-    private final DriveForwardCreator driveForwardCreator;
-    private final DriveDistanceCreator driveDistanceCreator;
     private final DriveAtPowerCreator driveAtPowerCreator;
     private final SetMaxDriveCurrentCreator setMaxDriveCurrentCreator;
 
     @Inject
-    public DriveCommands(DriveForwardCreator driveForwardCreator,
-                         DriveDistanceCreator driveDistanceCreator,
-                         DriveAtPowerCreator driveAtPowerCreator,
+    public DriveCommands(DriveAtPowerCreator driveAtPowerCreator,
                          SetMaxDriveCurrentCreator setMaxDriveCurrentCreator) {
-        this.driveForwardCreator = driveForwardCreator;
-        this.driveDistanceCreator = driveDistanceCreator;
         this.driveAtPowerCreator = driveAtPowerCreator;
         this.setMaxDriveCurrentCreator = setMaxDriveCurrentCreator;
-    }
-
-    public DriveForward drive(double power, double distance) {
-        return driveForwardCreator.create(power, distance);
-    }
-
-    public DriveDistance distance(double distance) {
-        return driveDistanceCreator.create(distance);
     }
 
     public DriveAtPower atPower(double power) {

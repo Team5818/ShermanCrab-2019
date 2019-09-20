@@ -42,12 +42,12 @@ public class ArmController extends Subsystem {
     private final CANSparkMax sparkSlaveTwo;
     private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
-    private final double P = 0.005, I = 0.0, D = 0.0, F = 0.0;
-    private final double GRAVITY_CONSTANT = -0.045;
-    private final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     private final PIDController pidLoop;
-    public boolean FRONT = true;
     private Provider<ArmControl> command;
+    private static final double P = 0.005, I = 0.0, D = 0.0, F = 0.0;
+    private static final double GRAVITY_CONSTANT = -0.045;
+    private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
+    public boolean front = true;
 
     @Inject
     public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
@@ -76,10 +76,9 @@ public class ArmController extends Subsystem {
     public void setAngle(double angle) {
         if (pistonController.getPistonState(Piston.DEPLOY)) {
             angle = MathUtil.limit(angle, ArmPosition.ZERO_DEGREES.ticksFront);
-            //TODO is this logger (and the one below it) redundant?
-            logger.conditionChange("deploy_pistons", "out");
+            logger.conditionChange("piston_angle_limiting", "enabled");
         } else {
-            logger.conditionChange("deploy_pistons", "in");
+            logger.conditionChange("piston_angle_limiting", "disabled");
         }
 
         setMode(NeutralIdleMode.BRAKE);
@@ -93,7 +92,6 @@ public class ArmController extends Subsystem {
         return (getAngle() - ArmPosition.ZERO_DEGREES.ticksFront) * ANGLE_SCALE;
     }
 
-    //TODO honestly everything from here to the end of safety() is a mess, but I'm hesitant to change it as it might break something
     public void setPower(double pwr) {
         if (safety(pwr)) {
             if (pwr != 0 && pidLoop.isEnabled()) {

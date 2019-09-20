@@ -43,7 +43,7 @@ public enum HoodPosition {
         this.ticksBack = toTicks(degreesBack);
     }
 
-    private int toTicks(double deg) {
+    private static int toTicks(double deg) {
         return MathUtil.moduloPositive((int) (deg * HoodController.ANGLE_SCALE), 4096);
     }
 }

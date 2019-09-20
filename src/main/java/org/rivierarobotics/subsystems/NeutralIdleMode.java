@@ -40,11 +40,11 @@ public enum NeutralIdleMode {
     }
 
     public void applyTo(SpeedController... controllers) {
-        for(SpeedController controller : controllers) {
-            if(controller.getClass().isAssignableFrom(CANSparkMax.class)) {
-                ((CANSparkMax)(controller)).setIdleMode(this.spark);
-            } else if(controller.getClass().isAssignableFrom(WPI_TalonSRX.class)) {
-                ((WPI_TalonSRX)(controller)).setNeutralMode(this.talon);
+        for (SpeedController controller : controllers) {
+            if (controller instanceof CANSparkMax) {
+                ((CANSparkMax) controller).setIdleMode(this.spark);
+            } else if(controller instanceof WPI_TalonSRX) {
+                ((WPI_TalonSRX) controller).setNeutralMode(this.talon);
             }
         }
     }

@@ -39,7 +39,6 @@ public class TentacleSpin extends Command {
 
     @Override
     protected void initialize() {
-        //TODO test if this even works any more (tentacle invert logic)
         double power = this.power;
         if (HoodController.CURRENT_HOOD_POSITION != null) {
             if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvert.front)

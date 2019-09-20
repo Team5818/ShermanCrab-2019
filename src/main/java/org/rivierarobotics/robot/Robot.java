@@ -47,10 +47,6 @@ public class Robot extends TimedRobot {
         }
     }
 
-    private final NetworkTableEntry driveDistanceLeft = Shuffleboard.getTab("Drive Train")
-            .add("Distance Left", 0).getEntry();
-    private final NetworkTableEntry driveDistanceRight = Shuffleboard.getTab("Drive Train")
-            .add("Distance Right", 0).getEntry();
     private final NetworkTableEntry driveTicksLeft = Shuffleboard.getTab("Drive Train")
             .add("Ticks Left", 0).getEntry();
     private final NetworkTableEntry driveTicksRight = Shuffleboard.getTab("Drive Train")
@@ -144,8 +140,6 @@ public class Robot extends TimedRobot {
     }
 
     private void displayShuffleboard() {
-        driveDistanceLeft.setDouble(globalComponent.getDriveTrain().getLeft().getDistance());
-        driveDistanceRight.setDouble(globalComponent.getDriveTrain().getRight().getDistance());
         driveTicksLeft.setDouble(globalComponent.getDriveTrain().getLeft().getTicks());
         driveTicksRight.setDouble(globalComponent.getDriveTrain().getRight().getTicks());
         driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());

@@ -57,10 +57,10 @@ public class HoodController extends Subsystem {
     private final ArmController armController;
     private final PIDController pidLoop;
     private final MechLogger logger;
-    private final double P = 0.00025, I = 0, D = 0, F = 0;
-    private final double GRAVITY_CONSTANT = 0.02;
-    private final double MAX_PID = 0.3;
-    private final double MAX_JS = 0.5;
+    private static final double P = 0.00025, I = 0, D = 0, F = 0;
+    private static final double GRAVITY_CONSTANT = 0.02;
+    private static final double MAX_PID = 0.3;
+    private static final double MAX_JS = 0.5;
     private Provider<HoodControl> command;
 
     @Inject

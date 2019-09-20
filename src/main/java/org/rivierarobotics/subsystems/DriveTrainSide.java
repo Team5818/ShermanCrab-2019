@@ -31,12 +31,9 @@ import org.rivierarobotics.util.MechLogger;
 
 public class DriveTrainSide {
     private final MechLogger logger;
-    private final double INCHES_TO_TICKS = 0;
-    private final double P = 0, I = 0, D = 0, F = 0;
     private WPI_TalonSRX talonMaster;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
-    private PIDController pidLoop;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
         this.logger = Logging.getLogger(getClass(), invert ? "left" : "right");
@@ -53,23 +50,8 @@ public class DriveTrainSide {
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower);
-
         logger.conditionChange("neutral_mode", "brake");
         NeutralIdleMode.BRAKE.applyTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
-    }
-
-    public double getDistance() {
-        return getTicks() / INCHES_TO_TICKS;
-    }
-
-    public void setDistance(double inches) {
-        double ticks = inches * INCHES_TO_TICKS;
-        double newSetpoint = getTicks() + ticks;
-        logger.setpointChange(newSetpoint);
-        pidLoop.setSetpoint(newSetpoint);
-        logger.conditionChange("pid_loop", "enabled");
-        pidLoop.enable();
     }
 
     public int getTicks() {
@@ -77,15 +59,7 @@ public class DriveTrainSide {
     }
 
     public void setPower(double pwr) {
-        if (pwr != 0 && pidLoop.isEnabled()) {
-            logger.conditionChange("pid_loop", "disabled");
-            pidLoop.disable();
-            logger.clearSetpoint();
-        }
-
-        if (!pidLoop.isEnabled()) {
-            rawSetPower(pwr);
-        }
+        rawSetPower(pwr);
     }
 
     private void rawSetPower(double pwr) {

@@ -36,6 +36,6 @@ public class WinchSafetyOverride extends InstantCommand {
 
     @Override
     protected void execute() {
-        winchController.LOCK_OVERRIDE = !winchController.LOCK_OVERRIDE;
+        winchController.lockOverride = !winchController.lockOverride;
     }
 }

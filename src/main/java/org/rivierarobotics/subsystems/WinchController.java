@@ -37,11 +37,8 @@ public class WinchController extends Subsystem {
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
-    private final double P = 0.0025;
-    private final double I = 0;
-    private final double D = 0;
-    private final double F = 0;
-    public boolean LOCK_OVERRIDE = false;
+    private static final double P = 0.0025, I = 0, D = 0, F = 0;
+    public boolean lockOverride = false;
     private CANSparkMax winch;
     private DigitalInput climbLimitSwitch;
 
@@ -76,7 +73,7 @@ public class WinchController extends Subsystem {
     }
 
     public void atPower(double pwr) {
-        if (pistonController.getPistonState(Piston.LOCK_CLIMB) || LOCK_OVERRIDE) {
+        if (pistonController.getPistonState(Piston.LOCK_CLIMB) || lockOverride) {
             pidLoop.disable();
             logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
