@@ -56,7 +56,7 @@ public class DriveTrainSide {
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::rawSetPower);
 
         logger.conditionChange("neutral_mode", "brake");
-        NeutralIdleMode.BRAKE.setTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
+        NeutralIdleMode.BRAKE.applyTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
     }
 
     public double getDistance() {

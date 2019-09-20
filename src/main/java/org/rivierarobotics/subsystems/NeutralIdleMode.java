@@ -39,7 +39,7 @@ public enum NeutralIdleMode {
         this.talon = talon;
     }
 
-    public void setTo(SpeedController... controllers) {
+    public void applyTo(SpeedController... controllers) {
         for(SpeedController controller : controllers) {
             if(controller.getClass().isAssignableFrom(CANSparkMax.class)) {
                 ((CANSparkMax)(controller)).setIdleMode(this.spark);

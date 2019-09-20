@@ -21,7 +21,6 @@
 package org.rivierarobotics.subsystems;
 
 public enum WinchPosition {
-    //TODO figure out a way to convert NEO encoder revs into standardized units
     HELPER_RETRACT(70), FINAL(375);
 
     public final int rotations;
