@@ -27,15 +27,22 @@ import javax.inject.Inject;
 public class WinchCommands {
     private final WinchSetPositionCreator winchSetPositionCreator;
     private final WinchAtPowerCreator winchAtPowerCreator;
+    private final WinchSafetyOverrideCreator winchSafetyOverrideCreator;
+    private final WinchEncoderResetCreator winchEncoderResetCreator;
 
     @Inject
-    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator, WinchAtPowerCreator winchAtPowerCreator) {
+    public WinchCommands(WinchSetPositionCreator winchSetPositionCreator,
+                         WinchAtPowerCreator winchAtPowerCreator,
+                         WinchSafetyOverrideCreator winchSafetyOverrideCreator,
+                         WinchEncoderResetCreator winchEncoderResetCreator) {
         this.winchSetPositionCreator = winchSetPositionCreator;
         this.winchAtPowerCreator = winchAtPowerCreator;
+        this.winchSafetyOverrideCreator = winchSafetyOverrideCreator;
+        this.winchEncoderResetCreator = winchEncoderResetCreator;
     }
 
     public final WinchSetPosition set(WinchPosition pos) {
-        return winchSetPositionCreator.create(pos.ticks);
+        return winchSetPositionCreator.create(pos.rotations);
     }
 
     public final WinchSetPosition set(double pos) {
@@ -44,5 +51,13 @@ public class WinchCommands {
 
     public final WinchAtPower atPower(double pwr) {
         return winchAtPowerCreator.create(pwr);
+    }
+
+    public final WinchSafetyOverride overrideSafety() {
+        return winchSafetyOverrideCreator.create();
+    }
+
+    public final WinchEncoderReset resetEncoder() {
+        return winchEncoderResetCreator.create();
     }
 }

@@ -26,6 +26,6 @@ public enum Piston {
     public final boolean extend;
 
     Piston(boolean ext) {
-        extend = ext;
+        this.extend = ext;
     }
 }

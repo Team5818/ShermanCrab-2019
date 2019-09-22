@@ -28,8 +28,8 @@ import org.rivierarobotics.subsystems.TentacleController;
 
 @GenerateCreator
 public class TentacleSpin extends Command {
-    private double power;
-    private TentacleController tentacle;
+    private final double power;
+    private final TentacleController tentacle;
 
     public TentacleSpin(@Provided TentacleController tentacle, double power) {
         this.tentacle = tentacle;
@@ -41,8 +41,8 @@ public class TentacleSpin extends Command {
     protected void initialize() {
         double power = this.power;
         if (HoodController.CURRENT_HOOD_POSITION != null) {
-            if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertFront)
-                    || (!HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvertBack)) {
+            if ((HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvert.front)
+                    || (!HoodController.HOOD_FRONT && HoodController.CURRENT_HOOD_POSITION.tentacleInvert.back)) {
                 power *= -1;
             }
         }

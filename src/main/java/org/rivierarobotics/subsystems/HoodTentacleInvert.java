@@ -18,19 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.commands;
+package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.ArmPosition;
+public enum HoodTentacleInvert {
+    FRONT_AND_BACK(true, true),
+    FRONT_ONLY(true, false),
+    BACK_ONLY(false, true),
+    NEITHER(false, false);
 
-@GenerateCreator
-public class ArmClimb extends CommandGroup {
-    public ArmClimb(@Provided ArmCommands arm) {
-        addSequential(arm.setFrontPosition(ArmPosition.L2_CLIMB));
-        addSequential(new TimedCommand(5.0));
-        addSequential(arm.setFrontPosition(ArmPosition.NINETY_DEGREES));
+    public final boolean front, back;
+
+    HoodTentacleInvert(boolean front, boolean back) {
+        this.front = front;
+        this.back = back;
     }
 }

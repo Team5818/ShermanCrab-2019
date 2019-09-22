@@ -29,21 +29,19 @@ import org.rivierarobotics.util.MathUtil;
 import javax.inject.Inject;
 
 public class HoodControl extends Command {
-
-    private HoodController hood;
-    private Joystick hoodRotateJoy;
+    private final HoodController hoodController;
+    private final Joystick hoodJoystick;
 
     @Inject
-    public HoodControl(HoodController hood, @Input(Input.Position.CODRIVER_RIGHT) Joystick hoodRotateJoy) {
-        this.hood = hood;
-        this.hoodRotateJoy = hoodRotateJoy;
-        requires(hood);
+    public HoodControl(HoodController hoodController, @Input(Input.Position.CODRIVER_RIGHT) Joystick hoodJoystick) {
+        this.hoodController = hoodController;
+        this.hoodJoystick = hoodJoystick;
+        requires(hoodController);
     }
 
     @Override
     protected void execute() {
-        double armJoyY = hoodRotateJoy.getY();
-        hood.setPower(MathUtil.fitDeadband(armJoyY));
+        hoodController.setPower(MathUtil.fitDeadband(hoodJoystick.getY()));
     }
 
     @Override

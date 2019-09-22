@@ -20,41 +20,23 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.HoodController;
 
 @GenerateCreator
-public class DriveDistance extends Command {
+public class HoodEncoderReset extends InstantCommand {
+    private final HoodController hoodController;
 
-    private DriveTrain dt;
-    private final double distance;
-    private double startDistance;
-    private double currentDistance;
-    private double calcDistance;
-
-    public DriveDistance(@Provided DriveTrain dt, double distance) {
-        this.distance = distance;
-        this.dt = dt;
-        requires(dt);
-    }
-
-    @Override
-    protected void initialize() {
-        startDistance = currentDistance = dt.getDistance();
-        calcDistance = startDistance + distance;
-        dt.addDistance(distance, distance);
+    public HoodEncoderReset(@Provided HoodController hoodController) {
+        this.hoodController = hoodController;
+        requires(hoodController);
     }
 
     @Override
     protected void execute() {
-        currentDistance = dt.getDistance();
-    }
-
-
-    @Override
-    protected boolean isFinished() {
-        return currentDistance >= calcDistance;
+        hoodController.getPIDLoop().disable();
+        hoodController.resetQuadratureEncoder();
     }
 }

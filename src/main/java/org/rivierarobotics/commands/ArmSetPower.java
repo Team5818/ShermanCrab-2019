@@ -27,8 +27,8 @@ import org.rivierarobotics.subsystems.ArmController;
 
 @GenerateCreator
 public class ArmSetPower extends Command {
-    private double pwr;
-    private ArmController arm;
+    private final double pwr;
+    private final ArmController arm;
 
     public ArmSetPower(@Provided ArmController arm, double pwr) {
         this.pwr = pwr;

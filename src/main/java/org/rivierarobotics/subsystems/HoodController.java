@@ -20,10 +20,9 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -41,30 +40,10 @@ import javax.inject.Singleton;
 
 @Singleton
 public class HoodController extends Subsystem {
-    private Provider<HoodControl> command;
-    private final WPI_TalonSRX hood;
-    private final ArmController armController;
-    private PIDController pidLoop;
-    private final MechLogger logger;
-
-    private static final double P = 0.00075;
-    private static final double I = 0;
-    private static final double D = 0.0006;
-    private static final double F = 0.0;
-    private static final double GRAVITY_CONSTANT = 0.2;
-    private static final double GRAVITY_CONSTANT_TOP = GRAVITY_CONSTANT;
-    private static final double MAX_PID = 0.5;
-    public static double ANGLE_SCALE = 4096 / 360.0;
+    public static final double ANGLE_SCALE = 4096 / 360;
+    private static final NetworkTableEntry SETPOINT_ANGLE, PWR, GRAV_OFFSET, REAL_ANGLE;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
-    private static final NetworkTableEntry SETPOINT_ANGLE;
-    private static final NetworkTableEntry PWR;
-    private static final NetworkTableEntry GRAV_OFFSET;
-    private static final NetworkTableEntry REAL_ANGLE;
-
-    private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Hood Controller").add(name, def);
-    }
 
     static {
         SETPOINT_ANGLE = ezWidget("Setpoint Angle", 0).getEntry();
@@ -73,27 +52,43 @@ public class HoodController extends Subsystem {
         REAL_ANGLE = ezWidget("Real Angle", 0).getEntry();
     }
 
+    private final CANSparkMax driveSpark;
+    private final WPI_TalonSRX encoderTalon;
+    private final ArmController armController;
+    private final PIDController pidLoop;
+    private final MechLogger logger;
+    private static final double P = 0.00025, I = 0, D = 0, F = 0;
+    private static final double GRAVITY_CONSTANT = 0.02;
+    private static final double MAX_PID = 0.3;
+    private static final double MAX_JS = 0.5;
+    private Provider<HoodControl> command;
+
     @Inject
-    public HoodController(ArmController armController, Provider<HoodControl> command, int h) {
-        this.hood = new WPI_TalonSRX(h);
+    public HoodController(ArmController armController, Provider<HoodControl> command, int drive, int encoder) {
+        this.driveSpark = new CANSparkMax(drive, CANSparkMaxLowLevel.MotorType.kBrushless);
+        this.encoderTalon = new WPI_TalonSRX(encoder);
         this.armController = armController;
         this.command = command;
         this.logger = Logging.getLogger(getClass());
 
-        /* Disables limit switches on malfunctioning encoder */
-        hood.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
-        hood.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
-
         logger.conditionChange("neutral_mode", "brake");
-        hood.setNeutralMode(NeutralMode.Brake);
-        hood.setSensorPhase(true);
+        driveSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        encoderTalon.setSensorPhase(true);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
                 () -> MathUtil.moduloPositive(getAngle(), 4096)
-        ), this::setPowerPID, 0.01);
+        ), this::rawSetPower, 0.01);
 
         pidLoop.setInputRange(0, 4096);
         pidLoop.setOutputRange(-MAX_PID, MAX_PID);
         pidLoop.setContinuous();
+    }
+
+    private static SimpleWidget ezWidget(String name, Object def) {
+        return Shuffleboard.getTab("Hood Controller").add(name, def);
+    }
+
+    public int getAngle() {
+        return encoderTalon.getSensorCollection().getQuadraturePosition();
     }
 
     public void setAngle(double angle) {
@@ -104,74 +99,57 @@ public class HoodController extends Subsystem {
         logger.conditionChange("pid_loop", "enabled");
     }
 
-    public int getVelocity() {
-        return hood.getSensorCollection().getQuadratureVelocity();
-    }
-
-    public int getAngle() {
-        return -hood.getSensorCollection().getQuadraturePosition();
-    }
-
     public double getDegrees() {
-        return -getAngle() / ANGLE_SCALE % 360;
+        return getAngle() / ANGLE_SCALE % 360;
     }
 
     public void setPower(double pwr) {
-        PWR.setDouble(hood.getMotorOutputPercent());
         if (pwr != 0 && pidLoop.isEnabled()) {
             pidLoop.disable();
             logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
             logger.conditionChange("neutral_mode", "coast");
-            hood.setNeutralMode(NeutralMode.Coast);
+            driveSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
         } else if (pwr == 0) {
             logger.conditionChange("neutral_mode", "brake");
-            hood.setNeutralMode(NeutralMode.Brake);
+            driveSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         }
 
         if (!pidLoop.isEnabled()) {
             pwr += getGravOffset();
-            rawSetPower(pwr);
+            rawSetPower(MathUtil.limit(pwr, MAX_JS));
         }
     }
 
     private void rawSetPower(double pwr) {
+        PWR.setDouble(getDegrees());
         logger.powerChange(pwr);
-        hood.set(pwr);
+        driveSpark.set(pwr);
     }
 
     private double getGravOffset() {
         double realAngle = this.getDegrees() + armController.getDegrees();
         realAngle = (realAngle % 360) + (realAngle < 0 ? 360 : 0);
-        double gravityConstant;
-        if (90 < realAngle && realAngle < 270) {
-            gravityConstant = GRAVITY_CONSTANT_TOP;
-        } else {
-            gravityConstant = GRAVITY_CONSTANT;
-        }
-        double gravOffset = Math.sin(Math.toRadians(realAngle)) * gravityConstant;
+        double gravOffset = Math.sin(Math.toRadians(realAngle)) * GRAVITY_CONSTANT;
         GRAV_OFFSET.setDouble(gravOffset);
         REAL_ANGLE.setDouble(realAngle);
-        return -gravOffset;
-    }
-
-    private void setPowerPID(double pwr) {
-        double gravOffset = getGravOffset();
-        pwr += gravOffset;
-        pwr = MathUtil.limit(pwr, MAX_PID);
-        rawSetPower(pwr);
+        return gravOffset;
     }
 
     public void resetQuadratureEncoder() {
-        hood.getSensorCollection().setQuadraturePosition(0, 0);
+        encoderTalon.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     public PIDController getPIDLoop() {
         return pidLoop;
     }
 
-    public WPI_TalonSRX getHood() {
-        return hood;
+    public CANSparkMax getDriveSpark() {
+        return driveSpark;
+    }
+
+    public WPI_TalonSRX getEncoderTalon() {
+        return encoderTalon;
     }
 
     @Override

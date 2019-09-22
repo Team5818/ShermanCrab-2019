@@ -49,10 +49,6 @@ public class Shifter extends Subsystem {
         shift.set(!shift.get());
     }
 
-    public boolean getGearState() {
-        return shift.get();
-    }
-
     @Override
     protected void initDefaultCommand() {
 

@@ -29,9 +29,9 @@ import org.rivierarobotics.subsystems.HoodPosition;
 @GenerateCreator
 public class HoodSetPosition extends InstantCommand {
     private final HoodController hood;
+    private final HoodPosition position;
     private final double ticks;
     private final boolean front;
-    private final HoodPosition position;
 
     public HoodSetPosition(@Provided HoodController hood, HoodPosition pos, boolean front) {
         this(hood, front ? pos.ticksFront : pos.ticksBack, front, pos);

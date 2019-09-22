@@ -34,13 +34,13 @@ public class AbstractPIDSource implements PIDSource {
     }
 
     @Override
-    public void setPIDSourceType(PIDSourceType pidSource) {
-        this.sourceType = pidSource;
+    public PIDSourceType getPIDSourceType() {
+        return sourceType;
     }
 
     @Override
-    public PIDSourceType getPIDSourceType() {
-        return sourceType;
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        this.sourceType = pidSource;
     }
 
     @Override

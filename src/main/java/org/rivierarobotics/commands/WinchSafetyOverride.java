@@ -20,20 +20,22 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
-import org.rivierarobotics.subsystems.HoodPosition;
-import org.rivierarobotics.subsystems.Piston;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import net.octyl.aptcreator.GenerateCreator;
+import net.octyl.aptcreator.Provided;
+import org.rivierarobotics.subsystems.WinchController;
 
-import javax.inject.Inject;
+@GenerateCreator
+public class WinchSafetyOverride extends InstantCommand {
+    private final WinchController winchController;
 
-public class ScissorClimb extends CommandGroup {
+    public WinchSafetyOverride(@Provided WinchController winchController) {
+        this.winchController = winchController;
+        requires(winchController);
+    }
 
-    @Inject
-    public ScissorClimb(PistonCommands piston, HoodCommands hood) {
-        addSequential(piston.extend(Piston.LOCK_CLIMB));
-        addSequential(new TimedCommand(0.5));
-        addSequential(piston.extend(Piston.HELPER_CLIMB));
-        addSequential(hood.setFrontPosition(HoodPosition.CLIMB_NINETY));
+    @Override
+    protected void execute() {
+        winchController.lockOverride = !winchController.lockOverride;
     }
 }

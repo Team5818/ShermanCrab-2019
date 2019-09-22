@@ -20,9 +20,12 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -31,33 +34,68 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WinchController extends Subsystem {
-    private final WPI_TalonSRX winch;
     private final MechLogger logger;
+    private final PIDController pidLoop;
+    private final PistonController pistonController;
+    private static final double P = 0.0025, I = 0, D = 0, F = 0;
+    public boolean lockOverride = false;
+    private CANSparkMax winch;
+    private DigitalInput climbLimitSwitch;
 
     @Inject
-    public WinchController(int ch) {
+    public WinchController(PistonController pistonController, int spark, int limit) {
+        this.pistonController = pistonController;
         logger = Logging.getLogger(getClass());
-        winch = new WPI_TalonSRX(ch);
+        winch = new CANSparkMax(spark, CANSparkMaxLowLevel.MotorType.kBrushless);
+        climbLimitSwitch = new DigitalInput(limit);
+        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getDistance), this::rawSetPower, 0.01);
+
         winch.setInverted(true);
-        winch.setNeutralMode(NeutralMode.Brake);
+        winch.setIdleMode(CANSparkMax.IdleMode.kBrake);
         logger.conditionChange("neutral_mode", "brake");
+        resetEncoder();
     }
 
     public int getDistance() {
-        return winch.getSensorCollection().getPulseWidthPosition();
+        return (int) (winch.getEncoder().getPosition());
     }
 
     public void setPosition(double position) {
-        /* No PID loop needed - manual control by itself is sufficient */
+        logger.setpointChange(position);
+        pidLoop.setSetpoint(position);
+        pidLoop.enable();
+        logger.conditionChange("pid_loop", "enabled");
     }
 
-    public void setPower(double pwr) {
+    public void rawSetPower(double pwr) {
         logger.powerChange(pwr);
         winch.set(pwr);
     }
 
-    public WPI_TalonSRX getWinch() {
+    public void atPower(double pwr) {
+        if (pistonController.getPistonState(Piston.LOCK_CLIMB) || lockOverride) {
+            pidLoop.disable();
+            logger.clearSetpoint();
+            logger.conditionChange("pid_loop", "disabled");
+            rawSetPower(pwr);
+        }
+    }
+
+    public void resetEncoder() {
+        winch.getEncoder().setPosition(0.0);
+    }
+
+    public PIDController getPIDLoop() {
+        return pidLoop;
+    }
+
+    public CANSparkMax getWinch() {
         return winch;
+    }
+
+    public boolean getClimbLimitSwitch() {
+        //negates returned value as limit switch is wired backwards
+        return !climbLimitSwitch.get();
     }
 
     @Override

@@ -20,39 +20,25 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import org.rivierarobotics.subsystems.WinchController;
 
-@GenerateCreator
-public class DriveForward extends Command {
-    private final double power;
-    private final double distance;
-    private final DriveTrain dt;
-    private double startDistance;
-    private double currentDistance;
+public class AutoClimbEnd extends TimedCommand {
+    public final WinchController winchController;
 
-    public DriveForward(@Provided DriveTrain dt, double power, double distance) {
-        this.power = power;
-        this.distance = distance;
-        this.dt = dt;
-        requires(dt);
-    }
-
-    @Override
-    protected void initialize() {
-        startDistance = currentDistance = dt.getDistance();
+    public AutoClimbEnd(WinchController winchController) {
+        super(0.5);
+        this.winchController = winchController;
+        requires(winchController);
     }
 
     @Override
     protected void execute() {
-        dt.setPower(power, power);
-        currentDistance = dt.getDistance();
+        winchController.atPower(1.0);
     }
 
     @Override
-    protected boolean isFinished() {
-        return currentDistance >= distance + startDistance;
+    protected void end() {
+        winchController.atPower(0.0);
     }
 }

@@ -30,7 +30,7 @@ import org.rivierarobotics.subsystems.Gear;
 public class FullShift extends CommandGroup {
     public FullShift(@Provided DriveCommands driveCommands, @Provided GearCommands gearCommands, Gear gear) {
         addSequential(new TimedCommand(0.2));
-        addSequential(gearCommands.airShift(gear));
+        addSequential(gearCommands.shift(gear));
         addSequential(driveCommands.setMaxCurrent(gear));
         addSequential(new TimedCommand(0.2));
     }

@@ -20,42 +20,32 @@
 
 package org.rivierarobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-import java.util.ArrayList;
-import java.util.List;
+public enum NeutralIdleMode {
+    BRAKE("brake", CANSparkMax.IdleMode.kBrake, NeutralMode.Brake),
+    COAST("coast", CANSparkMax.IdleMode.kCoast, NeutralMode.Coast);
 
-public class TestControllers {
-    private static final List<SpeedController> CONTROLLERS = new ArrayList<>();
+    public final String name;
+    public final CANSparkMax.IdleMode spark;
+    public final NeutralMode talon;
 
-    static {
-        ShuffleboardTab tab = Shuffleboard.getTab("Test Controllers");
-        for (int i = 1; i <= 13; i++) {
-            SpeedController c;
-            switch (i) {
-                case 1:
-                case 4:
-                case 7:
-                case 11:
-                case 12:
-                    c = new WPI_TalonSRX(i);
-                    tab.add((Sendable) c);
-                    break;
-                default:
-                    c = new CANSparkMax(i, CANSparkMaxLowLevel.MotorType.kBrushless);
-                    break;
-            }
-            CONTROLLERS.add(c);
-        }
+    NeutralIdleMode(String name, CANSparkMax.IdleMode spark, NeutralMode talon) {
+        this.name = name;
+        this.spark = spark;
+        this.talon = talon;
     }
 
-    public static SpeedController get(int i) {
-        return CONTROLLERS.get(i - 1);
+    public void applyTo(SpeedController... controllers) {
+        for (SpeedController controller : controllers) {
+            if (controller instanceof CANSparkMax) {
+                ((CANSparkMax) controller).setIdleMode(this.spark);
+            } else if(controller instanceof WPI_TalonSRX) {
+                ((WPI_TalonSRX) controller).setNeutralMode(this.talon);
+            }
+        }
     }
 }

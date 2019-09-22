@@ -31,22 +31,11 @@ import java.util.stream.Collector;
 public class MechLogger {
 
     private static final double POWER_CMP_FUZZ = 0.001;
-
-    private static boolean basicallyEqual(double a, double b) {
-        return a - POWER_CMP_FUZZ < b && b < a + POWER_CMP_FUZZ;
-    }
-
-    private static StringJoiner newTagJoiner() {
-        return new StringJoiner(",", "tags=", ", ")
-                .setEmptyValue("");
-    }
-
     private final Logger delegate;
     private final String tagsProcessed;
+    private final Map<String, Object> conditions = new HashMap<>();
     private double lastPower;
     private Double lastSetpoint;
-    private final Map<String, Object> conditions = new HashMap<>();
-
     MechLogger(Logger delegate, List<String> tags) {
         this.delegate = delegate;
         this.tagsProcessed = tags.stream().collect(Collector.of(
@@ -55,6 +44,15 @@ public class MechLogger {
                 StringJoiner::merge,
                 StringJoiner::toString
         ));
+    }
+
+    private static boolean basicallyEqual(double a, double b) {
+        return a - POWER_CMP_FUZZ < b && b < a + POWER_CMP_FUZZ;
+    }
+
+    private static StringJoiner newTagJoiner() {
+        return new StringJoiner(",", "tags=", ", ")
+                .setEmptyValue("");
     }
 
     private void logPower(double power) {

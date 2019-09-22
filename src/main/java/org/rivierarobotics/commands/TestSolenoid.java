@@ -31,18 +31,6 @@ import java.util.function.Consumer;
 
 @GenerateCreator
 public class TestSolenoid extends Command {
-    @Singleton
-    public static class TSSystem extends Subsystem {
-        @Inject
-        public TSSystem() {
-        }
-
-        @Override
-        protected void initDefaultCommand() {
-
-        }
-    }
-
     private final Consumer<Boolean> out;
 
     public TestSolenoid(@Provided TSSystem TSSystem, Consumer<Boolean> out) {
@@ -63,5 +51,17 @@ public class TestSolenoid extends Command {
     @Override
     protected boolean isFinished() {
         return false;
+    }
+
+    @Singleton
+    public static class TSSystem extends Subsystem {
+        @Inject
+        public TSSystem() {
+        }
+
+        @Override
+        protected void initDefaultCommand() {
+
+        }
     }
 }

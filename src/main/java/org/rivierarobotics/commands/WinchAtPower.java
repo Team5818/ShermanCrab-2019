@@ -37,7 +37,7 @@ public class WinchAtPower extends InstantCommand {
     }
 
     @Override
-    protected void initialize() {
-        winchController.setPower(pwr);
+    protected void execute() {
+        winchController.atPower(pwr);
     }
 }

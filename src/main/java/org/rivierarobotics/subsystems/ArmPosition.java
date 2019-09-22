@@ -23,23 +23,19 @@ package org.rivierarobotics.subsystems;
 public enum ArmPosition {
     ZERO_DEGREES(0),
     NINETY_DEGREES(90),
-    FORTY_FIVE_DEGREES(45),
 
-    ROCKET_LEVEL_ONE(48),
+    ROCKET_LEVEL_ONE(47),
     ROCKET_LEVEL_TWO(22),
     CARGO_SHIP(40),
-    HUMAN_PLAYER_STATION(24),
     COLLECT(90),
 
-    L2_CLIMB(118);
+    CLIMB_INITIAL(82),
+    CLIMB_PUSH(106);
 
-    public final double degreesFront;
-    public final double degreesBack;
-    public final double ticksFront;
-    public final double ticksBack;
     public final static double TICKS_AT_ZERO = 2835;
     private final static double TICKS_AT_NINETY = 3835;
     public static final double TICKS_TO_DEGREES = (TICKS_AT_NINETY - TICKS_AT_ZERO) / 90;
+    public final double degreesFront, degreesBack, ticksFront, ticksBack;
 
     ArmPosition(double degrees) {
         this.degreesFront = degrees;

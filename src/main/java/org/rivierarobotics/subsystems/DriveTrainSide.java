@@ -25,57 +25,21 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
 public class DriveTrainSide {
-    private static final double INCHES_TO_TICKS;
-    private static final double P;
-    private static final double I;
-    private static final double D;
-    private static final double F;
-
-    private static SimpleWidget ezWidget(String name, Object def) {
-        return Shuffleboard.getTab("Drive Train").addPersistent(name, def);
-    }
-
-    static {
-        INCHES_TO_TICKS = ezWidget("Inches to Ticks", 1).getEntry().getDouble(1);
-        System.err.println("Inches to Ticks: " + INCHES_TO_TICKS);
-
-        P = ezWidget("P", 0.2).getEntry().getDouble(0.2);
-        System.err.println("P: " + P);
-
-        I = ezWidget("I", 0.0).getEntry().getDouble(0);
-        System.err.println("I: " + I);
-
-        D = ezWidget("D", 0.0).getEntry().getDouble(0);
-        System.err.println("D: " + D);
-
-        F = ezWidget("F", 0.2).getEntry().getDouble(0.2);
-        System.err.println("F: " + F);
-    }
-
     private final MechLogger logger;
     private WPI_TalonSRX talonMaster;
     private CANSparkMax sparkSlaveOne;
     private CANSparkMax sparkSlaveTwo;
-    private int distanceInvert;
-    private PIDController pidLoop;
 
     public DriveTrainSide(int master, int slaveOne, int slaveTwo, boolean invert) {
         this.logger = Logging.getLogger(getClass(), invert ? "left" : "right");
         talonMaster = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
-        if (invert) {
-            distanceInvert = -1;
-        } else {
-            distanceInvert = 1;
-        }
 
         talonMaster.setInverted(invert);
 
@@ -86,48 +50,21 @@ public class DriveTrainSide {
         sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
         sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getTicks), this::setMotorPower);
-    }
-
-    public double getDistance() {
-        return getTicks() / INCHES_TO_TICKS;
+        logger.conditionChange("neutral_mode", "brake");
+        NeutralIdleMode.BRAKE.applyTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
     }
 
     public int getTicks() {
-        return talonMaster.getSensorCollection().getQuadraturePosition() * distanceInvert;
-    }
-
-    public void addDistance(double inches) {
-        double ticks = inches * INCHES_TO_TICKS;
-        double newSetpoint = getTicks() + ticks;
-        logger.setpointChange(newSetpoint);
-        pidLoop.setSetpoint(newSetpoint);
-        logger.conditionChange("pid_loop", "enabled");
-        pidLoop.enable();
+        return talonMaster.getSensorCollection().getQuadraturePosition();
     }
 
     public void setPower(double pwr) {
-        if (pwr != 0 && pidLoop.isEnabled()) {
-            logger.conditionChange("pid_loop", "disabled");
-            pidLoop.disable();
-            logger.clearSetpoint();
-        }
-
-        if (!pidLoop.isEnabled()) {
-            setMotorPower(pwr);
-        }
+        rawSetPower(pwr);
     }
 
-    private void setMotorPower(double pwr) {
+    private void rawSetPower(double pwr) {
         logger.powerChange(pwr);
         talonMaster.set(pwr);
-    }
-
-    public void setBrake() {
-        logger.conditionChange("neutral_mode", "brake");
-        talonMaster.setNeutralMode(NeutralMode.Brake);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setMaxCurrent(int maxCurrent) {
