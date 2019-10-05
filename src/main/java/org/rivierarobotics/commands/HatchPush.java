@@ -32,5 +32,7 @@ public class HatchPush extends CommandGroup {
         addSequential(piston.extend(Piston.PUSH));
         addSequential(new TimedCommand(0.05));
         addSequential(piston.extend(Piston.CLAMP));
+        addSequential(new TimedCommand(1.0));
+        addSequential(piston.retract(Piston.PUSH));
     }
 }

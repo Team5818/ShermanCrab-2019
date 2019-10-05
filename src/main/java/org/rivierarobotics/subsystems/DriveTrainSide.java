@@ -20,12 +20,9 @@
 
 package org.rivierarobotics.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.PIDController;
-import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -42,13 +39,8 @@ public class DriveTrainSide {
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         talonMaster.setInverted(invert);
-
-        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, true);
-
-        talonMaster.setNeutralMode(NeutralMode.Coast);
-        sparkSlaveOne.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        sparkSlaveTwo.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        sparkSlaveOne.setInverted(invert);
+        sparkSlaveTwo.setInverted(invert);
 
         logger.conditionChange("neutral_mode", "brake");
         NeutralIdleMode.BRAKE.applyTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
@@ -65,6 +57,8 @@ public class DriveTrainSide {
     private void rawSetPower(double pwr) {
         logger.powerChange(pwr);
         talonMaster.set(pwr);
+        sparkSlaveOne.set(pwr);
+        sparkSlaveTwo.set(pwr);
     }
 
     public void setMaxCurrent(int maxCurrent) {
