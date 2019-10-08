@@ -23,6 +23,9 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.Controller;
+import edu.wpi.first.wpilibj.SpeedController;
+import org.rivierarobotics.util.ControllerUtil;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -38,12 +41,9 @@ public class DriveTrainSide {
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        talonMaster.setInverted(invert);
-        sparkSlaveOne.setInverted(invert);
-        sparkSlaveTwo.setInverted(invert);
-
-        logger.conditionChange("neutral_mode", "brake");
+        ControllerUtil.setInverted(invert, talonMaster, sparkSlaveOne, sparkSlaveTwo);
         NeutralIdleMode.BRAKE.applyTo(talonMaster, sparkSlaveOne, sparkSlaveTwo);
+        logger.conditionChange("neutral_mode", "brake");
     }
 
     public int getTicks() {
