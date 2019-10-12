@@ -24,16 +24,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.commands.ArmControl;
 import org.rivierarobotics.util.*;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.List;
 
 @Singleton
 public class ArmController extends Subsystem {
@@ -44,18 +40,21 @@ public class ArmController extends Subsystem {
     private final PistonController pistonController;
     private final PIDController pidLoop;
     private Provider<ArmControl> command;
-    private static final double P = 0.005, I = 0.0, D = 0.0, F = 0.0;
+    private static final double P = 0.0005, I = 0.0, D = 0.0, F = 0.0;
     private static final double GRAVITY_CONSTANT = -0.045;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     public boolean front = true;
 
-    @Inject
     public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
         armTalon = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        ControllerUtil.setInverted(false, armTalon, sparkSlaveOne, sparkSlaveTwo);
+        armTalon.setInverted(false);
+
+        sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
+        sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
+
         setMode(NeutralIdleMode.COAST);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
@@ -105,8 +104,6 @@ public class ArmController extends Subsystem {
         pwr = MathUtil.limit(pwr, 0.85);
         logger.powerChange(pwr);
         armTalon.set(pwr);
-        sparkSlaveOne.set(pwr);
-        sparkSlaveTwo.set(pwr);
     }
 
     private void stop() {
