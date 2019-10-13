@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 import org.rivierarobotics.subsystems.NeutralIdleMode;
@@ -106,6 +107,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        globalComponent.getHoodController().resetQuadratureEncoder();
         globalComponent.getWinchController().getPIDLoop().disable();
         globalComponent.getArmController().getPIDLoop().disable();
         globalComponent.getArmController().setMode(NeutralIdleMode.BRAKE);
@@ -146,6 +148,7 @@ public class Robot extends TimedRobot {
 
         hoodTicks.setDouble(globalComponent.getHoodController().getAngle());
         hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
+        SmartDashboard.putBoolean("limit", globalComponent.getWinchController().getClimbLimitSwitch());
         hoodDegrees.setDouble(globalComponent.getHoodController().getDegrees());
         armAngle.setDouble(globalComponent.getArmController().getAngle());
         armDegrees.setDouble(globalComponent.getArmController().getDegrees());

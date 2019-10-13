@@ -89,11 +89,7 @@ public class ButtonConfiguration {
 
         JoystickButton hatchPush = new JoystickButton(codriverButtons, 8);
         hatchPush.whenPressed(cmds.hatch().push());
-        hatchPush.whenReleased(cmds.hatch().pushCleanup());
-
-        JoystickButton sneakPush = new JoystickButton(driverButtons, 4);
-        sneakPush.whenPressed(cmds.piston().extend(Piston.PUSH));
-        sneakPush.whenReleased(cmds.piston().retract(Piston.PUSH));
+        hatchPush.whenReleased(cmds.piston().retract(Piston.PUSH));
 
         //clamp
         JoystickButton clampOpen = new JoystickButton(codriverRight, 1);
@@ -153,7 +149,7 @@ public class ButtonConfiguration {
         JoystickButton overrideWinchSafety = new JoystickButton(driverButtons, 3);
         overrideWinchSafety.whenPressed(cmds.winch().overrideSafety());
 
-        JoystickButton resetHoodEncoder = new JoystickButton(driverButtons, 4);
+        JoystickButton resetHoodEncoder = new JoystickButton(codriverButtons, 10);
         resetHoodEncoder.whenPressed(cmds.hood().resetEncoder());
 
         JoystickButton resetWinchEncoder = new JoystickButton(driverButtons, 5);
