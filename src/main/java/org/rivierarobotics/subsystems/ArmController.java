@@ -31,37 +31,34 @@ import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MathUtil;
 import org.rivierarobotics.util.MechLogger;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
 public class ArmController extends Subsystem {
-    private final WPI_TalonSRX arm;
+    private final WPI_TalonSRX armTalon;
     private final CANSparkMax sparkSlaveOne;
     private final CANSparkMax sparkSlaveTwo;
     private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
     private final PIDController pidLoop;
     private Provider<ArmControl> command;
-    private static final double P = 0.005, I = 0.0, D = 0.0, F = 0.0;
+    private static final double P = 0.0005, I = 0.0, D = 0.0, F = 0.0;
     private static final double GRAVITY_CONSTANT = -0.045;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     public boolean front = true;
 
-    @Inject
     public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
-        arm = new WPI_TalonSRX(master);
+        armTalon = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        arm.setInverted(false);
+        armTalon.setInverted(false);
 
         sparkSlaveOne.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
         setMode(NeutralIdleMode.COAST);
-
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
 
         this.pistonController = pistonController;
@@ -69,7 +66,7 @@ public class ArmController extends Subsystem {
     }
 
     public int getAngle() {
-        int angle = arm.getSensorCollection().getPulseWidthPosition();
+        int angle = armTalon.getSensorCollection().getPulseWidthPosition();
         return (angle > 4096) ? (angle % 4096) : ((angle < -4096) ? (-(Math.abs(angle)) % 4096) : angle);
     }
 
@@ -109,7 +106,7 @@ public class ArmController extends Subsystem {
         pwr += Math.sin(Math.toRadians(getDegrees())) * GRAVITY_CONSTANT;
         pwr = MathUtil.limit(pwr, 0.85);
         logger.powerChange(pwr);
-        arm.set(pwr);
+        armTalon.set(pwr);
     }
 
     private void stop() {
@@ -142,7 +139,7 @@ public class ArmController extends Subsystem {
     }
 
     public void setMode(NeutralIdleMode mode) {
-        mode.applyTo(arm, sparkSlaveOne, sparkSlaveTwo);
+        mode.applyTo(armTalon, sparkSlaveOne, sparkSlaveTwo);
         logger.conditionChange("neutral_mode", mode.name);
     }
 
@@ -150,8 +147,8 @@ public class ArmController extends Subsystem {
         return pidLoop;
     }
 
-    public WPI_TalonSRX getArm() {
-        return arm;
+    public WPI_TalonSRX getArmTalon() {
+        return armTalon;
     }
 
     @Override

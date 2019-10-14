@@ -23,7 +23,10 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.HoodPosition;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.WinchController;
 
 import javax.inject.Inject;
 
@@ -35,17 +38,17 @@ public class AutoClimb extends CommandGroup {
                      @Provided WinchController winchController) {
         this.winchController = winchController;
         requires(winchController);
+
         addSequential(piston.extend(Piston.LOCK_CLIMB));
         addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
-        addSequential(new TimedCommand(0.1));
         addSequential(arm.setFrontPosition(ArmPosition.CLIMB_INITIAL));
-        addSequential(piston.extend(Piston.HELPER_CLIMB));
-        addSequential(new TimedCommand(0.1));
-        addSequential(winch.set(WinchPosition.HELPER_RETRACT));
+        addSequential(new TimedCommand(0.2));
         addSequential(arm.setFrontPosition(ArmPosition.CLIMB_PUSH));
-        addSequential(new TimedCommand(0.5));
-        addSequential(piston.retract(Piston.HELPER_CLIMB));
+        addSequential(piston.extend(Piston.HELPER_CLIMB));
+        addSequential(new TimedCommand(0.4));
         addSequential(winch.atPower(1.0));
+        addSequential(new TimedCommand(1.5));
+        addSequential(piston.retract(Piston.HELPER_CLIMB));
         addSequential(new TimedCommand(2.0));
         addSequential(hood.setFrontPosition(HoodPosition.RESTING_ARM_ZERO));
         addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));

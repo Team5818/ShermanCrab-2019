@@ -43,7 +43,7 @@ public enum NeutralIdleMode {
         for (SpeedController controller : controllers) {
             if (controller instanceof CANSparkMax) {
                 ((CANSparkMax) controller).setIdleMode(this.spark);
-            } else if(controller instanceof WPI_TalonSRX) {
+            } else if (controller instanceof WPI_TalonSRX) {
                 ((WPI_TalonSRX) controller).setNeutralMode(this.talon);
             }
         }
