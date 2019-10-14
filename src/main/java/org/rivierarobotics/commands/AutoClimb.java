@@ -23,7 +23,10 @@ package org.rivierarobotics.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import net.octyl.aptcreator.Provided;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.HoodPosition;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.WinchController;
 
 import javax.inject.Inject;
 

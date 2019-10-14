@@ -26,7 +26,10 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.rivierarobotics.commands.ArmControl;
-import org.rivierarobotics.util.*;
+import org.rivierarobotics.util.AbstractPIDSource;
+import org.rivierarobotics.util.Logging;
+import org.rivierarobotics.util.MathUtil;
+import org.rivierarobotics.util.MechLogger;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -144,7 +147,7 @@ public class ArmController extends Subsystem {
         return pidLoop;
     }
 
-    public WPI_TalonSRX getArm() {
+    public WPI_TalonSRX getArmTalon() {
         return armTalon;
     }
 

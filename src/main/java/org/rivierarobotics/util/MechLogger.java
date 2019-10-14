@@ -36,6 +36,7 @@ public class MechLogger {
     private final Map<String, Object> conditions = new HashMap<>();
     private double lastPower;
     private Double lastSetpoint;
+
     MechLogger(Logger delegate, List<String> tags) {
         this.delegate = delegate;
         this.tagsProcessed = tags.stream().collect(Collector.of(

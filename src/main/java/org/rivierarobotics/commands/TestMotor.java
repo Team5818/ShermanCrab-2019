@@ -35,6 +35,7 @@ import java.util.function.DoubleSupplier;
 public class TestMotor extends Command {
     private final DoubleSupplier stick;
     private final DoubleConsumer out;
+
     public TestMotor(@Provided TMSystem tmSystem, DoubleSupplier stick, DoubleConsumer out) {
         requires(tmSystem);
         this.stick = stick;
