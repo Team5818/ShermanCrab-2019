@@ -43,7 +43,10 @@ public class ArmController extends Subsystem {
     private final PistonController pistonController;
     private final PIDController pidLoop;
     private Provider<ArmControl> command;
-    private static final double P = 0.0005, I = 0.0, D = 0.0, F = 0.0;
+    private static final double P = 0.0005;
+    private static final double I = 0.0;
+    private static final double D = 0.0;
+    private static final double F = 0.0;
     private static final double GRAVITY_CONSTANT = -0.045;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     public boolean front = true;

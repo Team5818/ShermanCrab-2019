@@ -20,10 +20,10 @@
 
 package org.rivierarobotics.commands;
 
-import javax.inject.Inject;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import javax.inject.Inject;
 
 public class TestCommands {
     private final TestMotorCreator testMotorCreator;

@@ -25,16 +25,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 
+import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.function.Consumer;
 
 @GenerateCreator
 public class TestSolenoid extends Command {
     private final Consumer<Boolean> out;
 
-    public TestSolenoid(@Provided TSSystem TSSystem, Consumer<Boolean> out) {
-        requires(TSSystem);
+    public TestSolenoid(@Provided TSSystem tsSystem, Consumer<Boolean> out) {
+        requires(tsSystem);
         this.out = out;
     }
 
@@ -61,7 +61,6 @@ public class TestSolenoid extends Command {
 
         @Override
         protected void initDefaultCommand() {
-
         }
     }
 }

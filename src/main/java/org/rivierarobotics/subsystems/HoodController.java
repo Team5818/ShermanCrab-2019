@@ -41,7 +41,10 @@ import javax.inject.Singleton;
 @Singleton
 public class HoodController extends Subsystem {
     public static final double ANGLE_SCALE = 4096 / 360;
-    private static final NetworkTableEntry SETPOINT_ANGLE, PWR, GRAV_OFFSET, REAL_ANGLE;
+    private static final NetworkTableEntry SETPOINT_ANGLE;
+    private static final NetworkTableEntry PWR;
+    private static final NetworkTableEntry GRAV_OFFSET;
+    private static final NetworkTableEntry REAL_ANGLE;
     public static HoodPosition CURRENT_HOOD_POSITION;
     public static boolean HOOD_FRONT = true;
 
@@ -57,7 +60,10 @@ public class HoodController extends Subsystem {
     private final ArmController armController;
     private final PIDController pidLoop;
     private final MechLogger logger;
-    private static final double P = 0.00025, I = 0, D = 0, F = 0;
+    private static final double P = 0.00025;
+    private static final double I = 0.0;
+    private static final double D = 0.0;
+    private static final double F = 0.0;
     private static final double GRAVITY_CONSTANT = 0.02;
     private static final double MAX_PID = 0.2;
     private static final double MAX_JS = 0.2;
@@ -75,7 +81,7 @@ public class HoodController extends Subsystem {
         driveSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         encoderTalon.setSensorPhase(true);
         pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
-                () -> MathUtil.moduloPositive(getAngle(), 4096)
+            () -> MathUtil.moduloPositive(getAngle(), 4096)
         ), this::rawSetPower, 0.01);
 
         pidLoop.setInputRange(0, 4096);

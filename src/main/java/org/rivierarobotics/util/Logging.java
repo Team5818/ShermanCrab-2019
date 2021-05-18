@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Logging {
+    private Logging() {
+    }
 
     public static MechLogger getLogger(Class<?> clazz, String... tags) {
         return getLogger(clazz.getName(), tags);
@@ -39,5 +41,4 @@ public class Logging {
     private static MechLogger getMechLogger(Logger logger, String[] tags) {
         return new MechLogger(logger, Stream.of(tags).collect(Collectors.toList()));
     }
-
 }

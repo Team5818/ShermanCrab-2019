@@ -22,7 +22,16 @@ package org.rivierarobotics.inject;
 
 import dagger.Module;
 import dagger.Subcomponent;
-import org.rivierarobotics.commands.*;
+import org.rivierarobotics.commands.ArmCommands;
+import org.rivierarobotics.commands.ClimbCommands;
+import org.rivierarobotics.commands.DriveCommands;
+import org.rivierarobotics.commands.GearCommands;
+import org.rivierarobotics.commands.HatchCommands;
+import org.rivierarobotics.commands.HoodCommands;
+import org.rivierarobotics.commands.PistonCommands;
+import org.rivierarobotics.commands.TentacleCommands;
+import org.rivierarobotics.commands.TestCommands;
+import org.rivierarobotics.commands.WinchCommands;
 
 @Subcomponent
 public abstract class CommandComponent {

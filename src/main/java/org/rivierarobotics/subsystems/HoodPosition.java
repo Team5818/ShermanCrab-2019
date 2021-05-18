@@ -22,18 +22,19 @@ package org.rivierarobotics.subsystems;
 
 import org.rivierarobotics.util.MathUtil;
 
-import static org.rivierarobotics.subsystems.HoodTentacleInvert.*;
-
 public enum HoodPosition {
-    RESTING_ARM_ZERO(0, NEITHER),
-    ROCKET_LEVEL_ONE(22, FRONT_ONLY),
-    ROCKET_LEVEL_TWO(86, BACK_ONLY),
-    CARGO_SHIP(120, BACK_ONLY),
-    COLLECT(6, BACK_ONLY),
-    CLIMB(67, NEITHER);
+    RESTING_ARM_ZERO(0, HoodTentacleInvert.NEITHER),
+    ROCKET_LEVEL_ONE(22, HoodTentacleInvert.FRONT_ONLY),
+    ROCKET_LEVEL_TWO(86, HoodTentacleInvert.BACK_ONLY),
+    CARGO_SHIP(120, HoodTentacleInvert.BACK_ONLY),
+    COLLECT(6, HoodTentacleInvert.BACK_ONLY),
+    CLIMB(67, HoodTentacleInvert.NEITHER);
 
-    public final double degreesFront, degreesBack, ticksFront, ticksBack;
     public final HoodTentacleInvert tentacleInvert;
+    public final double degreesFront;
+    public final double degreesBack;
+    public final double ticksFront;
+    public final double ticksBack;
 
     HoodPosition(double degrees, HoodTentacleInvert tentacleInvert) {
         this.tentacleInvert = tentacleInvert;

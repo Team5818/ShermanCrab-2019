@@ -37,6 +37,9 @@ public class ControlsModule {
     private static final int DRIVER_BUTTONS = 4;
     private static final int CODRIVER_BUTTONS = 5;
 
+    private ControlsModule() {
+    }
+
     @Provides
     @Singleton
     @Input(Input.Position.DRIVER_LEFT)

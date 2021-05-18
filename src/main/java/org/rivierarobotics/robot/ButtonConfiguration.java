@@ -25,16 +25,19 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import org.rivierarobotics.commands.CommandGroups;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmPosition;
+import org.rivierarobotics.subsystems.Gear;
+import org.rivierarobotics.subsystems.HoodPosition;
+import org.rivierarobotics.subsystems.Piston;
+import org.rivierarobotics.subsystems.TestControllers;
 
-import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.util.Vector;
 import java.util.function.DoubleConsumer;
-
-import static org.rivierarobotics.commands.CommandGroups.inOrder;
+import javax.inject.Inject;
 
 public class ButtonConfiguration {
     private final Joystick driverLeft;
@@ -100,49 +103,49 @@ public class ButtonConfiguration {
 
         //hood & arm
         JoystickButton frontRocketTwo = new JoystickButton(codriverButtons, 4);
-        frontRocketTwo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_TWO),
+        frontRocketTwo.whenPressed(CommandGroups.inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_TWO),
                 cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_TWO)));
 
         JoystickButton backRocketTwo = new JoystickButton(codriverButtons, 1);
-        backRocketTwo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_TWO),
+        backRocketTwo.whenPressed(CommandGroups.inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_TWO),
                 cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_TWO)));
 
         JoystickButton frontRocketOne = new JoystickButton(codriverButtons, 5);
-        frontRocketOne.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
+        frontRocketOne.whenPressed(CommandGroups.inOrder(cmds.hood().setFrontPosition(HoodPosition.ROCKET_LEVEL_ONE),
                 cmds.arm().setFrontPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
         JoystickButton backRocketOne = new JoystickButton(codriverButtons, 2);
-        backRocketOne.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_ONE),
+        backRocketOne.whenPressed(CommandGroups.inOrder(cmds.hood().setBackPosition(HoodPosition.ROCKET_LEVEL_ONE),
                 cmds.arm().setBackPosition(ArmPosition.ROCKET_LEVEL_ONE)));
 
         JoystickButton frontCargo = new JoystickButton(codriverButtons, 6);
-        frontCargo.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.CARGO_SHIP),
+        frontCargo.whenPressed(CommandGroups.inOrder(cmds.hood().setFrontPosition(HoodPosition.CARGO_SHIP),
                 cmds.arm().setFrontPosition(ArmPosition.CARGO_SHIP)));
 
         JoystickButton backCargo = new JoystickButton(codriverButtons, 3);
-        backCargo.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.CARGO_SHIP),
+        backCargo.whenPressed(CommandGroups.inOrder(cmds.hood().setBackPosition(HoodPosition.CARGO_SHIP),
                 cmds.arm().setBackPosition(ArmPosition.CARGO_SHIP)));
 
         JoystickButton frontCollect = new JoystickButton(codriverButtons, 11);
-        frontCollect.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.COLLECT),
+        frontCollect.whenPressed(CommandGroups.inOrder(cmds.hood().setFrontPosition(HoodPosition.COLLECT),
                 cmds.arm().setFrontPosition(ArmPosition.COLLECT)));
 
         JoystickButton backCollect = new JoystickButton(codriverButtons, 9);
-        backCollect.whenPressed(inOrder(cmds.hood().setBackPosition(HoodPosition.COLLECT),
+        backCollect.whenPressed(CommandGroups.inOrder(cmds.hood().setBackPosition(HoodPosition.COLLECT),
                 cmds.arm().setBackPosition(ArmPosition.COLLECT)));
 
         JoystickButton zeroArm = new JoystickButton(codriverButtons, 7);
-        zeroArm.whenPressed(inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
+        zeroArm.whenPressed(CommandGroups.inOrder(cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES)));
 
         //resets
         JoystickButton coDriverRetractAll = new JoystickButton(codriverButtons, 12);
-        coDriverRetractAll.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY),
+        coDriverRetractAll.whenPressed(CommandGroups.inOrder(cmds.piston().retract(Piston.DEPLOY),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES),
                 cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO)));
 
         JoystickButton driverRetractAll = new JoystickButton(driverButtons, 6);
-        driverRetractAll.whenPressed(inOrder(cmds.piston().retract(Piston.DEPLOY),
+        driverRetractAll.whenPressed(CommandGroups.inOrder(cmds.piston().retract(Piston.DEPLOY),
                 cmds.arm().setFrontPosition(ArmPosition.ZERO_DEGREES),
                 cmds.hood().setFrontPosition(HoodPosition.RESTING_ARM_ZERO)));
 
@@ -181,32 +184,32 @@ public class ButtonConfiguration {
         clearButtons();
         for (int i = 1; i <= 6; i++) {
             DoubleConsumer out = TestControllers.get(i)::set;
-            new JoystickButton(driverButtons, i).whenPressed(cmds.test().motor(
-                    () -> -driverLeft.getY(),
-                    out));
+            new JoystickButton(driverButtons, i).whenPressed(cmds.test()
+                .motor(() -> -driverLeft.getY(), out));
         }
         for (int i = 7; i <= 9; i++) {
             DoubleConsumer out = TestControllers.get(i)::set;
-            new JoystickButton(codriverButtons, i).whenPressed(cmds.test().motor(
-                    () -> -codriverLeft.getY(),
-                    out));
+            new JoystickButton(codriverButtons, i).whenPressed(cmds.test()
+                .motor(() -> -codriverLeft.getY(), out));
         }
-        new JoystickButton(codriverButtons, 10).whenPressed(cmds.test().motor(
-                () -> -codriverLeft.getY(),
-                TestControllers.get(10)::set));
+        new JoystickButton(codriverButtons, 10).whenPressed(cmds.test()
+                .motor(() -> -codriverLeft.getY(), TestControllers.get(10)::set));
         for (int i = 0; i < 6; i++) {
-            new JoystickButton(codriverButtons, i + 1).whenPressed(cmds.test().solenoid(new Solenoid(i)::set));
+            new JoystickButton(codriverButtons, i + 1)
+                    .whenPressed(cmds.test().solenoid(new Solenoid(i)::set));
         }
-        new JoystickButton(codriverButtons, 11).whenPressed(cmds.tentacle().spin(0.2));
-        new JoystickButton(codriverButtons, 12).whenPressed(cmds.tentacle().spin(-0.2));
+        new JoystickButton(codriverButtons, 11)
+                .whenPressed(cmds.tentacle().spin(0.2));
+        new JoystickButton(codriverButtons, 12)
+                .whenPressed(cmds.tentacle().spin(-0.2));
     }
 
     @SuppressWarnings("unchecked")
     private void clearButtons() {
         try {
-            Field m_buttons = Scheduler.class.getDeclaredField("m_buttons");
-            m_buttons.setAccessible(true);
-            Vector<Trigger.ButtonScheduler> buttons = (Vector<Trigger.ButtonScheduler>) m_buttons.get(Scheduler.getInstance());
+            Field mButtons = Scheduler.class.getDeclaredField("mButtons");
+            mButtons.setAccessible(true);
+            Vector<Trigger.ButtonScheduler> buttons = (Vector<Trigger.ButtonScheduler>) mButtons.get(Scheduler.getInstance());
             if (buttons != null) {
                 buttons.clear();
             }

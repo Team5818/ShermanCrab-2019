@@ -24,7 +24,14 @@ import dagger.Component;
 import org.rivierarobotics.inject.CommandComponent.CCModule;
 import org.rivierarobotics.robot.ButtonConfiguration;
 import org.rivierarobotics.robot.ControlsModule;
-import org.rivierarobotics.subsystems.*;
+import org.rivierarobotics.subsystems.ArmController;
+import org.rivierarobotics.subsystems.DriveTrain;
+import org.rivierarobotics.subsystems.HoodController;
+import org.rivierarobotics.subsystems.PistonController;
+import org.rivierarobotics.subsystems.Shifter;
+import org.rivierarobotics.subsystems.SubsystemModule;
+import org.rivierarobotics.subsystems.TentacleController;
+import org.rivierarobotics.subsystems.WinchController;
 
 import javax.inject.Singleton;
 

@@ -26,10 +26,10 @@ import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.util.MathUtil;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @GenerateCreator
 public class TestMotor extends Command {

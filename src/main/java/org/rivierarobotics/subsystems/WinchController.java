@@ -37,7 +37,10 @@ public class WinchController extends Subsystem {
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
-    private static final double P = 0.0025, I = 0, D = 0, F = 0;
+    private static final double P = 0.0025;
+    private static final double I = 0.0;
+    private static final double D = 0.0;
+    private static final double F = 0.0;
     public boolean lockOverride = false;
     private CANSparkMax winch;
     private DigitalInput climbLimitSwitch;

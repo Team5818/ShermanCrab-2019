@@ -26,7 +26,8 @@ public enum HoodTentacleInvert {
     BACK_ONLY(false, true),
     NEITHER(false, false);
 
-    public final boolean front, back;
+    public final boolean front;
+    public final boolean back;
 
     HoodTentacleInvert(boolean front, boolean back) {
         this.front = front;

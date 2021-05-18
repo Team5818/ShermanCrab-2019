@@ -55,6 +55,9 @@ public class TestControllers {
         }
     }
 
+    private TestControllers() {
+    }
+
     public static SpeedController get(int i) {
         return CONTROLLERS.get(i - 1);
     }

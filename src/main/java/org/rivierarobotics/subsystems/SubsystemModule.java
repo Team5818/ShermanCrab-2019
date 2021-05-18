@@ -53,6 +53,9 @@ public class SubsystemModule {
 
     private static final int SHIFT_SOLENOID = 0;
 
+    private SubsystemModule() {
+    }
+
     @Provides
     @Singleton
     @Sided(Sided.Side.LEFT)

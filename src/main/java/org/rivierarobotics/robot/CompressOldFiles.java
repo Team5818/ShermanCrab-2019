@@ -29,10 +29,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
-
-import static java.util.stream.Collectors.toList;
 
 class CompressOldFiles {
     private static final Pattern MECH_LOG = Pattern.compile("mechanisms-.+\\.log");
@@ -40,7 +39,7 @@ class CompressOldFiles {
     void run() throws IOException {
         List<Path> files;
         try (Stream<Path> logs = Files.list(Paths.get("/home/lvuser/logs"))) {
-            files = logs.collect(toList());
+            files = logs.collect(Collectors.toList());
         }
         for (Path file : files) {
             String fileName = file.getFileName().toString();
