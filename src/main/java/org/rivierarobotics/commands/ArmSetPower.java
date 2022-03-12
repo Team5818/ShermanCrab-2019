@@ -20,13 +20,11 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import net.octyl.aptcreator.GenerateCreator;
-import net.octyl.aptcreator.Provided;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.rivierarobotics.subsystems.ArmController;
 
 @GenerateCreator
-public class ArmSetPower extends Command {
+public class ArmSetPower extends CommandBase {
     private final double pwr;
     private final ArmController arm;
 
