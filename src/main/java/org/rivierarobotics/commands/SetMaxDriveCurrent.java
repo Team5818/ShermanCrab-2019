@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.DriveTrain;
@@ -33,11 +33,11 @@ public class SetMaxDriveCurrent extends InstantCommand {
     public SetMaxDriveCurrent(@Provided DriveTrain driveTrain, int pwr) {
         this.driveTrain = driveTrain;
         this.pwr = pwr;
-        requires(driveTrain);
+        addRequirements(driveTrain);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         driveTrain.getLeft().setMaxCurrent(pwr);
         driveTrain.getRight().setMaxCurrent(pwr);
     }

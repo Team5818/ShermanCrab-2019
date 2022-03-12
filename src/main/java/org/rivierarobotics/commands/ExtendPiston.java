@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.Piston;
@@ -34,11 +34,11 @@ public class ExtendPiston extends InstantCommand {
     public ExtendPiston(@Provided PistonController pistonController, Piston piston) {
         this.pistonController = pistonController;
         this.piston = piston;
-        requires(pistonController);
+        addRequirements(pistonController);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         pistonController.extendPiston(piston);
     }
 }

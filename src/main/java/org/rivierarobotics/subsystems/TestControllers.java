@@ -23,8 +23,8 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestControllers {
-    private static final List<SpeedController> CONTROLLERS = new ArrayList<>();
+    private static final List<MotorController> CONTROLLERS = new ArrayList<>();
 
     static {
         ShuffleboardTab tab = Shuffleboard.getTab("Test Controllers");
         for (int i = 1; i <= 13; i++) {
-            SpeedController c;
+            MotorController c;
             switch (i) {
                 case 1:
                 case 4:
@@ -58,7 +58,7 @@ public class TestControllers {
     private TestControllers() {
     }
 
-    public static SpeedController get(int i) {
+    public static MotorController get(int i) {
         return CONTROLLERS.get(i - 1);
     }
 }

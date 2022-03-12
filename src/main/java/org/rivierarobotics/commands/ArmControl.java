@@ -21,14 +21,14 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.ArmController;
 import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 
-public class ArmControl extends Command {
+public class ArmControl extends CommandBase {
     private final ArmController arm;
     private final Joystick armJoy;
 
@@ -36,17 +36,12 @@ public class ArmControl extends Command {
     public ArmControl(ArmController arm, @Input(Input.Position.CODRIVER_LEFT) Joystick armJoy) {
         this.arm = arm;
         this.armJoy = armJoy;
-        this.arm.getPIDLoop().disable();
-        requires(arm);
+        arm.disablePID();
+        addRequirements(arm);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         arm.setPower(MathUtil.fitDeadband(-armJoy.getY()));
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
     }
 }

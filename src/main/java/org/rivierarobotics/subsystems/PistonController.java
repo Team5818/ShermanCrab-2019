@@ -20,8 +20,9 @@
 
 package org.rivierarobotics.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -29,7 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class PistonController extends Subsystem {
+public class PistonController extends SubsystemBase {
     private final Solenoid clampPiston;
     private final Solenoid pushPiston;
     private final Solenoid deployPiston;
@@ -41,11 +42,11 @@ public class PistonController extends Subsystem {
 
     @Inject
     public PistonController() {
-        clampPiston = new Solenoid(1);
-        pushPiston = new Solenoid(2);
-        deployPiston = new Solenoid(3);
-        helperClimbPiston = new Solenoid(4);
-        lockClimbPiston = new Solenoid(5);
+        clampPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+        pushPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+        deployPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+        helperClimbPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
+        lockClimbPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
         this.logger = Logging.getLogger(getClass());
     }
 
@@ -80,8 +81,8 @@ public class PistonController extends Subsystem {
     }
 
     private void logState(Piston piston, boolean state) {
-        logger.conditionChange(pistonFor(piston).getName() + "_swState", state == piston.extend ? "extended" : "retracted");
-        logger.conditionChange(pistonFor(piston).getName() + "_hwState", state ? "extended" : "retracted");
+        logger.conditionChange(piston.name() + "_swState", state == piston.extend ? "extended" : "retracted");
+        logger.conditionChange(piston.name() + "_hwState", state ? "extended" : "retracted");
     }
 
     public void swap(Piston piston) {
@@ -89,10 +90,4 @@ public class PistonController extends Subsystem {
         pistonFor(piston).set(state);
         logState(piston, state);
     }
-
-    @Override
-    protected void initDefaultCommand() {
-
-    }
-
 }

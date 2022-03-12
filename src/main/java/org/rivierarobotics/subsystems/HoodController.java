@@ -23,13 +23,11 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import org.rivierarobotics.commands.HoodControl;
-import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MathUtil;
 import org.rivierarobotics.util.MechLogger;
@@ -39,7 +37,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
-public class HoodController extends Subsystem {
+public class HoodController extends DefaultSubsystem<HoodControl> {
     public static final double ANGLE_SCALE = 4096 / 360;
     private static final NetworkTableEntry SETPOINT_ANGLE;
     private static final NetworkTableEntry PWR;
@@ -67,26 +65,22 @@ public class HoodController extends Subsystem {
     private static final double GRAVITY_CONSTANT = 0.02;
     private static final double MAX_PID = 0.2;
     private static final double MAX_JS = 0.2;
-    private Provider<HoodControl> command;
+    private boolean isPidEnabled = false;
 
     @Inject
     public HoodController(ArmController armController, Provider<HoodControl> command, int drive, int encoder) {
+        super(command);
         this.driveSpark = new CANSparkMax(drive, CANSparkMaxLowLevel.MotorType.kBrushless);
         this.encoderTalon = new WPI_TalonSRX(encoder);
         this.armController = armController;
-        this.command = command;
         this.logger = Logging.getLogger(getClass());
 
         logger.conditionChange("neutral_mode", "brake");
         driveSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         encoderTalon.setSensorPhase(true);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(
-            () -> MathUtil.moduloPositive(getAngle(), 4096)
-        ), this::rawSetPower, 0.01);
+        pidLoop = new PIDController(P, I, D);
 
-        pidLoop.setInputRange(0, 4096);
-        pidLoop.setOutputRange(-MAX_PID, MAX_PID);
-        pidLoop.setContinuous();
+        pidLoop.enableContinuousInput(0, 4096);
     }
 
     private static SimpleWidget ezWidget(String name, Object def) {
@@ -101,7 +95,7 @@ public class HoodController extends Subsystem {
         pidLoop.setSetpoint(angle);
         logger.setpointChange(angle);
         SETPOINT_ANGLE.setDouble(angle);
-        pidLoop.enable();
+        isPidEnabled = true;
         logger.conditionChange("pid_loop", "enabled");
     }
 
@@ -110,8 +104,8 @@ public class HoodController extends Subsystem {
     }
 
     public void setPower(double pwr) {
-        if (pwr != 0 && pidLoop.isEnabled()) {
-            pidLoop.disable();
+        if (pwr != 0 && isPidEnabled) {
+            isPidEnabled = false;
             logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
             logger.conditionChange("neutral_mode", "coast");
@@ -121,7 +115,7 @@ public class HoodController extends Subsystem {
             driveSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         }
 
-        if (!pidLoop.isEnabled()) {
+        if (!isPidEnabled) {
             pwr += getGravOffset();
             rawSetPower(MathUtil.limit(pwr, MAX_JS));
         }
@@ -146,6 +140,14 @@ public class HoodController extends Subsystem {
         encoderTalon.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
+    public void disablePID() {
+        isPidEnabled = false;
+    }
+
+    public boolean isPidEnabled() {
+        return isPidEnabled;
+    }
+
     public PIDController getPIDLoop() {
         return pidLoop;
     }
@@ -156,10 +158,5 @@ public class HoodController extends Subsystem {
 
     public WPI_TalonSRX getEncoderTalon() {
         return encoderTalon;
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(command.get());
     }
 }

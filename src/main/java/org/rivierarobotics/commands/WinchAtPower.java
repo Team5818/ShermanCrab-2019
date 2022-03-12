@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.WinchController;
@@ -33,11 +33,11 @@ public class WinchAtPower extends InstantCommand {
     public WinchAtPower(@Provided WinchController winchController, double pwr) {
         this.winchController = winchController;
         this.pwr = pwr;
-        requires(winchController);
+        addRequirements(winchController);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         winchController.atPower(pwr);
     }
 }

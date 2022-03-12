@@ -21,14 +21,15 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.DriveTrain;
 import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 
-public class DriveControl extends Command {
+public class DriveControl extends CommandBase {
     private final DriveTrain driveTrain;
     private final Joystick throttle;
     private final Joystick turning;
@@ -39,11 +40,11 @@ public class DriveControl extends Command {
         this.driveTrain = dt;
         this.throttle = left;
         this.turning = right;
-        requires(driveTrain);
+        addRequirements(driveTrain);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         setArcade(MathUtil.fitDeadband(turning.getX()), MathUtil.fitDeadband(-throttle.getY()));
     }
 
@@ -74,10 +75,4 @@ public class DriveControl extends Command {
         }
         driveTrain.setPower(left, right);
     }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
-
 }

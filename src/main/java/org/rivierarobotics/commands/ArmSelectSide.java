@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.ArmController;
@@ -33,11 +33,11 @@ public class ArmSelectSide extends InstantCommand {
     public ArmSelectSide(@Provided ArmController arm, boolean front) {
         this.arm = arm;
         this.front = front;
-        requires(arm);
+        addRequirements(arm);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         arm.front = this.front;
     }
 }

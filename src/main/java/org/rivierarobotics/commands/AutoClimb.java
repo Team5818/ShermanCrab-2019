@@ -20,8 +20,9 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.ArmPosition;
 import org.rivierarobotics.subsystems.HoodPosition;
@@ -30,37 +31,37 @@ import org.rivierarobotics.subsystems.WinchController;
 
 import javax.inject.Inject;
 
-public class AutoClimb extends CommandGroup {
+public class AutoClimb extends SequentialCommandGroup {
     private final WinchController winchController;
 
     @Inject
     public AutoClimb(PistonCommands piston, HoodCommands hood, ArmCommands arm, WinchCommands winch,
                      @Provided WinchController winchController) {
         this.winchController = winchController;
-        requires(winchController);
+        addRequirements(winchController);
 
-        addSequential(piston.extend(Piston.LOCK_CLIMB));
-        addSequential(hood.setFrontPosition(HoodPosition.CLIMB));
-        addSequential(arm.setFrontPosition(ArmPosition.CLIMB_INITIAL));
-        addSequential(new TimedCommand(0.2));
-        addSequential(arm.setFrontPosition(ArmPosition.CLIMB_PUSH));
-        addSequential(piston.extend(Piston.HELPER_CLIMB));
-        addSequential(new TimedCommand(0.4));
-        addSequential(winch.atPower(1.0));
-        addSequential(new TimedCommand(1.5));
-        addSequential(piston.retract(Piston.HELPER_CLIMB));
-        addSequential(new TimedCommand(2.0));
-        addSequential(hood.setFrontPosition(HoodPosition.RESTING_ARM_ZERO));
-        addSequential(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
+        sequence(piston.extend(Piston.LOCK_CLIMB));
+        sequence(hood.setFrontPosition(HoodPosition.CLIMB));
+        sequence(arm.setFrontPosition(ArmPosition.CLIMB_INITIAL));
+        sequence(new WaitCommand(0.2));
+        sequence(arm.setFrontPosition(ArmPosition.CLIMB_PUSH));
+        sequence(piston.extend(Piston.HELPER_CLIMB));
+        sequence(new WaitCommand(0.4));
+        sequence(winch.atPower(1.0));
+        sequence(new WaitCommand(1.5));
+        sequence(piston.retract(Piston.HELPER_CLIMB));
+        sequence(new WaitCommand(2.0));
+        sequence(hood.setFrontPosition(HoodPosition.RESTING_ARM_ZERO));
+        sequence(arm.setFrontPosition(ArmPosition.ZERO_DEGREES));
     }
 
     @Override
-    protected void end() {
-        new AutoClimbEnd(winchController).start();
+    public void end(boolean interrupted) {
+        CommandScheduler.getInstance().schedule(new AutoClimbEnd(winchController));
     }
 
     @Override
-    protected boolean isFinished() {
+    public boolean isFinished() {
         return winchController.getClimbLimitSwitch();
     }
 }

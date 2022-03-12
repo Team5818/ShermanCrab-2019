@@ -20,8 +20,9 @@
 
 package org.rivierarobotics.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -29,13 +30,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class Shifter extends Subsystem {
+public class Shifter extends SubsystemBase {
     private final Solenoid shift;
     private final MechLogger logger;
 
     @Inject
     public Shifter(int ch) {
-        shift = new Solenoid(ch);
+        shift = new Solenoid(PneumaticsModuleType.CTREPCM, ch);
         this.logger = Logging.getLogger(getClass());
     }
 
@@ -47,10 +48,5 @@ public class Shifter extends Subsystem {
     public void swapGear() {
         logger.conditionChange("gear", !shift.get() ? "high" : "low");
         shift.set(!shift.get());
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-
     }
 }

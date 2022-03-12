@@ -20,15 +20,15 @@
 
 package org.rivierarobotics.robot;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.rivierarobotics.inject.DaggerGlobalComponent;
 import org.rivierarobotics.inject.GlobalComponent;
 import org.rivierarobotics.subsystems.NeutralIdleMode;
@@ -95,21 +95,21 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         logMatchIfNeeded();
         displayShuffleboard();
-        Scheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
     }
 
     @Override
     public void teleopPeriodic() {
         logMatchIfNeeded();
         displayShuffleboard();
-        Scheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
     }
 
     @Override
     public void disabledInit() {
         globalComponent.getHoodController().resetQuadratureEncoder();
-        globalComponent.getWinchController().getPIDLoop().disable();
-        globalComponent.getArmController().getPIDLoop().disable();
+        globalComponent.getWinchController().disablePID();
+        globalComponent.getArmController().disablePID();
         globalComponent.getArmController().setMode(NeutralIdleMode.BRAKE);
     }
 
@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        Scheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
     }
 
     private void logMatchIfNeeded() {
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
         driveTrainOutput.setDouble(globalComponent.getDriveTrain().getLeft().getTalon().getMotorOutputPercent());
 
         hoodTicks.setDouble(globalComponent.getHoodController().getAngle());
-        hoodPID.setBoolean(globalComponent.getHoodController().getPIDLoop().isEnabled());
+        hoodPID.setBoolean(globalComponent.getHoodController().isPidEnabled());
         SmartDashboard.putBoolean("limit", globalComponent.getWinchController().getClimbLimitSwitch());
         hoodDegrees.setDouble(globalComponent.getHoodController().getDegrees());
         armAngle.setDouble(globalComponent.getArmController().getAngle());

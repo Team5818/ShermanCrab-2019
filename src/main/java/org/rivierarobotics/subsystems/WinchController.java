@@ -22,10 +22,9 @@ package org.rivierarobotics.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import org.rivierarobotics.util.AbstractPIDSource;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -33,7 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class WinchController extends Subsystem {
+public class WinchController extends SubsystemBase {
     private final MechLogger logger;
     private final PIDController pidLoop;
     private final PistonController pistonController;
@@ -44,6 +43,7 @@ public class WinchController extends Subsystem {
     public boolean lockOverride = false;
     private CANSparkMax winch;
     private DigitalInput climbLimitSwitch;
+    private boolean isPidEnabled = true;
 
     @Inject
     public WinchController(PistonController pistonController, int spark, int limit) {
@@ -51,7 +51,7 @@ public class WinchController extends Subsystem {
         logger = Logging.getLogger(getClass());
         winch = new CANSparkMax(spark, CANSparkMaxLowLevel.MotorType.kBrushless);
         climbLimitSwitch = new DigitalInput(limit);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getDistance), this::rawSetPower, 0.01);
+        pidLoop = new PIDController(P, I, D);
 
         winch.setInverted(true);
         winch.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -66,7 +66,7 @@ public class WinchController extends Subsystem {
     public void setPosition(double position) {
         logger.setpointChange(position);
         pidLoop.setSetpoint(position);
-        pidLoop.enable();
+        isPidEnabled = true;
         logger.conditionChange("pid_loop", "enabled");
     }
 
@@ -77,7 +77,7 @@ public class WinchController extends Subsystem {
 
     public void atPower(double pwr) {
         if (pistonController.getPistonState(Piston.LOCK_CLIMB) || lockOverride) {
-            pidLoop.disable();
+            isPidEnabled = false;
             logger.clearSetpoint();
             logger.conditionChange("pid_loop", "disabled");
             rawSetPower(pwr);
@@ -86,6 +86,10 @@ public class WinchController extends Subsystem {
 
     public void resetEncoder() {
         winch.getEncoder().setPosition(0.0);
+    }
+
+    public void disablePID() {
+        isPidEnabled = false;
     }
 
     public PIDController getPIDLoop() {
@@ -99,10 +103,5 @@ public class WinchController extends Subsystem {
     public boolean getClimbLimitSwitch() {
         //negates returned value as limit switch is wired backwards
         return !climbLimitSwitch.get();
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-
     }
 }

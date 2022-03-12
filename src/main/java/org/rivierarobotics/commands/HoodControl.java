@@ -21,14 +21,14 @@
 package org.rivierarobotics.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.rivierarobotics.inject.Input;
 import org.rivierarobotics.subsystems.HoodController;
 import org.rivierarobotics.util.MathUtil;
 
 import javax.inject.Inject;
 
-public class HoodControl extends Command {
+public class HoodControl extends CommandBase {
     private final HoodController hoodController;
     private final Joystick hoodJoystick;
 
@@ -36,16 +36,11 @@ public class HoodControl extends Command {
     public HoodControl(HoodController hoodController, @Input(Input.Position.CODRIVER_RIGHT) Joystick hoodJoystick) {
         this.hoodController = hoodController;
         this.hoodJoystick = hoodJoystick;
-        requires(hoodController);
+        addRequirements(hoodController);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         hoodController.setPower(MathUtil.fitDeadband(hoodJoystick.getY()));
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
     }
 }

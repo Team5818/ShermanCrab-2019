@@ -20,8 +20,8 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.util.MathUtil;
@@ -32,41 +32,30 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @GenerateCreator
-public class TestMotor extends Command {
+public class TestMotor extends CommandBase {
     private final DoubleSupplier stick;
     private final DoubleConsumer out;
 
     public TestMotor(@Provided TMSystem tmSystem, DoubleSupplier stick, DoubleConsumer out) {
-        requires(tmSystem);
+        addRequirements(tmSystem);
         this.stick = stick;
         this.out = out;
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         out.accept(MathUtil.fitDeadband(stick.getAsDouble()));
     }
 
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         out.accept(0);
     }
 
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
-
     @Singleton
-    public static class TMSystem extends Subsystem {
+    public static class TMSystem extends SubsystemBase {
         @Inject
         public TMSystem() {
-
-        }
-
-        @Override
-        protected void initDefaultCommand() {
-
         }
     }
 }

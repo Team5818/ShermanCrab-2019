@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.HoodController;
@@ -31,12 +31,12 @@ public class HoodEncoderReset extends InstantCommand {
 
     public HoodEncoderReset(@Provided HoodController hoodController) {
         this.hoodController = hoodController;
-        requires(hoodController);
+        addRequirements(hoodController);
     }
 
     @Override
-    protected void execute() {
-        hoodController.getPIDLoop().disable();
+    public void execute() {
+        hoodController.disablePID();
         hoodController.resetQuadratureEncoder();
     }
 }

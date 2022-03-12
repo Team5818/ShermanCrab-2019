@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.rivierarobotics.commands.DriveControl;
 import org.rivierarobotics.inject.Sided;
 
@@ -29,8 +29,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
-public class DriveTrain extends Subsystem {
-    private Provider<DriveControl> command;
+public class DriveTrain extends DefaultSubsystem<DriveControl> {
     private DriveTrainSide left;
     private DriveTrainSide right;
 
@@ -38,9 +37,9 @@ public class DriveTrain extends Subsystem {
     public DriveTrain(@Sided(Sided.Side.LEFT) DriveTrainSide left,
                       @Sided(Sided.Side.RIGHT) DriveTrainSide right,
                       Provider<DriveControl> command) {
+        super(command);
         this.left = left;
         this.right = right;
-        this.command = command;
     }
 
     public void setPower(double l, double r) {
@@ -54,10 +53,5 @@ public class DriveTrain extends Subsystem {
 
     public DriveTrainSide getRight() {
         return right;
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(command.get());
     }
 }

@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.Shifter;
@@ -31,11 +31,11 @@ public class SwapGear extends InstantCommand {
 
     public SwapGear(@Provided Shifter shifter) {
         this.shifter = shifter;
-        requires(shifter);
+        addRequirements(shifter);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         shifter.swapGear();
     }
 }

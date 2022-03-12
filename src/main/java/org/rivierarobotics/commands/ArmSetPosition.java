@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.ArmController;
@@ -33,17 +33,17 @@ public class ArmSetPosition extends InstantCommand {
 
     public ArmSetPosition(@Provided ArmController arm, ArmPosition pos) {
         this(arm, arm.front ? pos.ticksFront : pos.ticksBack);
-        requires(arm);
+        addRequirements(arm);
     }
 
     public ArmSetPosition(@Provided ArmController arm, double pos) {
         this.arm = arm;
         this.pos = pos;
-        requires(arm);
+        addRequirements(arm);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         arm.setAngle(pos);
     }
 }

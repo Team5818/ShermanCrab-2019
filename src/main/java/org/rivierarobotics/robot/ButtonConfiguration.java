@@ -21,10 +21,11 @@
 package org.rivierarobotics.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.rivierarobotics.commands.CommandGroups;
 import org.rivierarobotics.inject.CommandComponent;
 import org.rivierarobotics.inject.Input;
@@ -66,7 +67,7 @@ public class ButtonConfiguration {
     }
 
     public void initTeleop() {
-        clearButtons();
+        CommandScheduler.getInstance().clearButtons();
 
         //shift
         JoystickButton shiftHigh = new JoystickButton(driverLeft, 1);
@@ -181,7 +182,7 @@ public class ButtonConfiguration {
     }
 
     public void initTest() {
-        clearButtons();
+        CommandScheduler.getInstance().clearButtons();
         for (int i = 1; i <= 6; i++) {
             DoubleConsumer out = TestControllers.get(i)::set;
             new JoystickButton(driverButtons, i).whenPressed(cmds.test()
@@ -196,25 +197,11 @@ public class ButtonConfiguration {
                 .motor(() -> -codriverLeft.getY(), TestControllers.get(10)::set));
         for (int i = 0; i < 6; i++) {
             new JoystickButton(codriverButtons, i + 1)
-                    .whenPressed(cmds.test().solenoid(new Solenoid(i)::set));
+                    .whenPressed(cmds.test().solenoid(new Solenoid(PneumaticsModuleType.CTREPCM, i)::set));
         }
         new JoystickButton(codriverButtons, 11)
                 .whenPressed(cmds.tentacle().spin(0.2));
         new JoystickButton(codriverButtons, 12)
                 .whenPressed(cmds.tentacle().spin(-0.2));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void clearButtons() {
-        try {
-            Field mButtons = Scheduler.class.getDeclaredField("mButtons");
-            mButtons.setAccessible(true);
-            Vector<Trigger.ButtonScheduler> buttons = (Vector<Trigger.ButtonScheduler>) mButtons.get(Scheduler.getInstance());
-            if (buttons != null) {
-                buttons.clear();
-            }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

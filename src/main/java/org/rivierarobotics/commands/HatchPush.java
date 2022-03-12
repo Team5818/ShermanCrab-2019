@@ -20,17 +20,17 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.rivierarobotics.subsystems.Piston;
 
 import javax.inject.Inject;
 
-public class HatchPush extends CommandGroup {
+public class HatchPush extends SequentialCommandGroup {
     @Inject
     public HatchPush(PistonCommands piston) {
-        addSequential(piston.extend(Piston.PUSH));
-        addSequential(new TimedCommand(0.05));
-        addSequential(piston.extend(Piston.CLAMP));
+        addCommands(piston.extend(Piston.PUSH));
+        addCommands(new WaitCommand(0.05));
+        addCommands(piston.extend(Piston.CLAMP));
     }
 }

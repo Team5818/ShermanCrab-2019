@@ -22,7 +22,7 @@ package org.rivierarobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MechLogger;
 
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class TentacleController extends Subsystem {
+public class TentacleController extends SubsystemBase {
     private final WPI_TalonSRX tentacles;
     private final MechLogger logger;
 
@@ -45,9 +45,5 @@ public class TentacleController extends Subsystem {
     public void setPower(double pwr) {
         tentacles.set(pwr);
         logger.powerChange(pwr);
-    }
-
-    @Override
-    protected void initDefaultCommand() {
     }
 }

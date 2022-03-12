@@ -20,18 +20,18 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.Gear;
 
 @GenerateCreator
-public class FullShift extends CommandGroup {
+public class FullShift extends SequentialCommandGroup {
     public FullShift(@Provided DriveCommands driveCommands, @Provided GearCommands gearCommands, Gear gear) {
-        addSequential(new TimedCommand(0.2));
-        addSequential(gearCommands.shift(gear));
-        addSequential(driveCommands.setMaxCurrent(gear));
-        addSequential(new TimedCommand(0.2));
+        addCommands(new WaitCommand(0.2));
+        addCommands(gearCommands.shift(gear));
+        addCommands(driveCommands.setMaxCurrent(gear));
+        addCommands(new WaitCommand(0.2));
     }
 }

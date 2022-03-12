@@ -20,25 +20,26 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class CommandGroups {
     private CommandGroups() {
     }
 
     public static Command inParallel(Command... commands) {
-        CommandGroup group = new CommandGroup();
+        ParallelCommandGroup group = new ParallelCommandGroup();
         for (Command c : commands) {
-            group.addParallel(c);
+            group.addCommands(c);
         }
         return group;
     }
 
     public static Command inOrder(Command... commands) {
-        CommandGroup group = new CommandGroup();
+        SequentialCommandGroup group = new SequentialCommandGroup();
         for (Command c : commands) {
-            group.addSequential(c);
+            group.addCommands(c);
         }
         return group;
     }

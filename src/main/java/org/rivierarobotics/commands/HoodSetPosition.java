@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.HoodController;
@@ -42,11 +42,11 @@ public class HoodSetPosition extends InstantCommand {
         this.hood = hood;
         this.front = front;
         this.position = position;
-        requires(hood);
+        addRequirements(hood);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         hood.setAngle(ticks);
         HoodController.CURRENT_HOOD_POSITION = position;
         HoodController.HOOD_FRONT = front;

@@ -23,10 +23,8 @@ package org.rivierarobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.math.controller.PIDController;
 import org.rivierarobotics.commands.ArmControl;
-import org.rivierarobotics.util.AbstractPIDSource;
 import org.rivierarobotics.util.Logging;
 import org.rivierarobotics.util.MathUtil;
 import org.rivierarobotics.util.MechLogger;
@@ -35,23 +33,23 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
-public class ArmController extends Subsystem {
+public class ArmController extends DefaultSubsystem<ArmControl> {
     private final WPI_TalonSRX armTalon;
     private final CANSparkMax sparkSlaveOne;
     private final CANSparkMax sparkSlaveTwo;
     private final MechLogger logger = Logging.getLogger(getClass());
     private final PistonController pistonController;
     private final PIDController pidLoop;
-    private Provider<ArmControl> command;
     private static final double P = 0.0005;
     private static final double I = 0.0;
     private static final double D = 0.0;
-    private static final double F = 0.0;
     private static final double GRAVITY_CONSTANT = -0.045;
     private static final double ANGLE_SCALE = (90) / (ArmPosition.NINETY_DEGREES.ticksFront - ArmPosition.ZERO_DEGREES.ticksFront);
     public boolean front = true;
+    private boolean isPidEnabled = false;
 
     public ArmController(PistonController pistonController, Provider<ArmControl> command, int master, int slaveOne, int slaveTwo) {
+        super(command);
         armTalon = new WPI_TalonSRX(master);
         sparkSlaveOne = new CANSparkMax(slaveOne, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkSlaveTwo = new CANSparkMax(slaveTwo, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -62,10 +60,9 @@ public class ArmController extends Subsystem {
         sparkSlaveTwo.follow(CANSparkMax.ExternalFollower.kFollowerPhoenix, master, false);
 
         setMode(NeutralIdleMode.COAST);
-        pidLoop = new PIDController(P, I, D, F, new AbstractPIDSource(this::getAngle), this::rawSetPower, 0.01);
+        pidLoop = new PIDController(P, I, D);
 
         this.pistonController = pistonController;
-        this.command = command;
     }
 
     public int getAngle() {
@@ -84,7 +81,7 @@ public class ArmController extends Subsystem {
         setMode(NeutralIdleMode.BRAKE);
         pidLoop.setSetpoint(angle);
         logger.setpointChange(angle);
-        pidLoop.enable();
+        isPidEnabled = true;
         logger.conditionChange("pid_loop", "enabled");
     }
 
@@ -94,13 +91,13 @@ public class ArmController extends Subsystem {
 
     public void setPower(double pwr) {
         if (safety(pwr)) {
-            if (pwr != 0 && pidLoop.isEnabled()) {
+            if (pwr != 0 && isPidEnabled) {
                 disablePID();
-            } else if (pwr == 0 && !pidLoop.isEnabled()) {
+            } else if (pwr == 0 && !isPidEnabled) {
                 setMode(NeutralIdleMode.BRAKE);
             }
         }
-        if (!pidLoop.isEnabled()) {
+        if (!isPidEnabled) {
             rawSetPower(pwr);
         }
     }
@@ -113,7 +110,7 @@ public class ArmController extends Subsystem {
     }
 
     private void stop() {
-        if (pidLoop.isEnabled()) {
+        if (isPidEnabled) {
             rawSetPower(0.0);
             disablePID();
         }
@@ -135,8 +132,8 @@ public class ArmController extends Subsystem {
         }
     }
 
-    private void disablePID() {
-        pidLoop.disable();
+    public void disablePID() {
+        isPidEnabled = false;
         logger.clearSetpoint();
         logger.conditionChange("pid_loop", "disabled");
     }
@@ -152,10 +149,5 @@ public class ArmController extends Subsystem {
 
     public WPI_TalonSRX getArmTalon() {
         return armTalon;
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(command.get());
     }
 }

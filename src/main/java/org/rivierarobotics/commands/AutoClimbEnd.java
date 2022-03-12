@@ -20,25 +20,25 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.rivierarobotics.subsystems.WinchController;
 
-public class AutoClimbEnd extends TimedCommand {
+public class AutoClimbEnd extends WaitCommand {
     public final WinchController winchController;
 
     public AutoClimbEnd(WinchController winchController) {
         super(0.5);
         this.winchController = winchController;
-        requires(winchController);
+        addRequirements(winchController);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         winchController.atPower(1.0);
     }
 
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         winchController.atPower(0.0);
     }
 }

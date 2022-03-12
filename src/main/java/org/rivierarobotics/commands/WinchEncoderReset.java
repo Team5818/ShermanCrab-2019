@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.WinchController;
@@ -31,11 +31,11 @@ public class WinchEncoderReset extends InstantCommand {
 
     public WinchEncoderReset(@Provided WinchController winchController) {
         this.winchController = winchController;
-        requires(winchController);
+        addRequirements(winchController);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         winchController.resetEncoder();
     }
 }

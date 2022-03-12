@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 import org.rivierarobotics.subsystems.DriveTrain;
@@ -33,16 +33,16 @@ public class DriveAtPower extends InstantCommand {
     public DriveAtPower(@Provided DriveTrain driveTrain, double power) {
         this.power = power;
         this.driveTrain = driveTrain;
-        requires(driveTrain);
+        addRequirements(driveTrain);
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         driveTrain.setPower(power, power);
     }
 
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         driveTrain.setPower(0, 0);
     }
 }

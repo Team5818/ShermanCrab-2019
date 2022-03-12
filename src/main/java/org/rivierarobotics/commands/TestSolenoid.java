@@ -20,8 +20,8 @@
 
 package org.rivierarobotics.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import net.octyl.aptcreator.GenerateCreator;
 import net.octyl.aptcreator.Provided;
 
@@ -30,37 +30,28 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @GenerateCreator
-public class TestSolenoid extends Command {
+public class TestSolenoid extends CommandBase {
     private final Consumer<Boolean> out;
 
     public TestSolenoid(@Provided TSSystem tsSystem, Consumer<Boolean> out) {
-        requires(tsSystem);
+        addRequirements(tsSystem);
         this.out = out;
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         out.accept(true);
     }
 
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         out.accept(false);
     }
 
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
-
     @Singleton
-    public static class TSSystem extends Subsystem {
+    public static class TSSystem extends SubsystemBase {
         @Inject
         public TSSystem() {
-        }
-
-        @Override
-        protected void initDefaultCommand() {
         }
     }
 }
